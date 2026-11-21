@@ -399,6 +399,9 @@ it.layer(
         expect(response.status).toBe(200);
         expect(yield* response.text).toBe(nextHtml);
         expect(response.headers["cache-control"]).toBe("no-cache");
+        expect(response.headers["x-content-type-options"]).toBe("nosniff");
+        expect(response.headers["referrer-policy"]).toBe("strict-origin-when-cross-origin");
+        expect(response.headers["x-frame-options"]).toBe("DENY");
         expect(response.headers["etag"]).toBeUndefined();
         expect(response.headers["last-modified"]).toBeUndefined();
       }
@@ -545,7 +548,9 @@ describe("video asset byte ranges", () => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const directory = yield* fs.makeTempDirectoryScoped({ prefix: "loom-guarded-offset-limit-" });
+        const directory = yield* fs.makeTempDirectoryScoped({
+          prefix: "loom-guarded-offset-limit-",
+        });
         const filePath = path.join(directory, "clip.mp4");
         yield* fs.writeFileString(filePath, "0123456789");
         const canonicalPath = yield* fs.realPath(filePath);

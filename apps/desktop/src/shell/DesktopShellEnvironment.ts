@@ -107,6 +107,15 @@ const LOGIN_SHELL_ENV_NAMES = [
   "SSL_CERT_FILE",
   "SSL_CERT_DIR",
   "NODE_EXTRA_CA_CERTS",
+  "NODE_USE_ENV_PROXY",
+  "HTTP_PROXY",
+  "HTTPS_PROXY",
+  "NO_PROXY",
+  "ALL_PROXY",
+  "http_proxy",
+  "https_proxy",
+  "no_proxy",
+  "all_proxy",
   "LOOM_GITHUB_APP_CLIENT_ID",
   "__MISE_DIFF",
   "JAVA_HOME",
@@ -519,7 +528,7 @@ const installPosixEnvironment = Effect.fn("desktop.shellEnvironment.installPosix
       "SSL_CERT_DIR",
       "NODE_EXTRA_CA_CERTS",
       "JAVA_HOME",
-          "LOOM_GITHUB_APP_CLIENT_ID",
+      "LOOM_GITHUB_APP_CLIENT_ID",
     ] as const) {
       if (!config.env[name] && shellEnvironment[name]) {
         config.env[name] = shellEnvironment[name];

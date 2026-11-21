@@ -37,11 +37,7 @@ const decodeCache = Schema.decodeUnknownEffect(cacheCodec);
 
 function envOutput(values: Readonly<Record<string, string>>): string {
   return Object.entries(values)
-    .flatMap(([name, value]) => [
-      `__LOOM_ENV_${name}_START__`,
-      value,
-      `__LOOM_ENV_${name}_END__`,
-    ])
+    .flatMap(([name, value]) => [`__LOOM_ENV_${name}_START__`, value, `__LOOM_ENV_${name}_END__`])
     .join("\n");
 }
 
@@ -554,7 +550,7 @@ describe("DesktopShellEnvironment", () => {
     }),
   );
 
-  it.effect("hydrates missing CA trust variables from the login shell", () =>
+  it.effect("hydrates missing CA trust and proxy variables from the login shell", () =>
     Effect.gen(function* () {
       const env: NodeJS.ProcessEnv = {
         SHELL: "/bin/zsh",
@@ -571,12 +567,18 @@ describe("DesktopShellEnvironment", () => {
             SSL_CERT_FILE: "/opt/zerobrew/etc/ca-certificates/cacert.pem",
             SSL_CERT_DIR: "/opt/zerobrew/etc/ca-certificates",
             NODE_EXTRA_CA_CERTS: "/Users/me/corp-root.pem",
+            HTTPS_PROXY: "http://proxy.corp.internal:8080",
+            NO_PROXY: "localhost,127.0.0.1,.corp.internal",
+            NODE_USE_ENV_PROXY: "1",
           }),
       });
 
       assert.equal(env.SSL_CERT_FILE, "/opt/zerobrew/etc/ca-certificates/cacert.pem");
       assert.equal(env.SSL_CERT_DIR, "/etc/ssl/certs");
       assert.equal(env.NODE_EXTRA_CA_CERTS, "/Users/me/corp-root.pem");
+      assert.equal(env.HTTPS_PROXY, "http://proxy.corp.internal:8080");
+      assert.equal(env.NO_PROXY, "localhost,127.0.0.1,.corp.internal");
+      assert.equal(env.NODE_USE_ENV_PROXY, "1");
     }),
   );
 

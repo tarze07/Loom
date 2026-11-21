@@ -52,7 +52,6 @@ export const ManagedPolicyLimits = Schema.Struct({
   maxRuntimeMode: Schema.optionalKey(RuntimeMode),
   /** Clients the server accepts. Without `remote`, nothing off this machine can pair. */
   clients: Schema.optionalKey(Schema.NonEmptyArray(ManagedPolicyClient)),
-  /** `false` turns Loom Connect off and unlinks this machine. */
   webhookTasks: Schema.optionalKey(Schema.Boolean),
   browserCookieImport: Schema.optionalKey(Schema.Boolean),
   providers: Schema.optionalKey(ManagedProviderLimits),
@@ -63,7 +62,6 @@ export type ManagedPolicyLimits = typeof ManagedPolicyLimits.Type;
 export const ManagedPolicySummaryLimits = Schema.Struct({
   maxRuntimeMode: Schema.optionalKey(RuntimeMode),
   clients: Schema.optionalKey(Schema.NonEmptyArray(ManagedPolicyClient)),
-  /** `false` also when `clients` leaves out `remote`, since Connect is remote access. */
   webhookTasks: Schema.optionalKey(Schema.Boolean),
   browserCookieImport: Schema.optionalKey(Schema.Boolean),
   providers: Schema.optionalKey(
