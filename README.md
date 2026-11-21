@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://loom.local">
+  <a href="https://github.com/tarze07/Loom">
     <img src="./assets/prod/loom-black-web-icon-192x192.png" width="80" height="80" alt="Loom logo" />
   </a>
 </p>
@@ -9,16 +9,15 @@
 <p align="center">The open-source control plane for coding agents.</p>
 
 <p align="center">
-  <a href="https://loom.local/download"><strong>Download</strong></a> ·
-  <a href="https://apps.apple.com/us/app/loom-remote-claude-more/id6787819824">iOS</a> ·
-  <a href="https://play.google.com/store/apps/details?id=com.loom.app">Android</a> ·
-  <a href="https://app.loom.local">Web</a> ·
+  <a href="#run-from-source"><strong>Run from source</strong></a> ·
   <a href="./docs/README.md">Docs</a> ·
-  <a href="https://discord.gg/jn4EGJjrvv">Discord</a>
+  <a href="./docs/operations/development.md">Development</a> ·
+  <a href="https://github.com/tarze07/Loom/issues">Issues</a> ·
+  <a href="https://github.com/tarze07/Loom/releases">Releases</a>
 </p>
 
 <p align="center">
-  <a href="https://loom.local">
+  <a href="https://github.com/tarze07/Loom">
     <img src="./.github/readme/hero.webp" width="100%" alt="Loom on desktop with a finished Claude thread, next to the phone app asking to approve a command from Codex" />
   </a>
 </p>
@@ -31,51 +30,52 @@ It works with Claude Code, Codex, Cursor, OpenCode, Grok Build, Antigravity, Kir
 
 - **Your subscriptions.** Loom does not resell tokens. It drives the agents you are already signed in to.
 - **Every agent in one place.** Change models in the middle of a thread. Let Claude hand a task to Codex.
-- **Desktop, web, and phone.** One server, and every client shows the same threads. There are apps for iOS and Android.
-- **Remote ready.** Run agents on any machine. Connect over your local network or a VPN.
+- **Desktop, web, and phone.** One server, and every client shows the same threads. Includes web, Electron desktop, and React Native mobile apps.
+- **Remote ready.** Run agents on any machine. Connect over your local network, SSH, or Tailscale.
 - **Git built in.** Each thread can work in its own worktree. Review the diff, then commit, push, and open a pull request with one button.
 - **Fast.** Performance is a feature here. We measure it, and we treat a dropped frame as a bug.
 - **Open.** MIT licensed. If you don't like something, fork it.
 
-## Install
+## Run from source
 
-### Desktop app
+Loom uses [Vite+](https://viteplus.dev/guide/) (`vp`), which manages the Node version pinned in `package.json`.
 
-[Download Loom](https://loom.local/download) for macOS, Windows, or Linux. You can also use a package manager:
+### 1. Install `vp`
 
-| Platform       | Command                                                              |
-| -------------- | -------------------------------------------------------------------- |
-| macOS          | `brew install --cask loom`                                        |
-| Windows        | `winget install Loom.Loom` or `scoop install extras/loom`     |
-| Arch Linux     | `yay -S loom-bin`                                                  |
-| Nix            | `nix profile add github:NixOS/nixpkgs/nixos-unstable#loom`         |
-| Debian, Ubuntu | `.deb` from [Releases](https://github.com/tarze07/Loom/releases) |
-
-### Command line
-
-This installs the `loom` command. Run `loom` to start the server and open the web app.
+On macOS / Linux:
 
 ```bash
-curl -fsSL https://loom.local/install.sh | sh
+curl -fsSL https://vite.plus | bash
 ```
 
-On Windows, in PowerShell:
+On Windows (PowerShell):
 
 ```powershell
-irm https://loom.local/install.ps1 | iex
+irm https://vite.plus/ps1 | iex
 ```
 
-To try it once without an install, run `npx t3@latest`.
+### 2. Clone and start the server + web app
 
-### Phone
+```bash
+git clone https://github.com/tarze07/Loom.git
+cd Loom
+vp i
+vp run dev
+```
 
-Get the app from the [App Store](https://apps.apple.com/us/app/loom-remote-claude-more/id6787819824) or [Google Play](https://play.google.com/store/apps/details?id=com.loom.app). Then follow [remote access](./docs/user/remote-access.md) to connect it to your computer.
+Open the pairing URL printed by the dev runner to authenticate your browser.
+
+### Desktop & mobile apps
+
+- **Desktop (Electron):** run `vp run dev:desktop` for development, or `vp run build:desktop` to build the desktop bundle.
+- **Mobile (iOS / Android):** see [`apps/mobile/README.md`](./apps/mobile/README.md) for building the Expo Dev Client from source.
+- **Dev container:** see [Dev container](./docs/internals/devcontainer.md) for VS Code and Codespaces setup.
 
 ### Sign in to an agent
 
-Loom needs one agent that is installed and signed in. For example, install [Claude Code](https://claude.com/product/claude-code) and run `claude auth login`, or install [Codex CLI](https://developers.openai.com/codex/cli) and run `codex login`.
+Loom needs at least one coding agent installed and signed in. For example, install [Claude Code](https://claude.com/product/claude-code) and run `claude auth login`, or install [Codex CLI](https://developers.openai.com/codex/cli) and run `codex login`.
 
-[Provider setup](./docs/user/install.md#providers) has the steps for each agent. [Install Loom](./docs/user/install.md) covers nightly builds, AppImage, WSL, and NixOS.
+[Provider setup](./docs/user/install.md#providers) has the steps for each agent. [Install Loom](./docs/user/install.md) covers additional platform notes.
 
 ## "Wait, what are you selling me?"
 
@@ -88,6 +88,7 @@ We wanted something performant, remote-ready, and truly open. If we ever go the 
 - [Install and first run](./docs/user/install.md)
 - [Remote access from a phone or another machine](./docs/user/remote-access.md)
 - [Permission modes](./docs/user/permission-modes.md)
+- [Managed policy (enterprise / admin)](./docs/user/managed-policy.md)
 - [Source control](./docs/user/source-control.md)
 - [Connect outside agents over MCP](./docs/user/outside-agents.md)
 - [FAQ](./docs/user/faq.md)
@@ -96,12 +97,11 @@ We wanted something performant, remote-ready, and truly open. If we ever go the 
 
 ## Contributing
 
-We have limited review capacity. Small, focused fixes are the most likely to be merged. Features need an approved discussion first.
+We have limited review capacity. Small, focused fixes are the most likely to be merged.
 
 - Read [CONTRIBUTING.md](./CONTRIBUTING.md) before you report a bug or open a pull request.
-- Put feature requests in [Ideas](https://github.com/tarze07/Loom/discussions/categories/ideas).
+- Report bugs or propose features in [Issues](https://github.com/tarze07/Loom/issues).
 - Build from source with the [development runbook](./docs/operations/development.md#first-checkout). The [architecture overview](./docs/internals/overview.md) explains how it works.
-- Get help in [Discord](https://discord.gg/jn4EGJjrvv).
 
 ## License
 
