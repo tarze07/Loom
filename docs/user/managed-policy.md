@@ -30,8 +30,7 @@ The desktop app includes the `loom` command; see [The `loom` command](./install.
   },
   "limits": {
     "maxRuntimeMode": "auto-accept-edits",
-    "clients": ["desktop", "local-browser"],
-    "telemetry": false
+    "clients": ["desktop", "local-browser"]
   }
 }
 ```
@@ -75,9 +74,9 @@ Administrative Templates > Loom. Set **Organization** whenever you set any other
 Locks and provider fields go in the two JSON policies, as the same objects a policy file would hold.
 Machines pick up a change at the next Group Policy refresh; run `gpupdate /target:computer /force`
 to apply it now, then restart Loom.
-Setting **Allow Loom Connect**, **Allow webhook tasks**, **Allow importing browser cookies**, or
-**Allow usage data** to **Disabled** turns that feature off. Setting any other Loom policy to
-**Disabled** restricts nothing, the same as **Not Configured**.
+Setting **Allow webhook tasks** or **Allow importing browser cookies** to **Disabled** turns that
+feature off. Setting any other Loom policy to **Disabled** restricts nothing, the same as
+**Not Configured**.
 
 **Windows registry value.** Instead of the template, set the `Policy` value (`REG_SZ`) to the whole policy as one line of JSON,
 from Group Policy Preferences or an Intune script. Loom reads it through the Windows registry
@@ -166,10 +165,8 @@ A few settings need care:
   "limits": {
     "maxRuntimeMode": "auto-accept-edits",
     "clients": ["desktop"],
-    "connect": false,
     "webhookTasks": false,
     "browserCookieImport": false,
-    "telemetry": false,
     "providers": {
       "allowedDrivers": ["claudeAgent", "codex"],
       "instances": {
@@ -229,8 +226,7 @@ address or `localhost`. A [background service](./background-service.md) installe
 `LOOM_LAN` existed keeps private-network access, so without `remote` it refuses to start.
 Run `t3 up --no-lan` when its `service.env` sets no `LOOM_HOST`, or set
 `LOOM_HOST=127.0.0.1` in `service.env`, then run `t3 service restart`. The desktop app starts
-with network access and Tailscale Serve off, whatever the user chose. That also turns off
-Loom Connect. To keep other remote access but turn off Loom Connect alone, set `"connect": false`.
+with network access and Tailscale Serve off, whatever the user chose.
 
 When it starts, the server also turns off each Tailscale Serve route, HTTPS or TCP, that forwards
 to it, such as one `t3 pair --tailscale` set up, and leaves other routes alone. It does not start
@@ -249,9 +245,6 @@ so restart Loom after that.
   but do not run, and cannot be turned back on. Users can still edit or delete them.
 - `browserCookieImport: false`: users cannot import cookies from another browser into Loom's
   browser.
-- `telemetry: false`: the server and desktop app send no [product usage data](./telemetry.md) or
-  relay connection traces. A policy cannot turn them on. A browser that opens the server, such as
-  app.loom.local, still sends its own relay traces.
 
 ### Providers
 

@@ -231,11 +231,9 @@ describe("readManagedPolicy", () => {
               text("SupportUrl", ""),
               // Registry names ignore case.
               text("maxRuntimeMode", "auto-accept-edits"),
-              dword("Telemetry", 0),
+              dword("WebhookTasks", 0),
+              dword("BrowserCookieImport", 0),
               text("Settings", '{"enableAgentBrowserAccess": {"value": false, "locked": true}}'),
-              text("UpdatesMode", "off"),
-              dword("AllowNightly", 1),
-              dword("Updates", 1),
               dword("Clients", 1),
               dword("AllowedDrivers", 1),
             ],
@@ -252,8 +250,8 @@ describe("readManagedPolicy", () => {
           settings: { enableAgentBrowserAccess: { value: false, locked: true } },
           limits: {
             maxRuntimeMode: "auto-accept-edits",
-            telemetry: false,
-            updates: { mode: "off", allowNightly: true },
+            webhookTasks: false,
+            browserCookieImport: false,
             clients: ["desktop", "local-browser", "remote"],
             providers: { allowedDrivers: ["codex", "claudeAgent", "UnknownDriver"] },
           },
@@ -272,14 +270,12 @@ describe("readManagedPolicy", () => {
               organization,
               dword("Clients", 0),
               dword("AllowedDrivers", 0),
-              dword("Updates", 0),
-              dword("AllowNightly", 0),
-              dword("Telemetry", 0),
+              dword("WebhookTasks", 0),
             ],
             disabledGroups,
           ),
         ),
-        { schemaVersion: 1, organization: "Société 日本 ✓", limits: { telemetry: false } },
+        { schemaVersion: 1, organization: "Société 日本 ✓", limits: { webhookTasks: false } },
       );
       // With nothing else configured, that is no policy rather than one missing Organization.
       assert.isUndefined(
@@ -293,7 +289,9 @@ describe("readManagedPolicy", () => {
 
       // Anything the template does not write fails closed rather than being ignored.
       for (const [registry, reason] of [
-        [policyKey([organization, dword("Telemetry", 2)]), "DWORD of 0 or 1"],
+        [policyKey([organization, dword("WebhookTasks", 2)]), "DWORD of 0 or 1"],
+        [policyKey([organization, dword("Connect", 0)]), "not a Loom policy value"],
+        [policyKey([organization, dword("Telemetry", 0)]), "not a Loom policy value"],
         [policyKey([organization, text("MaxMode", "auto")]), "not a Loom policy value"],
         [policyKey([organization], { Other: { x: 1 } }), "Other is not a Loom policy key"],
         [

@@ -102,12 +102,6 @@ const policies = (): ReadonlyArray<Policy> => [
     ],
   },
   {
-    id: "Connect",
-    title: "Allow Loom Connect",
-    help: "Disabled turns Loom Connect off and unlinks this machine. Other remote access still follows Allowed clients.\n\nEnabled or Not Configured leaves Loom Connect available.",
-    toggle: "Connect",
-  },
-  {
     id: "WebhookTasks",
     title: "Allow webhook tasks",
     help: "Disabled stops scheduled tasks from using webhook triggers. Existing webhook tasks are kept but do not run.",

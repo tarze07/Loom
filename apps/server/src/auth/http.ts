@@ -199,13 +199,23 @@ export const failEnvironmentInternal =
     return yield* new EnvironmentInternalError({ code: "internal_error", reason, traceId });
   });
 
-const appendSessionCookie = (cookieName: string, token: string, expiresAt: DateTime.DateTime) =>
+const isSecureRequest = (request: HttpServerRequest.HttpServerRequest): boolean =>
+  request.protocol === "https" ||
+  request.headers["x-forwarded-proto"]?.split(",")[0]?.trim().toLowerCase() === "https";
+
+const appendSessionCookie = (
+  cookieName: string,
+  token: string,
+  expiresAt: DateTime.DateTime,
+  secure: boolean,
+) =>
   Effect.fromResult(
     Cookies.set(Cookies.empty, cookieName, token, {
       expires: DateTime.toDate(expiresAt),
       httpOnly: true,
       path: "/",
       sameSite: "lax",
+      secure,
     }),
   ).pipe(
     Effect.catch(() => failEnvironmentInternal("browser_session_cookie_failed")),
@@ -281,7 +291,12 @@ export const layer = HttpApiBuilder.group(
               result.sessionMethod === "browser-session-cookie" &&
               result.expiresAt
             ) {
-              yield* appendSessionCookie(sessions.cookieName, credential.token, result.expiresAt);
+              yield* appendSessionCookie(
+                sessions.cookieName,
+                credential.token,
+                result.expiresAt,
+                isSecureRequest(request),
+              );
               yield* appendCredentialResponseHeaders;
             }
             return result;
@@ -297,6 +312,7 @@ export const layer = HttpApiBuilder.group(
           function* (args) {
             yield* annotateEnvironmentRequest(args.endpoint.name);
             const request = yield* HttpServerRequest.HttpServerRequest;
+            const secure = isSecureRequest(request);
             const previousCredential = EnvironmentAuth.selectRequestCredential(
               request,
               sessions.cookieName,
@@ -317,6 +333,7 @@ export const layer = HttpApiBuilder.group(
                 httpOnly: true,
                 path: "/",
                 sameSite: "lax",
+                secure,
               }),
             ).pipe(Effect.catch(() => failEnvironmentInternal("browser_session_cookie_failed")));
             const sessionCookies = result.expireNormalCookie
@@ -325,6 +342,7 @@ export const layer = HttpApiBuilder.group(
                     httpOnly: true,
                     path: "/",
                     sameSite: "lax",
+                    secure,
                   }),
                 ).pipe(Effect.catch(() => failEnvironmentInternal("browser_session_cookie_failed")))
               : selectedCookie;

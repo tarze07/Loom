@@ -3385,6 +3385,28 @@ describe("UsageService", () => {
       }).pipe(Effect.scoped),
   );
 
+  it.effect("skips external LiteLLM pricing fetches when enableProviderUpdateChecks is false", () =>
+    Effect.gen(function* () {
+      const { home } = yield* setup;
+      const requests: Array<HttpClientRequest.HttpClientRequest> = [];
+      const serviceLayer = layerService({
+        prefix: "usage-service-rates-disabled-test",
+        home,
+        settings: { enableProviderUpdateChecks: false },
+        onRatesFetch: (request) => requests.push(request),
+      });
+      const service = yield* UsageService.make.pipe(Effect.provide(serviceLayer));
+
+      const summary = yield* service.readSummary(WINDOW);
+      assert.strictEqual(summary.pricing.status, "unavailable");
+      assert.strictEqual(requests.length, 0);
+
+      const refreshed = yield* service.refreshRates;
+      assert.strictEqual(refreshed.status, "unavailable");
+      assert.strictEqual(requests.length, 0);
+    }).pipe(Effect.scoped),
+  );
+
   it.live("does not orphan an in-flight scan when its first caller is interrupted", () =>
     Effect.gen(function* () {
       const { settings, home } = yield* setup;

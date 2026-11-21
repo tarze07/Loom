@@ -661,8 +661,14 @@ const handleStaticAndDevRequest = Effect.fn("handleStaticAndDevRequest")(
           }
         : {};
     };
+    const securityHeaders: Record<string, string> = {
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+      ...(isHtml ? { "X-Frame-Options": "DENY" } : {}),
+    };
     const headers: Record<string, string> = {
       "Cache-Control": cacheControl,
+      ...securityHeaders,
       ...validators(fileInfo),
     };
     const etag = headers.ETag;
@@ -699,6 +705,7 @@ const handleStaticAndDevRequest = Effect.fn("handleStaticAndDevRequest")(
       return HttpServerResponse.uint8Array(bytes, {
         headers: {
           "Cache-Control": cacheControl,
+          ...securityHeaders,
           ...validators({ ...info, size: ByteSize.bytes(bytes.byteLength) }),
         },
         contentType,

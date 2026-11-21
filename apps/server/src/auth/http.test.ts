@@ -119,10 +119,31 @@ it.effect("sets the selected browser session cookies through the HTTP route", ()
           const devCookies = devResponse.headers.getSetCookie();
           const devCookie = devCookies.find((cookie) => cookie.startsWith("loom_dev_session_"));
           expect(devCookie).toContain("HttpOnly");
+          expect(devCookie).not.toContain("Secure");
           expect(devCookie).toContain(`=${DEV_TOKEN};`);
           expect(devCookies).toContainEqual(
             expect.stringMatching(/^loom_session_[^=]*=;.*Max-Age=0/),
           );
+
+          const proxiedHttpsResponse = await environmentA.handler(
+            postJson(
+              "/api/auth/browser-session",
+              { credential: DEV_TOKEN },
+              { "x-forwarded-proto": "https" },
+            ),
+            requestContext,
+          );
+          expect(proxiedHttpsResponse.status).toBe(200);
+          const proxiedHttpsCookies = proxiedHttpsResponse.headers.getSetCookie();
+          const proxiedDevCookie = proxiedHttpsCookies.find((cookie) =>
+            cookie.startsWith("loom_dev_session_"),
+          );
+          const proxiedExpiredCookie = proxiedHttpsCookies.find((cookie) =>
+            cookie.startsWith("loom_session_"),
+          );
+          expect(proxiedDevCookie).toContain("Secure");
+          expect(proxiedExpiredCookie).toContain("Secure");
+
           const devCookieHeader = devCookie?.split(";", 1)[0] ?? "";
           const environmentBSession = await environmentB.handler(
             new Request("http://127.0.0.1/api/auth/session", {
@@ -152,6 +173,7 @@ it.effect("sets the selected browser session cookies through the HTTP route", ()
           expect(restrictedCookies).toHaveLength(1);
           expect(restrictedCookies[0]).toMatch(/^loom_session_/);
           expect(restrictedCookies[0]).not.toContain("loom_dev_session_");
+          expect(restrictedCookies[0]).not.toContain("Secure");
         }),
       ([environmentA, environmentB]) =>
         Effect.promise(() => Promise.all([environmentA.dispose(), environmentB.dispose()])),
