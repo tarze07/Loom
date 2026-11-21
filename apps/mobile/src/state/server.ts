@@ -1,0 +1,20 @@
+import { createServerEnvironmentAtoms } from "@loom/client-runtime/state/server";
+import { createEnvironmentServerConfigsAtom } from "@loom/client-runtime/state/shell";
+
+import { environmentCatalog } from "../connection/catalog";
+import { connectionAtomRuntime } from "../connection/runtime";
+import { environmentSession } from "./session";
+
+export const serverEnvironment = createServerEnvironmentAtoms(connectionAtomRuntime, {
+  initialConfigValueAtom: environmentSession.initialConfigValueAtom,
+  usageLimitSources: true,
+  usageLimitsCommand: true,
+  providerCatalogsOnDemand: true,
+  providerCatalogDigests: true,
+  providerStatusDeltas: true,
+  omitRefreshedProviders: true,
+});
+export const environmentServerConfigsAtom = createEnvironmentServerConfigsAtom({
+  catalogValueAtom: environmentCatalog.catalogValueAtom,
+  serverConfigValueAtom: serverEnvironment.configValueAtom,
+});

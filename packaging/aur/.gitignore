@@ -1,0 +1,9 @@
+src/
+pkg/
+*.AppImage
+*.pkg.tar.zst
+.SRCINFO
+loom-bin-*.png
+loom-bin-*-LICENSE
+loom-nightly-bin-*.png
+loom-nightly-bin-*-LICENSE

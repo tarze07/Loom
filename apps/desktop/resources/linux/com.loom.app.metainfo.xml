@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.loom.app</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <name>Loom</name>
+  <summary>Desktop GUI for coding agents</summary>
+  <developer id="com.loom">
+    <name>Loom Inc.</name>
+  </developer>
+  <description>
+    <p>
+      Loom is an open-source desktop app for coding agents. Work with your
+      existing agent subscriptions, review code changes, and run commands in
+      your projects.
+    </p>
+    <p>
+      Connect from desktop, web, or mobile to continue working remotely.
+    </p>
+  </description>
+  <launchable type="desktop-id">loom.desktop</launchable>
+  <icon type="stock">loom</icon>
+  <provides>
+    <binary>loom</binary>
+  </provides>
+  <categories>
+    <category>Development</category>
+  </categories>
+  <url type="homepage">https://loom.local</url>
+  <url type="bugtracker">https://github.com/tarze07/Loom/issues</url>
+  <url type="vcs-browser">https://github.com/tarze07/Loom</url>
+</component>

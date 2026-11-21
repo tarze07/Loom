@@ -1,0 +1,20 @@
+{
+  "$schema": "https://nitro.margelo.com/nitro.schema.json",
+  "cxxNamespace": ["loomhighlights"],
+  "ios": {
+    "iosModuleName": "LoomHighlightsNative"
+  },
+  "android": {
+    "androidNamespace": ["loomhighlights"],
+    "androidCxxLibName": "loomhighlights"
+  },
+  "autolinking": {
+    "LoomHighlights": {
+      "all": {
+        "language": "c++",
+        "implementationClassName": "HybridLoomHighlights"
+      }
+    }
+  },
+  "ignorePaths": ["node_modules", "Vendor"]
+}

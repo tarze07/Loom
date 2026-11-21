@@ -1,0 +1,83 @@
+query LoomExpoViewer {
+  meActor {
+    __typename
+    ... on UserActor {
+      username
+    }
+    ... on Robot {
+      firstName
+    }
+    accounts {
+      name
+      appsPaginated(first: 100) {
+        edges {
+          node {
+            id
+            fullName
+          }
+        }
+      }
+    }
+  }
+}
+
+query LoomEasSimulatorAvailability($appId: String!, $filter: [String!]) {
+  app {
+    byId(appId: $appId) {
+      ownerAccount {
+        name
+        accountFeatureGates(filter: $filter)
+      }
+    }
+  }
+}
+
+mutation LoomCreateEasSimulatorSession($input: CreateDeviceRunSessionInput!) {
+  deviceRunSession {
+    createDeviceRunSession(deviceRunSessionInput: $input) {
+      id
+    }
+  }
+}
+
+query LoomEasSimulatorSession($id: ID!) {
+  deviceRunSessions {
+    byId(deviceRunSessionId: $id) {
+      id
+      status
+      remoteConfig {
+        ... on AgentDeviceRunSessionRemoteConfig {
+          agentDeviceRemoteSessionUrl
+          agentDeviceRemoteSessionToken
+          webPreviewToken
+          previewApiUrl
+        }
+      }
+    }
+  }
+}
+
+query LoomActiveEasSimulatorSessions($appId: String!, $filter: DeviceRunSessionFilterInput) {
+  app {
+    byId(appId: $appId) {
+      deviceRunSessionsPaginated(first: 50, filter: $filter) {
+        edges {
+          node {
+            id
+            status
+            name
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation LoomStopEasSimulatorSession($id: ID!) {
+  deviceRunSession {
+    ensureDeviceRunSessionStopped(deviceRunSessionId: $id) {
+      id
+      status
+    }
+  }
+}

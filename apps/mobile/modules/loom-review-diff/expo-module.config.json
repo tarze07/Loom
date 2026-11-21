@@ -1,0 +1,10 @@
+{
+  "platforms": ["apple", "android"],
+  "apple": {
+    "modules": ["LoomReviewDiffModule"],
+    "podspecPath": "LoomReviewDiffNative.podspec"
+  },
+  "android": {
+    "modules": ["expo.modules.loomreviewdiff.LoomReviewDiffModule"]
+  }
+}

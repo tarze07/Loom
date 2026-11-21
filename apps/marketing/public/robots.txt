@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://loom.local/sitemap.xml

@@ -1,0 +1,17 @@
+{
+  "name": "@loom/mobile-review-diff-native",
+  "version": "0.0.0",
+  "private": true,
+  "expo-module": {
+    "ios": {
+      "modules": [
+        "LoomReviewDiffModule"
+      ]
+    },
+    "android": {
+      "modules": [
+        "expo.modules.loomreviewdiff.LoomReviewDiffModule"
+      ]
+    }
+  }
+}

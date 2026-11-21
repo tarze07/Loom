@@ -1,0 +1,17 @@
+{
+  "name": "@loom/mobile-terminal-native",
+  "version": "0.0.0",
+  "private": true,
+  "expo-module": {
+    "ios": {
+      "modules": [
+        "LoomTerminalModule"
+      ]
+    },
+    "android": {
+      "modules": [
+        "expo.modules.loomterminal.LoomTerminalModule"
+      ]
+    }
+  }
+}

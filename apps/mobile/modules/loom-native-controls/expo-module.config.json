@@ -1,0 +1,20 @@
+{
+  "platforms": ["apple", "android"],
+  "apple": {
+    "modules": ["LoomNativeControlsModule", "LoomKeyboardCommandsModule"],
+    "appDelegateSubscribers": [
+      "LoomWorkspaceOrientationSubscriber",
+      "LoomMenuDismissTouchGateSubscriber",
+      "LoomBackgroundGraceSubscriber"
+    ]
+  },
+  "android": {
+    "modules": [
+      "expo.modules.loomnativecontrols.LoomNativeControlsModule",
+      "expo.modules.loomnativecontrols.LoomWorkspaceNavigationModule",
+      "expo.modules.loomnativecontrols.LoomKeyboardCommandsModule",
+      "expo.modules.loomnativecontrols.LoomFoldPostureModule",
+      "expo.modules.loomnativecontrols.LoomSecretInputModule"
+    ]
+  }
+}

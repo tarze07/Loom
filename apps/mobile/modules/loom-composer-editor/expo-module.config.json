@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android"],
+  "apple": {
+    "modules": ["LoomComposerEditorModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.loomcomposereditor.LoomComposerEditorModule"]
+  }
+}

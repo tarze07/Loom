@@ -1,0 +1,4 @@
+interface:
+  display_name: "Loom App Testing"
+  short_description: "Test web and desktop in Loom's Browser panel"
+  default_prompt: "Use $test-loom-app to verify the affected web or desktop flow through Loom's Browser panel."

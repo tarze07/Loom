@@ -1,0 +1,4 @@
+interface:
+  display_name: "Test Loom Mobile"
+  short_description: "Test iOS and Android in Loom's Device panel"
+  default_prompt: "Use $test-loom-mobile to verify the affected native mobile flow through Loom's Device panel and AgentDevice."
