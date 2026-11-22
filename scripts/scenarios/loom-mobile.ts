@@ -9,7 +9,7 @@ import * as Schema from "effect/Schema";
 
 import { APP_DIR, MOBILE, MOBILE_T3_HOME } from "../e2e.config.ts";
 import { run, ScenarioError } from "./shell.ts";
-import { makeState, runPromise, type LoomState } from "./t3.ts";
+import { makeState, runPromise, type LoomState } from "./loom.ts";
 
 const APP_ID = "com.loom.app.dev";
 const SCHEME = "loom-dev";
