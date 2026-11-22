@@ -256,6 +256,7 @@ export function SavedBackendListRow({
               hostLabel={environment.label}
               diagnosis={diagnosis}
               onRetry={() => void retryNow(environmentId)}
+              onAddRoute={() => onAddRoute(environment)}
             />
           ) : null}
           {routesOpen && (

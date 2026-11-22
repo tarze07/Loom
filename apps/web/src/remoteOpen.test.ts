@@ -1,6 +1,5 @@
 import {
   PrimaryConnectionTarget,
-  RelayConnectionTarget,
   SshConnectionTarget,
 } from "@loom/client-runtime/connection";
 import { buildRemoteOpenUrl, EnvironmentId } from "@loom/contracts";
