@@ -92,14 +92,14 @@ export const readLiveHomeOwner = Effect.fn("DesktopHomeOwner.readLiveHomeOwner")
 export const homeOwnedMessage = (owner: Option.Option<HomeOwner>): string =>
   Option.match(owner, {
     onNone: () =>
-      "Another Loom server, such as the background service, is using this data directory, or an older background service is set up for it. Stop that server or try `t3 update`. If the older launcher cannot update, run `t3 service uninstall` and optionally reinstall with `t3 service install` from a current CLI. Use `npx t3@latest` if `loom` is missing or outdated, and pass `--base-dir` with the service's Loom home to each command. Then reopen Loom. You can also set a separate LOOM_HOME and pair with the running server.",
+      "Another Loom server, such as the background service, is using this data directory, or an older background service is set up for it. Stop that server or try `loom update`. If the older launcher cannot update, run `loom service uninstall` and optionally reinstall with `loom service install` from a current CLI. Use `npx loom@latest` if `loom` is missing or outdated, and pass `--base-dir` with the service's Loom home to each command. Then reopen Loom. You can also set a separate LOOM_HOME and pair with the running server.",
     onSome: (owner) => {
       const kind = owner.serviceManaged
         ? "The Loom background service"
-        : "Another Loom server (for example `t3 serve`, or one started over SSH)";
+        : "Another Loom server (for example `loom serve`, or one started over SSH)";
       const version = owner.serverVersion ? `, version ${owner.serverVersion}` : "";
       const stop = owner.serviceManaged
-        ? "Stop it with `t3 service uninstall`, passing `--base-dir` with this Loom home"
+        ? "Stop it with `loom service uninstall`, passing `--base-dir` with this Loom home"
         : "If a Loom app on another machine started it over SSH, that app restarts it: remove or disconnect that SSH environment there, or quit that app. Then stop the server";
       return `${kind} is using this Loom home (PID ${owner.pid}, port ${owner.port}${version}). ${stop}, and reopen Loom. You can also set a separate LOOM_HOME and pair with the running server.`;
     },

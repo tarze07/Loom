@@ -42,9 +42,9 @@ import { statusCommand, upCommand } from "./cli/up.ts";
 const layerCliRuntime = Layer.mergeAll(NodeServices.layer, NodeCrypto.layer, NetService.layer);
 
 export const makeCli = () =>
-  Command.make("t3", { ...sharedServerCommandFlags }).pipe(
+  Command.make("loom", { ...sharedServerCommandFlags }).pipe(
     Command.withDescription(
-      "Run Loom in this terminal and open it in your browser. To use it from your other devices, run `t3 up`.",
+      "Run Loom in this terminal and open it in your browser. To use it from your other devices, run `loom up`.",
     ),
     Command.withHandler(runDefaultServerCommand),
     Command.withSubcommands([

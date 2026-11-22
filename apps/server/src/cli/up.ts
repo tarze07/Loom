@@ -51,7 +51,7 @@ const readSetup = Effect.fn("cli.up.read_setup")(function* () {
 });
 
 /**
- * The route `t3 up` starts from. With no flag it asks; a flag means it asks
+ * The route `loom up` starts from. With no flag it asks; a flag means it asks
  * nothing and keeps the route not named as it is.
  */
 export const planRoutes = (
@@ -109,7 +109,7 @@ const formatSetup = (setup: Setup) => {
       ? ["Anyone on your LAN or tailnet can reach the port. A pairing code is the only lock."]
       : []),
     ...(setup.lanFromOldDefault
-      ? ["Older installs keep LAN access on. Turn it off: `t3 up --no-lan`."]
+      ? ["Older installs keep LAN access on. Turn it off: `loom up --no-lan`."]
       : []),
   ];
   return [
@@ -185,7 +185,7 @@ const setUp = Effect.fn("cli.up")(function* (flags: {
     return yield* new CliError.UserError({
       cause: "routes",
       userMessage:
-        "No terminal. Choose access with --lan, or use --yes for the default. See `t3 up --help`.",
+        "No terminal. Choose access with --lan, or use --yes for the default. See `loom up --help`.",
     });
   }
   if (routes.lan && !current.lan) {
@@ -227,7 +227,7 @@ const setUp = Effect.fn("cli.up")(function* (flags: {
   }
 
   const previousLan = (yield* CliService.readServiceEnv(baseDir)).entries.LOOM_LAN;
-  // Also with no service manager: the file records the choice that `t3 status` shows.
+  // Also with no service manager: the file records the choice that `loom status` shows.
   yield* CliService.writeServiceEnv(baseDir, { LOOM_LAN: String(routes.lan) });
   // When the service step fails, an installed service still runs with the old
   // value, so the file goes back to match it.
@@ -299,7 +299,7 @@ const setUp = Effect.fn("cli.up")(function* (flags: {
       }
       if (outcome === "skipped") {
         yield* Console.log(
-          "The installed service was not restarted. Run `t3 service status` to see why.",
+          "The installed service was not restarted. Run `loom service status` to see why.",
         );
       }
     }

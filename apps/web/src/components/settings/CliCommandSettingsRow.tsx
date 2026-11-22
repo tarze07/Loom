@@ -12,9 +12,9 @@ import { SettingsRow } from "./settingsLayout";
 import { searchableSetting } from "./settingsSearch";
 
 const FAILURE_TITLES = {
-  install: "Could not install t3",
-  uninstall: "Could not remove t3",
-  addToPath: "Could not add t3 to PATH",
+  install: "Could not install loom",
+  uninstall: "Could not remove loom",
+  addToPath: "Could not add loom to PATH",
 } as const;
 
 /** The desktop `loom` command's state, and its actions with a toast on failure. */
@@ -53,7 +53,7 @@ export function CliCommandSettingsRow() {
   if (!state?.supported) return null;
   const installed = state.installedPath !== null;
   const description = state.shadowedBy
-    ? `Another t3 at ${state.shadowedBy} runs first in a new terminal. Remove it to use Loom's.`
+    ? `Another loom at ${state.shadowedBy} runs first in a new terminal. Remove it to use Loom's.`
     : !installed
       ? "Run Loom's CLI as `loom` from any terminal."
       : state.onPath

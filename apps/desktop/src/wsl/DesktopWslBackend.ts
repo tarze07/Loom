@@ -128,7 +128,7 @@ export const layer = Layer.effect(
                 Ref.set(
                   preflightErrorRef,
                   Option.some(
-                    "Another Loom server is using this distro's Loom home, or an older background service is set up for it. Stop that server or pair with it, or try `t3 update` in the distro. If the older launcher cannot update, run `t3 service uninstall` and optionally reinstall with `t3 service install` from a current CLI in the distro. Use `npx t3@latest` if `loom` is missing or outdated, and pass `--base-dir` with the service's Loom home to each command.",
+                    "Another Loom server is using this distro's Loom home, or an older background service is set up for it. Stop that server or pair with it, or try `loom update` in the distro. If the older launcher cannot update, run `loom service uninstall` and optionally reinstall with `loom service install` from a current CLI in the distro. Use `npx loom@latest` if `loom` is missing or outdated, and pass `--base-dir` with the service's Loom home to each command.",
                   ),
                 ),
               ),

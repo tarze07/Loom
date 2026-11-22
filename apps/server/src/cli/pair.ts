@@ -322,7 +322,7 @@ export const pairCommand = Command.make("pair", {
       const pairingBaseUrl = resolveDirectPairingBaseUrl(target.state);
       if (isLoopbackHost(new URL(pairingBaseUrl).hostname)) {
         notes.push(
-          "This URL is only reachable from this machine. To reach it from your other devices, run `t3 up`.",
+          "This URL is only reachable from this machine. To reach it from your other devices, run `loom up`.",
         );
       } else if (target.state.privateNetworkOnly) {
         notes.push("This URL works only from this machine's local network.");

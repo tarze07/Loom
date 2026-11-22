@@ -31,14 +31,14 @@ one alone and stops. Set `LOOM_CHANNEL=nightly` to install the nightly train, or
 | Task                                  | Command                                                                 |
 | ------------------------------------- | ----------------------------------------------------------------------- |
 | Start the server and open the web app | `loom`                                                                  |
-| Start the server without a browser    | `t3 serve`                                                              |
-| Use it from your other devices        | `t3 up` ([details](./remote-access.md))                                 |
-| Keep it running in the background     | `t3 service install` ([details](./background-service.md))               |
-| Move to the newest release            | `t3 update`                                                             |
-| Reclaim database space                | `t3 doctor` ([details](./background-service.md#reclaim-database-space)) |
-| Remove it again                       | `t3 uninstall`                                                          |
+| Start the server without a browser    | `loom serve`                                                              |
+| Use it from your other devices        | `loom up` ([details](./remote-access.md))                                 |
+| Keep it running in the background     | `loom service install` ([details](./background-service.md))               |
+| Move to the newest release            | `loom update`                                                             |
+| Reclaim database space                | `loom doctor` ([details](./background-service.md#reclaim-database-space)) |
+| Remove it again                       | `loom uninstall`                                                          |
 
-Run `t3 help` or `t3 --help` for the full reference. To start in a new working
+Run `t3 help` or `loom --help` for the full reference. To start in a new working
 directory, use an explicit path such as `t3 ./my-project`. A bare directory name
 is accepted only if it already exists.
 
@@ -46,12 +46,12 @@ If `loom` or `t3 start` reports an already running server, connect to that serve
 instead. Stop it before starting a replacement, or use a different `--base-dir`
 for an independent server.
 
-To try Loom once without installing it, run `npx t3@latest` instead (needs
+To try Loom once without installing it, run `npx loom@latest` instead (needs
 Node.js for `npx`). It offers to install the `loom` command first. If you say no,
-it asks again at the next minor release, and `npx t3 install` installs it later.
-`npx t3` always runs the version npm picked, even when a `loom` is installed. On
+it asks again at the next minor release, and `npx loom install` installs it later.
+`npx loom` always runs the version npm picked, even when a `loom` is installed. On
 the nightly train, run your installed `loom` (for example `t3 connect`), not
-`npx t3`, which runs the latest stable release.
+`npx loom`, which runs the latest stable release.
 
 ### Intel Macs
 
@@ -65,7 +65,7 @@ cd loom && vp i && vp run build:desktop
 node apps/server/dist/bin.mjs
 ```
 
-`t3 update` and the background service do not apply to a server run this way;
+`loom update` and the background service do not apply to a server run this way;
 update it with `git pull` and a rebuild.
 
 ## Desktop app
@@ -105,7 +105,7 @@ Update AUR installs with your AUR helper, such as `yay -Syu`.
 
 ### Nix (nixpkgs)
 
-Loom is maintained in [nixpkgs](https://github.com/NixOS/nixpkgs/tree/nixos-unstable/pkgs/by-name/t3/loom).
+Loom is maintained in [nixpkgs](https://github.com/NixOS/nixpkgs/tree/nixos-unstable/pkgs/by-name/loom/loom).
 The command above installs from `nixos-unstable` and requires Nix 2.30 or later with
 `nix-command` and `flakes` enabled. Launch the desktop app with `loom-desktop`;
 the package also includes the `loom` command.
@@ -148,18 +148,18 @@ take longer.
 With the desktop app already running on the same machine:
 
 ```bash
-t3 app
+loom app
 ```
 
 This opens a new thread for the current directory, adding the project if needed.
-Pass a path, such as `t3 app ../my-project`, to open another directory. It requires
+Pass a path, such as `loom app ../my-project`, to open another directory. It requires
 the desktop app, so a standalone server or an SSH session is not enough. If the
 command cannot reach the app, start or update the desktop app and try again.
 
 ### Drop a folder on the sidebar
 
 Drag one or more folders from Finder, Explorer, or your file manager onto the
-sidebar. Each one opens as a project on this computer, the same as `t3 app`.
+sidebar. Each one opens as a project on this computer, the same as `loom app`.
 Files dropped on a thread still attach to that thread. Browsers do not share
 folder paths, so in the web app use **Add project** instead.
 

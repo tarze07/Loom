@@ -17,7 +17,7 @@ The only official websites are https://loom.local and the web app at https://app
 - [Web app](https://app.loom.local): connect to a Loom server from a browser
 - [Source code](${GITHUB_REPOSITORY_URL}): the MIT-licensed repository
 - [Releases](${GITHUB_REPOSITORY_URL}/releases): release builds and changelogs
-- [npm package](https://www.npmjs.com/package/t3): run \`npx t3@latest\`
+- [npm package](https://www.npmjs.com/package/loom): run \`npx loom@latest\`
 - [iOS app](${IOS_APP_STORE_URL})
 - [Android app](${ANDROID_PLAY_STORE_URL})
 
