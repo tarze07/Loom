@@ -9,7 +9,7 @@ import * as HttpApiBuilder from "effect/http-api/HttpApiBuilder";
 
 import * as ScheduledTaskService from "./ScheduledTaskService.ts";
 
-export const WEBHOOK_MAX_BODY_BYTES = 1024 * 1024;
+const WEBHOOK_MAX_BODY_BYTES = 1024 * 1024;
 
 const WEBHOOK_OUTCOME_HEADER = "x-loom-hook-outcome";
 

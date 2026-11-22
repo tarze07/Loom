@@ -139,7 +139,7 @@ export type EnvironmentRpcStreamFailure<TTag extends EnvironmentStreamRpcTag> =
     ? E
     : never;
 
-export const currentSession = Effect.fn("EnvironmentRpc.currentSession")(function* () {
+const currentSession = Effect.fn("EnvironmentRpc.currentSession")(function* () {
   const supervisor = yield* EnvironmentSupervisor.EnvironmentSupervisor;
   return yield* SubscriptionRef.get(supervisor.session).pipe(
     Effect.flatMap(
@@ -197,7 +197,7 @@ const authorizeRequest = Effect.fn("EnvironmentRpc.authorize")(function* (
   yield* guard.authorize(supervisor.target.environmentId, method, input);
 });
 
-export const requestInSession = Effect.fn("EnvironmentRpc.request")(function* <
+const requestInSession = Effect.fn("EnvironmentRpc.request")(function* <
   TTag extends EnvironmentUnaryRpcTag,
 >(session: RpcSession, tag: TTag, input: EnvironmentRpcInput<TTag>) {
   const supervisor = yield* EnvironmentSupervisor.EnvironmentSupervisor;
@@ -241,7 +241,7 @@ export function runStreamGuarded<TTag extends EnvironmentStreamCommandRpcTag>(
   );
 }
 
-export function runStreamInSession<TTag extends EnvironmentStreamCommandRpcTag>(
+function runStreamInSession<TTag extends EnvironmentStreamCommandRpcTag>(
   session: RpcSession,
   tag: TTag,
   input: EnvironmentRpcInput<TTag>,

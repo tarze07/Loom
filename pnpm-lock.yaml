@@ -210,9 +210,6 @@ catalogs:
     '@pierre/highlights':
       specifier: 0.5.0
       version: 0.5.0
-    '@types/plist':
-      specifier: 3.0.5
-      version: 3.0.5
     '@types/react':
       specifier: ~19.3.0
       version: 19.3.0
@@ -240,9 +237,6 @@ catalogs:
     pele:
       specifier: ^1.8.0
       version: 1.8.0
-    plist:
-      specifier: 3.1.1
-      version: 3.1.1
     react:
       specifier: 19.3.0
       version: 19.3.0
@@ -967,9 +961,6 @@ importers:
       '@loom/ssh':
         specifier: workspace:*
         version: link:../../packages/ssh
-      '@loom/tailscale':
-        specifier: workspace:*
-        version: link:../../packages/tailscale
       '@loom/web':
         specifier: workspace:*
         version: link:../web
@@ -2395,9 +2386,6 @@ importers:
       '@loom/shared':
         specifier: workspace:*
         version: link:../packages/shared
-      '@loom/tailscale':
-        specifier: workspace:*
-        version: link:../packages/tailscale
       agent-device:
         specifier: 0.21.36
         version: 0.21.36
@@ -2410,9 +2398,6 @@ importers:
       playwright-core:
         specifier: 1.64.1
         version: 1.64.1
-      plist:
-        specifier: 'catalog:'
-        version: 3.1.1
       pngjs:
         specifier: 7.0.0
         version: 7.0.0
@@ -2423,9 +2408,6 @@ importers:
       '@effect/vitest':
         specifier: 4.1.2
         version: 4.1.2(patch_hash=299510b71c36537a832a67e9d160a5f112a5f326a29e95c41cb45fc8234e47c7)(@astrojs/compiler-rs@0.5.1)(@types/node@24.12.4)(@vitest/browser-playwright@5.0.5)(@vitest/ui@5.0.5)(@volar/typescript@2.4.28(typescript@6.0.3))(bufferutil@4.1.0)(effect@4.1.2)(esbuild@0.28.2)(jiti@2.7.0)(jsdom@30.1.0(@noble/hashes@1.8.0))(playwright@1.64.1)(terser@5.48.0)(typescript@6.0.3)(unrun@0.2.39)(utf-8-validate@6.0.6)(yaml@2.9.0)
-      '@types/plist':
-        specifier: 'catalog:'
-        version: 3.0.5
       '@types/pngjs':
         specifier: 6.0.5
         version: 6.0.5
@@ -6937,9 +6919,6 @@ packages:
 
   '@types/node@24.12.4':
     resolution: {integrity: sha512-GUUEShf+PBCGW2KaXwcIt3Yk+e3pkKwWKb9GSyM9WQVE+ep2jzmHdGsHzu4wgcZy5fN9FBdVzjpBQsYlpfpgLA==}
-
-  '@types/plist@3.0.5':
-    resolution: {integrity: sha512-E6OCaRmAe4WDmWNsL/9RMqdkkzDCY1etutkflWk4c+AcjDU07Pcz1fQwTX0TQz+Pxqn9i4L1TU3UFpjnrcDgxA==}
 
   '@types/pngjs@6.0.5':
     resolution: {integrity: sha512-0k5eKfrA83JOZPppLtS2C7OUtyNAl2wKNxfyYl9Q5g9lPkgBl/9hNyAu6HuEH2J4XmIv2znEpkDd0SaZVxW6iQ==}
@@ -16509,11 +16488,6 @@ snapshots:
   '@types/node@24.12.4':
     dependencies:
       undici-types: 7.16.0
-
-  '@types/plist@3.0.5':
-    dependencies:
-      '@types/node': 24.12.4
-      xmlbuilder: 15.1.1
 
   '@types/pngjs@6.0.5':
     dependencies:

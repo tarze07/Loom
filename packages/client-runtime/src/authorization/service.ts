@@ -62,7 +62,7 @@ const fetchDescriptor = Effect.fn("clientRuntime.connection.remote.fetchDescript
   }).pipe(Effect.mapError((error) => mapRemoteEnvironmentError(error)));
 });
 
-export const make = Effect.gen(function* () {
+const make = Effect.gen(function* () {
   const presentation = yield* ClientCapabilities.ClientPresentation;
   const httpClient = yield* HttpClient.HttpClient;
 

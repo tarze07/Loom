@@ -22,7 +22,7 @@ import { projectLocationFlags, resolveCliAuthConfig } from "./config.ts";
 import * as CliService from "./service.ts";
 
 /** Node preserves argv0's spelling; resolve bare names on PATH to find the launcher symlink. */
-export const resolveLauncherPath = Effect.gen(function* () {
+const resolveLauncherPath = Effect.gen(function* () {
   const path = yield* Path.Path;
   const fs = yield* FileSystem.FileSystem;
   const invokedAs = yield* HostProcess.InvokedAs;
@@ -44,7 +44,7 @@ export const resolveLauncherPath = Effect.gen(function* () {
 });
 
 /** Windows executables see their own path, so find the installer shim by matching loom.cmd targets on PATH. */
-export const findWindowsShim = Effect.fn("cli.uninstall.find_windows_shim")(function* (
+const findWindowsShim = Effect.fn("cli.uninstall.find_windows_shim")(function* (
   executablePath: string,
 ) {
   const fs = yield* FileSystem.FileSystem;

@@ -66,9 +66,6 @@ const refuse = (policy: PolicyDocument, action: string, detail?: string) =>
 export const refuseRemoteClients = (policy: PolicyDocument, detail?: string) =>
   refuse(policy, AUTH_POLICY_ACTION["remote-reachable"], detail);
 
-/** Why `limits.connect` blocks something, or undefined when nothing does. */
-export const refuseConnect = (policy: PolicyDocument) => refuse(policy, "Loom Connect");
-
 export const checkServerReachability = Effect.fn("managedLimits.checkServerReachability")(
   function* (
     policy: PolicyDocument,

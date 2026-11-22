@@ -344,7 +344,7 @@ interface StartupOptions {
   readonly abort?: (error: ServerRuntimeStartupError) => Effect.Effect<void>;
 }
 
-export const startEffectWorker = Effect.fn("ServerRuntimeStartup.startEffectWorker")(function* <
+const startEffectWorker = Effect.fn("ServerRuntimeStartup.startEffectWorker")(function* <
   WorkerContext,
 >(input: {
   readonly runWorker: Effect.Effect<void, never, WorkerContext>;
