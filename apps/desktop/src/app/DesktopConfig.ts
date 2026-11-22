@@ -11,9 +11,6 @@ const trimNonEmptyOption = (value: string): Option.Option<string> => {
 export const trimmedString = (name: string) =>
   Config.String(name).pipe(Config.option, Config.map(Option.flatMap(trimNonEmptyOption)));
 
-const optionalBoolean = (name: string) =>
-  Config.Boolean(name).pipe(Config.option, Config.map(Option.getOrElse(() => false)));
-
 const commaSeparatedStrings = (name: string) =>
   trimmedString(name).pipe(
     Config.map(
@@ -48,9 +45,7 @@ export const DesktopConfig = Config.all({
   otlpTracesUrl: trimmedString("LOOM_OTLP_TRACES_URL"),
   otlpMetricsUrl: trimmedString("LOOM_OTLP_METRICS_URL"),
   otlpLogsUrl: trimmedString("LOOM_OTLP_LOGS_URL"),
-  otlpExportIntervalMs: Config.Int("LOOM_OTLP_EXPORT_INTERVAL_MS").pipe(
-    Config.withDefault(10_000),
-  ),
+  otlpExportIntervalMs: Config.Int("LOOM_OTLP_EXPORT_INTERVAL_MS").pipe(Config.withDefault(10_000)),
   otlpHeaders: Config.schema(OtlpHeadersFromString, "LOOM_OTLP_HEADERS").pipe(Config.option),
   otlpProtocol: Config.schema(OtlpProtocol, "LOOM_OTLP_PROTOCOL").pipe(
     Config.withDefault("http/json"),

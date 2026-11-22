@@ -3,18 +3,9 @@ import {
   EnvironmentId,
   type ExecutionEnvironmentDescriptor,
 } from "@loom/contracts";
-import {
-  resolveRemoteWebSocketConnectionUrl,
-  type RemoteEnvironmentAuthError,
-} from "./remote.ts";
-import {
-  environmentMismatchError,
-  mapRemoteEnvironmentError,
-} from "../connection/errors.ts";
-import type {
-  ConnectionAttemptError,
-  PreparedHttpAuthorization,
-} from "../connection/model.ts";
+import { resolveRemoteWebSocketConnectionUrl } from "./remote.ts";
+import { environmentMismatchError, mapRemoteEnvironmentError } from "../connection/errors.ts";
+import type { ConnectionAttemptError, PreparedHttpAuthorization } from "../connection/model.ts";
 import { isNearbyAddress } from "../connection/routes.ts";
 import { fetchRemoteEnvironmentDescriptor } from "../environment/descriptor.ts";
 import * as ClientCapabilities from "../platform/capabilities.ts";

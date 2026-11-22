@@ -2,8 +2,6 @@ import {
   type DesktopSshEnvironmentTarget,
   EnvironmentId,
   type OrchestrationV2ShellSnapshot,
-  ORCHESTRATION_PROTOCOL_VERSION,
-  type ExecutionEnvironmentDescriptor,
   type ServerConfig,
 } from "@loom/contracts";
 import { describe, expect, it } from "@effect/vitest";
@@ -683,7 +681,8 @@ describe("EnvironmentRegistry", () => {
         yield* registry.start;
         yield* SubscriptionRef.changes(registry.entries).pipe(
           Stream.filter(
-            (entries) => entries.get(SSH_ROUTE_CONNECTION.environmentId)?.unsupportedReason !== undefined,
+            (entries) =>
+              entries.get(SSH_ROUTE_CONNECTION.environmentId)?.unsupportedReason !== undefined,
           ),
           Stream.take(1),
           Stream.runDrain,
@@ -852,10 +851,12 @@ describe("EnvironmentRegistry", () => {
           SSH_ROUTE_CONNECTION.environmentId,
         );
         expect(entry?.enabled).toBe(false);
-        expect((yield* Ref.get(harness.storedDisabled)).has(SSH_ROUTE_CONNECTION.environmentId)).toBe(true);
-        expect(hasRoutes(yield* Ref.get(harness.storedTargets), SSH_ROUTE_CONNECTION.environmentId)).toBe(
-          true,
-        );
+        expect(
+          (yield* Ref.get(harness.storedDisabled)).has(SSH_ROUTE_CONNECTION.environmentId),
+        ).toBe(true);
+        expect(
+          hasRoutes(yield* Ref.get(harness.storedTargets), SSH_ROUTE_CONNECTION.environmentId),
+        ).toBe(true);
         expect(yield* Ref.get(harness.releasedSessions)).toBe(1);
 
         yield* registry.setEnabled(SSH_ROUTE_CONNECTION.environmentId, true);
@@ -864,9 +865,9 @@ describe("EnvironmentRegistry", () => {
           SSH_ROUTE_CONNECTION.environmentId,
           (state) => state.phase === "connected",
         );
-        expect((yield* Ref.get(harness.storedDisabled)).has(SSH_ROUTE_CONNECTION.environmentId)).toBe(
-          false,
-        );
+        expect(
+          (yield* Ref.get(harness.storedDisabled)).has(SSH_ROUTE_CONNECTION.environmentId),
+        ).toBe(false);
       }).pipe(Effect.provide(harness.layer));
     }),
   );
@@ -939,13 +940,16 @@ describe("EnvironmentRegistry", () => {
       });
       const harness = yield* makeHarness(
         [SSH_ROUTE_CONNECTION],
-        [SSH_ROUTE_PROFILE, new BearerConnectionProfile({
-          connectionId: replacement.connectionId,
-          environmentId: replacement.environmentId,
-          label: replacement.label,
-          httpBaseUrl: "https://replacement.example.test",
-          wsBaseUrl: "wss://replacement.example.test",
-        })],
+        [
+          SSH_ROUTE_PROFILE,
+          new BearerConnectionProfile({
+            connectionId: replacement.connectionId,
+            environmentId: replacement.environmentId,
+            label: replacement.label,
+            httpBaseUrl: "https://replacement.example.test",
+            wsBaseUrl: "wss://replacement.example.test",
+          }),
+        ],
         [[replacement.connectionId, BEARER_CREDENTIAL]],
       );
 
@@ -1004,10 +1008,7 @@ describe("EnvironmentRegistry", () => {
         yield* Deferred.await(secondObserved).pipe(Effect.timeout("1 second"));
         yield* Fiber.interrupt(subscription);
 
-        expect(yield* Ref.get(labels)).toEqual([
-          SSH_ROUTE_CONNECTION.label,
-          replacement.label,
-        ]);
+        expect(yield* Ref.get(labels)).toEqual([SSH_ROUTE_CONNECTION.label, replacement.label]);
       }).pipe(Effect.provide(harness.layer), Effect.scoped);
     }),
   );
@@ -1811,7 +1812,9 @@ describe("EnvironmentRegistry routes", () => {
         ]);
         const entry = (yield* SubscriptionRef.get(registry.entries)).get(LAN_TARGET.environmentId);
         expect(entry?.target).toEqual(LAN_TARGET);
-        expect(entry?.alternateRoutes?.map((route) => route.target)).toEqual([SSH_ROUTE_CONNECTION]);
+        expect(entry?.alternateRoutes?.map((route) => route.target)).toEqual([
+          SSH_ROUTE_CONNECTION,
+        ]);
       }).pipe(Effect.provide(harness.layer), Effect.scoped);
     }),
   );

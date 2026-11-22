@@ -9,7 +9,7 @@ import * as NodeServices from "@effect/platform-node/NodeServices";
 import { AuthStandardClientScopes, ORCHESTRATION_PROTOCOL_VERSION } from "@loom/contracts";
 import * as NetService from "@loom/shared/Net";
 import * as HostProcess from "@loom/shared/HostProcess";
-import { assert, describe, expect, it } from "@effect/vitest";
+import { assert, describe, it } from "@effect/vitest";
 import * as Cause from "effect/Cause";
 import * as ConfigProvider from "effect/ConfigProvider";
 import * as Effect from "effect/Effect";
@@ -345,7 +345,9 @@ describe("auth pairing create --base-url", () => {
     "rejects %s before issuing a token",
     (baseUrl) =>
       Effect.gen(function* () {
-        const baseDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "loom-cli-base-url-test-"));
+        const baseDir = NodeFS.mkdtempSync(
+          NodePath.join(NodeOS.tmpdir(), "loom-cli-base-url-test-"),
+        );
         const error = yield* runCli([
           "auth",
           "pairing",
@@ -377,7 +379,9 @@ describe("auth pairing create --base-url", () => {
     "prints a pair URL for %s",
     (baseUrl) =>
       Effect.gen(function* () {
-        const baseDir = NodeFS.mkdtempSync(NodePath.join(NodeOS.tmpdir(), "loom-cli-base-url-test-"));
+        const baseDir = NodeFS.mkdtempSync(
+          NodePath.join(NodeOS.tmpdir(), "loom-cli-base-url-test-"),
+        );
         const output = yield* captureStdout(
           runCli([
             "auth",

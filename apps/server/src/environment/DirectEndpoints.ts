@@ -2,8 +2,6 @@ import type { ServerDirectEndpoint } from "@loom/contracts";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
-import { HttpClient } from "effect/http";
-import * as ChildProcessSpawner from "effect/process/ChildProcessSpawner";
 import * as NodeNet from "node:net";
 import * as NodeOS from "node:os";
 

@@ -26,7 +26,6 @@ import {
 } from "@loom/shared/managedPolicyFile";
 
 import { telemetryChannel } from "../config.ts";
-import * as ManagedLimits from "./managedLimits.ts";
 import * as ManagedProviders from "./managedProviders.ts";
 import * as ManagedSettings from "./managedSettings.ts";
 
@@ -129,13 +128,8 @@ function summarizeLimits(
   document: ManagedPolicyDocument,
   lockedInstanceFields: Readonly<Record<string, ReadonlyArray<string>>>,
 ): LimitsSummary {
-  const {
-    maxRuntimeMode,
-    clients,
-    webhookTasks,
-    browserCookieImport,
-    providers,
-  } = document.limits ?? {};
+  const { maxRuntimeMode, clients, webhookTasks, browserCookieImport, providers } =
+    document.limits ?? {};
   return {
     ...(maxRuntimeMode === undefined ? {} : { maxRuntimeMode }),
     ...(clients === undefined ? {} : { clients }),

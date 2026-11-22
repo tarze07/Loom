@@ -1,6 +1,5 @@
 import type { ThreadId } from "@loom/contracts";
 import * as Effect from "effect/Effect";
-import type * as Option from "effect/Option";
 
 import type { PreparedConnection } from "../connection/model.ts";
 import {
@@ -10,10 +9,7 @@ import {
 
 export const fetchEnvironmentThreadTranscript = Effect.fn(
   "clientRuntime.state.fetchEnvironmentThreadTranscript",
-)(function* (input: {
-  readonly prepared: PreparedConnection;
-  readonly threadId: ThreadId;
-}) {
+)(function* (input: { readonly prepared: PreparedConnection; readonly threadId: ThreadId }) {
   return yield* executeAuthenticatedEnvironmentHttpRequest({
     ...input,
     group: "orchestration",

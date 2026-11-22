@@ -8,7 +8,6 @@ import {
   ChatAttachmentId,
   CommandId,
   EventId,
-  MessageId,
   RuntimeRequestId,
   ThreadId,
   TurnItemId,
@@ -20,10 +19,7 @@ import {
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
-import {
-  createPendingAttachmentId,
-  resolveAttachmentPath,
-} from "../attachmentStore.ts";
+import { createPendingAttachmentId, resolveAttachmentPath } from "../attachmentStore.ts";
 import * as ServerConfig from "../config.ts";
 import * as ServerSettings from "../serverSettings.ts";
 import {
@@ -367,7 +363,6 @@ it.effect("a retried response re-claims the preserved pending uploads", () =>
       NodeFS.readdirSync(config.attachmentsDir).filter((entry) =>
         entry.startsWith("thread-retry-"),
       ),
-      ).toHaveLength(2);
+    ).toHaveLength(2);
   }).pipe(Effect.provide(layerIntakeTest)),
 );
-

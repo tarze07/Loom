@@ -3,7 +3,6 @@ import {
   PrimaryConnectionTarget,
   type PreparedConnection,
 } from "@loom/client-runtime/connection";
-import type * as Effect from "effect/Effect";
 import {
   EnvironmentId,
   type EnvironmentSpeechModel,

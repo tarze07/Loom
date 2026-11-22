@@ -35,7 +35,6 @@ import {
   type DiscoveredLocalServerList,
   type EditorId,
   type FileManagerRevealKind,
-  type OrchestrationV2Command,
   type GitActionProgressEvent,
   type GitManagerServiceError,
   type MessageId,
@@ -257,10 +256,7 @@ import {
   SOCKET_FRAME_PARTS_QUERY_PARAM,
   splitLargeSocketFrames,
 } from "@loom/shared/socketFrameParts";
-import {
-  sameUsageLimitCommandCoverage,
-  withUsageLimitsCommands,
-} from "@loom/shared/usageLimits";
+import { sameUsageLimitCommandCoverage, withUsageLimitsCommands } from "@loom/shared/usageLimits";
 import * as AgentSessionScanner from "./project/AgentSessionScanner.ts";
 import * as AgentSessionImporter from "./project/AgentSessionImporter.ts";
 import * as UsageLimitSources from "./usage/UsageLimitSources.ts";
@@ -1860,9 +1856,7 @@ export const layerWsRpc = (
                   ).pipe(Effect.provide(intakeContext)),
                 )
                 .pipe(
-                  Effect.tap((result) =>
-                    result.replayed ? Effect.void : Effect.void,
-                  ),
+                  Effect.tap((result) => (result.replayed ? Effect.void : Effect.void)),
                   Effect.map((result) => ({ sequence: result.sequence })),
                   Effect.mapError((cause) => {
                     const detail = userFacingDispatchErrorMessage(cause);
@@ -3351,22 +3345,14 @@ export const layer = Layer.unwrap(
           yield* RpcServer.make(ServerWsRpcGroup, WS_RPC_SERVER_OPTIONS).pipe(
             Effect.provideService(RpcServer.Protocol, withOutputWindow(protocol)),
             Effect.provide(
-              Layer.merge(
-                RpcAuthorization.layer(session.scopes),
-                rpcInstrumentationLayer,
-              ),
+              Layer.merge(RpcAuthorization.layer(session.scopes), rpcInstrumentationLayer),
             ),
             Effect.forkScoped,
           );
           return httpEffect;
         }).pipe(
           Effect.provide(
-            layerWsRpc(
-              session,
-              serverBrowser,
-              reportProfiles,
-              readSettingsClient(url.value),
-            ).pipe(
+            layerWsRpc(session, serverBrowser, reportProfiles, readSettingsClient(url.value)).pipe(
               Layer.provideMerge(RpcSerialization.layerJson),
               // Handler-context reporters see only request defects, not server-wide defects.
               Layer.provide(DefectReporter.layer),

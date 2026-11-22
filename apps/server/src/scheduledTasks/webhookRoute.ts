@@ -7,7 +7,6 @@ import type * as HttpServerRequest from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import * as HttpApiBuilder from "effect/http-api/HttpApiBuilder";
 
-import * as Metrics from "../observability/Metrics.ts";
 import * as ScheduledTaskService from "./ScheduledTaskService.ts";
 
 export const WEBHOOK_MAX_BODY_BYTES = 1024 * 1024;
@@ -60,7 +59,8 @@ export const layer = HttpApiBuilder.group(
         ),
         Effect.option,
       );
-      if (Option.isNone(body)) return json(413, { error: "body_too_large_or_unreadable" }, "body_too_large");
+      if (Option.isNone(body))
+        return json(413, { error: "body_too_large_or_unreadable" }, "body_too_large");
       if (body.value.byteLength > WEBHOOK_MAX_BODY_BYTES) {
         return json(413, { error: "body_too_large" }, "body_too_large");
       }

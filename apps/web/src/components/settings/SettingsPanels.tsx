@@ -1,4 +1,3 @@
-import { useAtomValue } from "@effect/atom-react";
 import { NotificationSettings } from "./NotificationSettings";
 import { PRIVACY_POLICY_URL } from "../../legalLinks";
 import { CheckIcon } from "lucide-react";
@@ -27,7 +26,6 @@ import { createModelSelection } from "@loom/shared/model";
 import { resolvePastedPath } from "@loom/shared/path";
 import * as Equal from "effect/Equal";
 import * as Schema from "effect/Schema";
-import { APP_VERSION } from "../../branding";
 import { AboutVersionTitle } from "./AboutVersionTitle";
 import { CliCommandSettingsRow } from "./CliCommandSettingsRow";
 import { MobileAppSettingsRow } from "./MobileAppSettingsRow";
@@ -60,11 +58,7 @@ import {
 import { useTextGenerationTargets } from "../../textGenerators";
 import { ensureLocalApi, readLocalApi } from "../../localApi";
 import { isMacPlatform } from "../../lib/utils";
-import {
-  useEnvironmentProviders,
-  useEnvironments,
-  usePrimaryEnvironmentId,
-} from "../../state/environments";
+import { useEnvironmentProviders, usePrimaryEnvironmentId } from "../../state/environments";
 import { EMPTY_SERVER_PROVIDERS } from "../../state/server";
 import { Button } from "../ui/button";
 import { DraftInput } from "../ui/draft-input";
@@ -73,7 +67,6 @@ import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "../
 import { Switch } from "../ui/switch";
 import { ScopedSwitch } from "./ScopedSwitch";
 import { stackedThreadToast, toastManager } from "../ui/toast";
-import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import {
   getChangedBrowserSettingLabels,
   getChangedTypographySettingLabels,

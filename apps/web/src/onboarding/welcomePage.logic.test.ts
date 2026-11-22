@@ -1,5 +1,4 @@
 import {
-  type ManagedPolicySummary,
   ProjectId,
   resolveProviderInstanceEnabled,
   ProviderDriverKind,

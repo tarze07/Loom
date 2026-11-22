@@ -1,5 +1,4 @@
 import * as ProviderEventLoggers from "@loom/provider-core/server/ProviderEventLoggers";
-import * as Random from "effect/Random";
 import * as AssetSigner from "./assets/AssetSigner.ts";
 import * as DatabaseStorage from "./persistence/DatabaseStorage.ts";
 import * as StorageCleanup from "./storageCleanup.ts";
@@ -14,11 +13,8 @@ import * as NodeHttpServer from "@effect/platform-node/NodeHttpServer";
 import * as NodeCrypto from "@effect/platform-node/NodeCrypto";
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import { EnvironmentHttpApi, type RepositoryIdentity } from "@loom/contracts";
-import * as Cause from "effect/Cause";
-import * as Duration from "effect/Duration";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
-import * as Option from "effect/Option";
 import * as Layer from "effect/Layer";
 import * as Stream from "effect/Stream";
 import { FetchHttpClient, HttpRouter, HttpServer } from "effect/http";
@@ -174,7 +170,7 @@ import * as RunFinalizationService from "./orchestration-v2/RunFinalizationServi
 import * as ProjectionMaintenance from "./orchestration-v2/ProjectionMaintenance.ts";
 import * as ProjectionStoreV2 from "./orchestration-v2/ProjectionStore.ts";
 import { makePersistedServerRuntimeState } from "./serverRuntimeState.ts";
-import { acceptsPrivateNetworkConnection, loopbackUrlHostForAddress } from "./startupAccess.ts";
+import { acceptsPrivateNetworkConnection } from "./startupAccess.ts";
 import * as OrchestrationHttp from "./orchestration-v2/http.ts";
 import * as ProjectHttp from "./project/http.ts";
 import * as NetService from "@loom/shared/Net";
@@ -781,10 +777,7 @@ const layerMakeServer = Layer.unwrap(
       activate: Deferred.succeed(activation, undefined).pipe(Effect.asVoid),
       abort: (error) => Deferred.die(activation, error).pipe(Effect.asVoid),
       awaitAuxiliaryParked: Effect.all(
-        [
-          Deferred.await(runtimeStateParked),
-          Deferred.await(routesReady),
-        ],
+        [Deferred.await(runtimeStateParked), Deferred.await(routesReady)],
         { concurrency: "unbounded" },
       ).pipe(Effect.asVoid),
     }).pipe(Layer.provideMerge(layerRuntimeDependencies), Layer.provide(layerLauncher));

@@ -2,12 +2,7 @@ import { pipe } from "effect/Function";
 import { ChevronsLeftRightEllipsisIcon, PlusIcon, TerminalIcon } from "lucide-react";
 import { useAtomValue } from "@effect/atom-react";
 import { type KeyboardEvent, type ReactNode, useEffect, useRef, useState } from "react";
-import {
-  type DesktopDiscoveredSshHost,
-  type DesktopSshEnvironmentTarget,
-} from "@loom/contracts";
-import {
-} from "@loom/client-runtime/connection";
+import { type DesktopDiscoveredSshHost, type DesktopSshEnvironmentTarget } from "@loom/contracts";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
@@ -40,7 +35,6 @@ import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { Alert, AlertDescription } from "../ui/alert";
 import { Button } from "../ui/button";
 import { AnimatedHeight } from "../AnimatedHeight";
-import { environmentCatalog } from "~/connection/catalog";
 import {
   connectPairing as connectPairingAtom,
   connectSshEnvironment as connectSshEnvironmentAtom,
@@ -84,9 +78,6 @@ export function AddEnvironmentDialog({
   const keybindings = useAtomValue(primaryServerKeybindingsAtom);
   const connectPairing = useAtomCommand(connectPairingAtom, { reportFailure: false });
   const connectSshEnvironment = useAtomCommand(connectSshEnvironmentAtom, {
-    reportFailure: false,
-  });
-  const registerEnvironment = useAtomCommand(environmentCatalog.register, {
     reportFailure: false,
   });
   const savedDesktopSshEnvironmentKeys = (() => {

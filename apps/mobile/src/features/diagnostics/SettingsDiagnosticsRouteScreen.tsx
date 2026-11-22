@@ -3,7 +3,7 @@ import { ScreenScrollView as ScrollView } from "../../components/ui/ScreenScroll
 import * as Application from "expo-application";
 import Constants from "expo-constants";
 import * as Updates from "expo-updates";
-import { useAtomSet, useAtomValue } from "@effect/atom-react";
+import { useAtomValue } from "@effect/atom-react";
 import * as Effect from "effect/Effect";
 import * as Schema from "effect/Schema";
 import { AsyncResult, Atom } from "effect/reactivity";

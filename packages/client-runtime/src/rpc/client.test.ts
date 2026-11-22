@@ -26,7 +26,7 @@ import {
 import * as EnvironmentSupervisor from "../connection/supervisor.ts";
 import * as RpcSession from "../rpc/session.ts";
 import type { WsRpcProtocolClient } from "../rpc/protocol.ts";
-import { runStream, subscribe, subscribeDynamicWithSession, refreshVcsBranch } from "./client.ts";
+import { subscribe, subscribeDynamicWithSession, refreshVcsBranch } from "./client.ts";
 
 const TARGET = new PrimaryConnectionTarget({
   environmentId: EnvironmentId.make("environment-1"),

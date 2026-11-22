@@ -6,7 +6,6 @@ import {
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
-import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
 import { HttpClient } from "effect/http";
 
@@ -83,7 +82,7 @@ export const layer: Layer.Layer<PullRequestDiffLoader, never, HttpClient.HttpCli
           return yield* fetchEnvironmentPullRequestDiff({
             prepared,
             diff: input,
-              });
+          });
         },
         Effect.provideService(HttpClient.HttpClient, httpClient),
       ),

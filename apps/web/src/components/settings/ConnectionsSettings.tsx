@@ -1,7 +1,6 @@
 import { SessionPermissions } from "./SessionPermissions";
 import { useSearch } from "@tanstack/react-router";
 import { ChevronRightIcon, EllipsisIcon } from "lucide-react";
-import { useAtomValue } from "@effect/atom-react";
 import { type ReactNode, useState } from "react";
 import {
   AuthAccessReadScope,
@@ -75,7 +74,6 @@ import { EnvironmentMachineIcon } from "../EnvironmentMachineIcon";
 import { type ServerClientSessionRecord } from "~/environments/primary";
 import { isDesktopLocalConnectionTarget } from "~/connection/desktopLocal";
 import { useUiStateStore } from "~/uiStateStore";
-import { resolveServerConfigVersionMismatch } from "~/versionSkew";
 import { authEnvironment } from "~/state/auth";
 import { environmentCatalog } from "~/connection/catalog";
 import {
@@ -1101,10 +1099,7 @@ function ConnectionsSettingsContent({
                 title="Version"
                 description={
                   primaryServerConfig && primaryEnvironment
-                    ? [
-                        primaryServerConfig.environment.serverVersion,
-                        primaryEnvironment.displayUrl,
-                      ]
+                    ? [primaryServerConfig.environment.serverVersion, primaryEnvironment.displayUrl]
                         .filter((value): value is string => value !== null)
                         .join(" · ")
                     : "Loading…"
@@ -1391,8 +1386,8 @@ function ConnectionsSettingsContent({
               <DialogHeader>
                 <DialogTitle>Set up Tailscale HTTPS?</DialogTitle>
                 <DialogDescription>
-                  Loom will restart the local backend with Tailscale Serve enabled and ask
-                  Tailscale to proxy HTTPS traffic to this backend.
+                  Loom will restart the local backend with Tailscale Serve enabled and ask Tailscale
+                  to proxy HTTPS traffic to this backend.
                 </DialogDescription>
               </DialogHeader>
               <DialogPanel>

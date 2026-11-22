@@ -393,16 +393,6 @@ export class EnvironmentAuthenticatedAuth extends HttpApiMiddleware.Service<
   error: EnvironmentAuthenticationErrors,
 }) {}
 
-const EnvironmentHttpCloudErrors = [
-  EnvironmentHttpBadRequestError,
-  EnvironmentHttpUnauthorizedError,
-  EnvironmentHttpForbiddenError,
-  EnvironmentHttpConflictError,
-  EnvironmentHttpInternalServerError,
-  EnvironmentScopeRequiredError,
-] as const;
-
-
 export const AuthPairingLinkRevokeResult = Schema.Struct({
   revoked: Schema.Boolean,
 });

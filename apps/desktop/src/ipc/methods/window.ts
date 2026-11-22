@@ -27,7 +27,6 @@ import * as DesktopBackendConfiguration from "../../backend/DesktopBackendConfig
 import * as DesktopBackendPool from "../../backend/DesktopBackendPool.ts";
 import * as DesktopLocalEnvironmentAuth from "../../backend/DesktopLocalEnvironmentAuth.ts";
 import * as DesktopEnvironment from "../../app/DesktopEnvironment.ts";
-import * as DesktopManagedPolicy from "../../app/DesktopManagedPolicy.ts";
 import * as DesktopPrimaryPaste from "../../app/DesktopPrimaryPaste.ts";
 import * as DesktopAppSettings from "../../settings/DesktopAppSettings.ts";
 import * as DesktopWslBackend from "../../wsl/DesktopWslBackend.ts";

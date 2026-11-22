@@ -13,7 +13,6 @@ import { useEnvironmentIdentities, useEnvironments } from "./environments";
 import { environmentPresentations } from "./presentation";
 import { useEnvironmentQuery } from "./query";
 import { useEnvironmentsWithScope } from "./session";
-import { useAtomCommand } from "./use-atom-command";
 
 export const peerLinkEnvironment = createPeerLinkEnvironmentAtoms(connectionAtomRuntime);
 

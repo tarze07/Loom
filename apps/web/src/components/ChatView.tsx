@@ -247,7 +247,6 @@ import {
 } from "@loom/client-runtime/providerSkills";
 import { chatGitStatusAtom, NO_CHAT_GIT_STATUS_ATOM, vcsEnvironment } from "../state/vcs";
 import {
-  type EnvironmentPresentation,
   useEnvironment,
   useEnvironmentProviders,
   useEnvironments,
@@ -3070,9 +3069,10 @@ export default function ChatView(props: ChatViewProps) {
   // The end of the timeline holds the thread's present and next turns: what it is doing now,
   // its lifecycle status, then your queued messages.
   const timelineFooter =
-    pendingHandoff === null && !hasThreadNow && threadStatusLine === null && !hasQueuedTurns ? (
-      null
-    ) : (
+    pendingHandoff === null &&
+    !hasThreadNow &&
+    threadStatusLine === null &&
+    !hasQueuedTurns ? null : (
       <>
         {pendingHandoff === null ? null : (
           <div className="chat-content-lane">

@@ -108,10 +108,7 @@ type AttemptOutcome =
 type EstablishmentEvent =
   | {
       readonly _tag: "Completed";
-      readonly exit: Exit.Exit<
-        ConnectionDriver.EnvironmentConnectionLease,
-        TracedAttemptFailure
-      >;
+      readonly exit: Exit.Exit<ConnectionDriver.EnvironmentConnectionLease, TracedAttemptFailure>;
     }
   | { readonly _tag: "Interrupted"; readonly resetRetry: boolean }
   | { readonly _tag: "TimedOut" };
@@ -451,34 +448,6 @@ export const make = Effect.fn("EnvironmentSupervisor.make")(function* (
     );
   });
 
-  // Low-cardinality dimensions for time-to-connected dashboards; the error
-  // detail stays in the span status, never in an attribute.
-  const annotateAttemptOutcome = Effect.fnUntraced(function* (
-    exit: Exit.Exit<ConnectionDriver.EnvironmentConnectionLease, ConnectionAttemptError>,
-  ) {
-    if (Exit.isSuccess(exit)) {
-      const leaseTarget = exit.value.prepared.target;
-      const route = (yield* currentRoutes).find(
-        (candidate) => connectionRouteId(candidate.target) === connectionRouteId(leaseTarget),
-      );
-      return yield* Effect.annotateCurrentSpan({
-        "connection.outcome": "connected",
-        "connection.route": connectionRouteKind(
-          route ?? { target: leaseTarget, profile: Option.none() },
-        ),
-      });
-    }
-    if (Cause.hasInterruptsOnly(exit.cause)) {
-      return yield* Effect.annotateCurrentSpan("connection.outcome", "interrupted");
-    }
-    const failure = exit.cause.reasons.find(Cause.isFailReason)?.error;
-    yield* Effect.annotateCurrentSpan({
-      "connection.outcome": "failed",
-      "connection.failure.tag": failure?._tag ?? "defect",
-      "connection.failure.reason": failure?.reason ?? "defect",
-    });
-  });
-
   const establishTracedConnection = Effect.fnUntraced(function* (
     attempt: number,
     generation: number,
@@ -524,9 +493,7 @@ export const make = Effect.fn("EnvironmentSupervisor.make")(function* (
     }
   });
 
-  const connectedLeaseEnd = Effect.fnUntraced(function* (
-    next: SupervisorSignal,
-  ) {
+  const connectedLeaseEnd = Effect.fnUntraced(function* (next: SupervisorSignal) {
     if (next._tag === "DisconnectRequested") {
       return "end" as const;
     }
@@ -908,8 +875,7 @@ export const make = Effect.fn("EnvironmentSupervisor.make")(function* (
     const connectedLease: ConnectedLease = {
       ...active,
       activeRoute: (yield* currentRoutes).find(
-        (route) =>
-          connectionRouteId(route.target) === connectionRouteId(active.prepared.target),
+        (route) => connectionRouteId(route.target) === connectionRouteId(active.prepared.target),
       ),
     };
     const connectedAt = yield* Clock.currentTimeMillis;

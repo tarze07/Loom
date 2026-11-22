@@ -24,8 +24,6 @@ import * as DesktopBackendPool from "../../backend/DesktopBackendPool.ts";
 import * as DesktopAppSettings from "../../settings/DesktopAppSettings.ts";
 import * as ElectronDialog from "../../electron/ElectronDialog.ts";
 import * as ElectronWindow from "../../electron/ElectronWindow.ts";
-import * as IpcChannels from "../channels.ts";
-import * as DesktopIpc from "../DesktopIpc.ts";
 import {
   getLocalEnvironmentBootstraps,
   pickProjectFavicon,
@@ -180,7 +178,6 @@ describe("getLocalEnvironmentBootstraps", () => {
     }).pipe(Effect.provide(bootstrapsLayer([stoppedInstance])));
   });
 });
-
 
 describe("readMedia", () => {
   it.effect("reads http(s) media only for the main window", () =>

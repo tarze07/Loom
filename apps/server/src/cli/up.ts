@@ -260,7 +260,6 @@ const setUp = Effect.fn("cli.up")(function* (flags: {
       );
     }
   });
-  let started = false;
   if (!before.service.supported) {
     yield* printServeCommand("Background service unavailable.");
   } else {
@@ -290,7 +289,6 @@ const setUp = Effect.fn("cli.up")(function* (flags: {
       yield* printServeCommand(`Service setup failed: ${result.failed}`);
     } else if (result.changed) {
       yield* Console.log(CliService.formatServiceChange(result));
-      started = true;
     } else if (restart) {
       if (!interactive && !stopped) {
         yield* Console.log("Restarting Loom. Running agent turns will stop.");
@@ -304,7 +302,6 @@ const setUp = Effect.fn("cli.up")(function* (flags: {
           "The installed service was not restarted. Run `t3 service status` to see why.",
         );
       }
-      started = outcome === "restarted";
     }
   }
 

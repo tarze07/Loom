@@ -4,16 +4,9 @@
  *
  * @module managedLimits
  */
-import type {
-  ManagedPolicyClient,
-  ManagedPolicyDocument,
-  ServerAuthPolicy,
-} from "@loom/contracts";
+import type { ManagedPolicyClient, ManagedPolicyDocument, ServerAuthPolicy } from "@loom/contracts";
 import * as Effect from "effect/Effect";
-import * as PlatformError from "effect/PlatformError";
 import * as Schema from "effect/Schema";
-
-import * as NetService from "@loom/shared/Net";
 
 import { loopbackBindAddress } from "../auth/utils.ts";
 
@@ -69,11 +62,6 @@ const refuse = (policy: PolicyDocument, action: string, detail?: string) =>
     action,
     ...(detail === undefined ? {} : { detail }),
   });
-
-// Node throws ENOTDIR, outside the spawner's error mapping, when PATH ends in a file.
-const isMissingCli = (cause: unknown) =>
-  (PlatformError.isPlatformError(cause) && cause.reason._tag === "NotFound") ||
-  (cause instanceof Error && "code" in cause && cause.code === "ENOTDIR");
 
 export const refuseRemoteClients = (policy: PolicyDocument, detail?: string) =>
   refuse(policy, AUTH_POLICY_ACTION["remote-reachable"], detail);
