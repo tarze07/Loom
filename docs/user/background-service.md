@@ -44,14 +44,12 @@ under Loom home. Pass `--yes` from a script.
 
 ## Local network access
 
-A new service answers only on this machine. Other devices reach it through
-Loom Connect, or directly once you choose the local network in `t3 up` (or run
-`t3 up --lan`, which sets `LOOM_LAN=true` in `service.env`). It then listens on
-your local network and Tailscale addresses, so the desktop and mobile apps on
-the same network connect directly instead of through Loom Connect. It still does
-not answer on public addresses. Anyone on the same network can reach the port,
-so a pairing code is all that keeps them out. The hosted web app at app.loom.local
-stays on Loom Connect, because browsers block plain HTTP from an HTTPS page.
+A new service answers only on this machine. Other devices reach it once you
+choose the local network in `t3 up` (or run `t3 up --lan`, which sets
+`LOOM_LAN=true` in `service.env`). It then listens on your local network and
+Tailscale addresses, so the desktop and mobile apps on the same network can
+connect. It still does not answer on public addresses. Anyone on the same
+network can reach the port, so a pairing code is all that keeps them out.
 
 A service installed before `LOOM_LAN` existed keeps listening on the local
 network. `t3 status` says so, and `t3 up --no-lan` turns it off. Any
@@ -99,9 +97,6 @@ of signing out, and keep the PC awake, for unattended remote access. Installing
 over SSH while nobody is signed in at the PC can fail at the final start step;
 the service is still installed and will start at the next sign-in.
 
-`t3 up` installs the service when you set up Loom Connect, but the two are managed
-separately. Signing out of Loom Connect does not stop or uninstall the service.
-
 ## Keep the server responsive when agents use all memory
 
 On Linux, agents already run with lower priority than the server. When they
@@ -148,7 +143,7 @@ that session open.
 | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `linger-unavailable`                    | Run `loginctl show-user "$(id -un)" --property=Linger` and check that systemd-logind is available.                             |
 | `user-manager-unavailable`              | Run `systemctl --user status` in a login session for the service user; check your distribution's systemd user-session support. |
-| `service-disabled` or `service-stopped` | Read the log and, on Linux, `systemctl --user status loom.service`, then use the repair command printed by Loom.          |
+| `service-disabled` or `service-stopped` | Read the log and, on Linux, `systemctl --user status loom.service`, then use the repair command printed by Loom.               |
 | `restart-pending`                       | A newer version is installed but the service still runs the previous one. Run `t3 service restart`.                            |
 
 On macOS, check **System Settings → General → Login Items** if the service no
@@ -156,9 +151,6 @@ longer starts at login. If agent work cannot access Desktop, Documents, or
 Downloads, it may need Full Disk Access for the `loom` executable listed in
 `ProgramArguments` in
 `~/Library/LaunchAgents/com.loom.app.service.plist`.
-
-For failures after signing in to Loom Connect, see
-[connection troubleshooting](./loom-connect-troubleshooting.md).
 
 ## Reclaim database space
 

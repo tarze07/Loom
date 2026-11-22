@@ -11,13 +11,12 @@ in once, and you choose what it may do.
 Open the command palette (`Cmd/Ctrl+K`) and choose **Use Loom in another
 app (MCP)**, or use the button in **Settings → Sharing & access**. Pick the
 app and follow the step for that app. Assistants like
-Poke and Claude run in the cloud, so the wizard first asks you to sign in to Loom
-Connect and turn it on for the environment. To reach your other machines through
+Poke and Claude run in the cloud, so they need an address they can reach from
+the internet; see [Get the MCP URL](#get-the-mcp-url). To reach your other machines through
 the same connection, turn on **Linked environments** in Labs and
 [link them](./remote-access.md#link-another-environment).
 
-When the app opens the sign-in page, choose what it may do and approve with your
-Loom Connect account. On an older environment, the wizard asks for the level and
+When the app opens the sign-in page, choose what it may do and approve. On an older environment, the wizard asks for the level and
 gives you a code to paste instead. A code works once, for 5 minutes, and
 approves only that level.
 
@@ -35,28 +34,25 @@ example:
 https://<environment-address>/mcp
 ```
 
-When Loom Connect serves the environment, the copied URL is its Loom Connect
-address, which agents can reach from anywhere. Otherwise it uses the route this
-device is connected over, so an agent on the same device can reach it.
+The URL uses the route this device is connected over, so an agent on the same
+device can reach it.
 
-- **An agent on your own computers** can use `localhost` on the host, Loom
-  Connect, or any `https` address, such as
+- **An agent on your own computers** can use `localhost` on the host or any
+  `https` address, such as
   [Tailscale HTTPS](./remote-access.md#tailscale-https). Signing in sends the
   agent's credentials to the environment, and agents only do that over `https`
   or to `localhost`. A plain-`http` LAN or Tailscale address, like
   `http://100.x.y.z:3773`, lets an agent find the environment but not finish
   signing in.
 - **A hosted agent**, such as ChatGPT or a bot running in the cloud, must reach
-  the environment from the internet. Use the Loom Connect address. A Tailscale
-  address only works from your own tailnet.
+  the environment from the internet, so use a public `https` address that you
+  set up for it, such as a reverse proxy. A Tailscale address only works from
+  your own tailnet.
 
 ## Approve a sign-in
 
-The first time an agent connects, it opens a sign-in page. When the agent
-reaches the environment through Loom Connect, the page opens on the Loom web
-app: sign in with the Loom Connect account the environment is linked to and
-approve there, without a code. Otherwise the page opens on the environment.
-Either page names the agent and where its access goes:
+The first time an agent connects, it opens a sign-in page on the environment.
+The page names the agent and where its access goes:
 
 - For an agent on your computer, approval returns to a `localhost` address on
   the computer that opened the page.
@@ -123,8 +119,8 @@ codex mcp login t3
 Add the environment as a custom MCP app in ChatGPT's apps settings:
 
 1. Create a new app or plugin with a custom MCP server.
-2. Set the server URL to `https://<environment-address>/mcp`, using the Loom
-   Connect address.
+2. Set the server URL to `https://<environment-address>/mcp`, using a public
+   `https` address for the environment.
 3. Choose **OAuth** for authentication. ChatGPT discovers the rest; you do not
    need a client ID or secret.
 4. Create the app, then approve the sign-in page that opens.
