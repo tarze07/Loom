@@ -1,8 +1,4 @@
-import {
-  ModelCapabilities,
-  TrimmedNonEmptyString,
-  type ProviderDriverKind,
-} from "@loom/contracts";
+import { ModelCapabilities, TrimmedNonEmptyString, type ProviderDriverKind } from "@loom/contracts";
 import * as Clock from "effect/Clock";
 import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";

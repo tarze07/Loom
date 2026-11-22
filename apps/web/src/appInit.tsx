@@ -1,8 +1,4 @@
-import {
-  scopedThreadKey,
-  scopeProjectRef,
-  scopeThreadRef,
-} from "@loom/client-runtime/environment";
+import { scopedThreadKey, scopeProjectRef, scopeThreadRef } from "@loom/client-runtime/environment";
 import type { ScopedThreadRef } from "@loom/contracts";
 import type { ClientSettings } from "@loom/contracts/settings";
 import { createBrowserHistory, createHashHistory } from "@tanstack/react-router";
