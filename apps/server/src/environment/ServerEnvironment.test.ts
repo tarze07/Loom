@@ -133,6 +133,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("ServerEnvironmen
         Effect.provideService(HostProcess.LinuxLibc, "libc" in host ? host.libc : "gnu"),
       );
       expect(descriptor.capabilities.voiceTranscription).toBe(host.supported);
+      expect(Object.hasOwn(descriptor.capabilities, "serverInstallation")).toBe(false);
     }),
   );
   it.effect.each([

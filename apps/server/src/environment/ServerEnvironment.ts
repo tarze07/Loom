@@ -268,7 +268,7 @@ export const make = Effect.gen(function* () {
       npmReleaseLookup: true,
       voiceTranscription: isSpeechPlatformSupported(hostPlatform, hostArchitecture, hostLibc),
       cloudVoiceTranscription: true,
-      serverInstallation: serverInstallation ?? undefined,
+      ...(serverInstallation === null ? {} : { serverInstallation }),
       serverBrowser: true,
       peerLinks: true,
       mcpModeLimitHeader: true,
