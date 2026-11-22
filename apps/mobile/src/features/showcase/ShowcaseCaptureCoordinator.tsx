@@ -97,8 +97,6 @@ function showcaseNavigationAction(
   switch (scene) {
     case "threads":
       return StackActions.popToTop();
-    case "agent-activity":
-      return CommonActions.reset({ index: 0, routes: [{ name: "Home" }] });
     case "environments":
       return CommonActions.reset(settingsNavigationState(rootState, "SettingsEnvironments"));
     case "terminal":
@@ -270,9 +268,7 @@ export function installShowcaseCapture(
 
     const navigationReady = rootNavigationRef.isReady();
     const rootState = navigationReady ? rootNavigationRef.getRootState() : undefined;
-    const scene = rootState
-      ? showcaseSceneOnScreen(pathnameFromState(rootState))
-      : null;
+    const scene = rootState ? showcaseSceneOnScreen(pathnameFromState(rootState)) : null;
 
     if (requestedScene !== null && hasFixture && showcaseThread && rootState) {
       const navigation = { requestedScene, scene, thread: showcaseThread };

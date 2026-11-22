@@ -14,6 +14,7 @@ import type { ConnectedEnvironmentSummary, EnvironmentRuntimeState } from "./rem
 import { environmentSession } from "./session";
 import { environmentCatalog } from "../connection/catalog";
 import { createRemoteEnvironmentProjectionAtoms } from "./remote-environment-projections";
+import { serverEnvironment } from "./server";
 import { connectPairingUrl as connectPairingUrlCommand } from "../connection/onboarding";
 
 const connectionPairingUrlAtom = Atom.make("").pipe(
