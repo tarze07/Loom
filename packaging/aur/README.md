@@ -6,10 +6,8 @@ repackage the official x86_64 AppImage from GitHub Releases.
 
 ## Publishing
 
-The release workflow calls `.github/workflows/publish-aur.yml` after publishing a GitHub release;
-the workflow can also be run manually for a specific tag. It selects the stable or nightly
-package, then updates its version and checksums, builds it, regenerates `.SRCINFO`, and pushes it
-to the AUR.
+To update the package version and checksums, build it, and regenerate `.SRCINFO` from a GitHub
+release tag, run `packaging/aur/scripts/release.sh` (or wire it into a release workflow).
 
 To validate a release on Arch Linux:
 

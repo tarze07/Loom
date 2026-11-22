@@ -25,9 +25,11 @@
 - [Loom Connect troubleshooting](./user/loom-connect-troubleshooting.md)
 - [Outside agents (MCP)](./user/outside-agents.md)
 - [Running in the background](./user/background-service.md)
+- [Managed policy](./user/managed-policy.md)
 - [Updating Loom](./user/updating.md)
 - [Triage an issue](./user/triage.md)
-- Provider guides: [Codex](./user/providers-codex.md) · [Claude](./user/providers-claude.md) · [OpenCode](./user/providers-opencode.md) · [Antigravity](./user/providers-antigravity.md) · [Kiro](./user/providers-kiro.md) · [Pi](./user/providers-pi.md) · [Muse Code](./user/providers-muse.md) · [fx](./user/providers-fx.md)
+- [FAQ](./user/faq.md)
+- Provider guides: [Codex](./user/providers-codex.md) · [Claude](./user/providers-claude.md) · [OpenCode](./user/providers-opencode.md) · [Antigravity](./user/providers-antigravity.md) · [Kiro](./user/providers-kiro.md) · [Pi](./user/providers-pi.md) · [Muse Code](./user/providers-muse.md) · [fx](./user/providers-fx.md) · [ACP](./user/providers-acp.md)
 
 ---
 
@@ -42,6 +44,9 @@ source alone does not explain. Most code changes do not need an internal documen
 
 - [Architecture overview](./internals/overview.md)
 - [Glossary](./internals/glossary.md)
+- [Effect services](./internals/effect-services.md)
+- [Web UI](./internals/web-ui.md)
+- [Testing](./internals/testing.md)
 - [Connection runtime](./internals/connection-runtime.md)
 - [Providers](./internals/providers.md)
 - [Adding a provider](./internals/adding-a-provider.md)
@@ -50,7 +55,6 @@ source alone does not explain. Most code changes do not need an internal documen
 - [Remote environments](./internals/remote.md)
 - [Server updates](./internals/server-updates.md)
 - [Resource telemetry](./internals/resource-telemetry.md)
-- [Product analytics](./internals/product-analytics.md)
 - [Environment auth](./internals/environment-auth.md)
 - [Loom Connect](./internals/loom-connect.md)
 - [Assistant citations](./internals/assistant-citations.md)
