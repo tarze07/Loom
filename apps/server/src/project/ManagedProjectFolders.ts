@@ -126,7 +126,7 @@ export class ManagedProjectFolders extends Context.Service<
       NamedProjectError
     >;
   }
->()("t3/project/ManagedProjectFolders") {}
+>()("loom/project/ManagedProjectFolders") {}
 
 const folderWords = (text: string) =>
   text

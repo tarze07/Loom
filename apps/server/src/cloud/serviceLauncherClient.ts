@@ -80,7 +80,7 @@ export class ServiceLauncherClient extends Context.Service<
         so it can be older than this runtime's own. */
     readonly protocol: SupportedLauncherProtocol | undefined;
   }
->()("t3/cloud/serviceLauncherClient") {}
+>()("loom/cloud/serviceLauncherClient") {}
 
 const resolveStartup = Effect.fn("cloud.service_launcher_client.resolve_startup")(
   function* (options?: { readonly currentVersion?: string }) {

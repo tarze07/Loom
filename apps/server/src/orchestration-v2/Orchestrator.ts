@@ -518,7 +518,7 @@ export interface OrchestratorV2Shape {
 }
 
 export class OrchestratorV2 extends Context.Service<OrchestratorV2, OrchestratorV2Shape>()(
-  "t3/orchestration-v2/Orchestrator/OrchestratorV2",
+  "loom/orchestration-v2/Orchestrator/OrchestratorV2",
 ) {}
 
 /** Run ordinals can skip values: a queued run moves past newer runs when it starts. */
