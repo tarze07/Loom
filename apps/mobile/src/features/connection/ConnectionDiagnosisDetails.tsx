@@ -9,7 +9,7 @@ import {
 import type { EnvironmentId } from "@loom/contracts";
 import Constants from "expo-constants";
 import { AsyncResult } from "effect/reactivity";
-import { Linking, View } from "react-native";
+import { View } from "react-native";
 
 import { AppText as Text } from "../../components/ui/AppText";
 import { Button } from "../../components/ui/Button";
@@ -46,7 +46,6 @@ export function ConnectionDiagnosisDetails(props: {
   readonly diagnosis: ConnectionDiagnosis;
 }) {
   const { diagnosis } = props;
-  const { moreInfoUrl } = diagnosis;
   return (
     <View className="gap-3">
       <View className="gap-0.5">
@@ -82,14 +81,6 @@ export function ConnectionDiagnosisDetails(props: {
           });
         }}
       />
-      {moreInfoUrl ? (
-        <Button
-          label="More info"
-          icon="safari"
-          tone="secondary"
-          onPress={() => void Linking.openURL(moreInfoUrl).catch(() => undefined)}
-        />
-      ) : null}
     </View>
   );
 }
