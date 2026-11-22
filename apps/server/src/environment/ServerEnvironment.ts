@@ -262,6 +262,7 @@ export const make = Effect.gen(function* () {
       freshContext: true,
       scheduledTaskThreadModes: true,
       npmReleaseLookup: true,
+      agentActivityPublishing: false,
       voiceTranscription: isSpeechPlatformSupported(hostPlatform, hostArchitecture, hostLibc),
       cloudVoiceTranscription: true,
       serverInstallation: serverInstallation ?? undefined,
