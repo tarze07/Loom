@@ -73,7 +73,7 @@ export function startI18n(): void {
 }
 
 /** Resolves once the requested locale's translations are ready; immediate for English. */
-export function whenLocaleReady(): Promise<void> {
+function whenLocaleReady(): Promise<void> {
   const locale = requestedLocale;
   return loadLocale(locale).then(() => activateLocale(locale));
 }

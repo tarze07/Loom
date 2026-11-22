@@ -1,9 +1,4 @@
-import {
-  AuthStandardClientScopes,
-  EnvironmentId,
-  type ServerConfig,
-  type ServerConfigStreamEvent,
-} from "@loom/contracts";
+import { EnvironmentId, type ServerConfig, type ServerConfigStreamEvent } from "@loom/contracts";
 import { describe, expect, it } from "@effect/vitest";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
@@ -17,10 +12,7 @@ import * as Stream from "effect/Stream";
 import * as SubscriptionRef from "effect/SubscriptionRef";
 import * as TestClock from "effect/testing/TestClock";
 
-import * as ClientCapabilities from "../platform/capabilities.ts";
-import * as RpcHttp from "../rpc/http.ts";
 import type { WsRpcProtocolClient } from "../rpc/protocol.ts";
-import { fetchEnvironmentSessionState } from "../state/session.ts";
 import type { ConnectionCatalogEntry, ConnectionRoute } from "./catalog.ts";
 import * as Connectivity from "./connectivity.ts";
 import * as ConnectionDriver from "./driver.ts";
@@ -1932,5 +1924,4 @@ describe("EnvironmentSupervisor routes", () => {
       );
     }),
   );
-
 });

@@ -117,7 +117,7 @@ const primaryTransport: McpApprovalTransport = {
 const decodeAuthorizationRequest = Schema.decodeSync(AuthMcpAuthorizationRequest);
 
 /** The agent's OAuth request from this page's query; other parameters are ignored. */
-export function readAuthorizationRequest(): AuthMcpAuthorizationRequest {
+function readAuthorizationRequest(): AuthMcpAuthorizationRequest {
   return decodeAuthorizationRequest(Object.fromEntries(new URL(window.location.href).searchParams));
 }
 
@@ -130,7 +130,7 @@ export function ConnectAgentSurface() {
  * The consent screen for one agent sign-in. `acceptsCode` shows the sign-in code field;
  * `requireLevelChoice` starts with no level picked; `footer` sits under the actions.
  */
-export function McpConsent({
+function McpConsent({
   authorization,
   transport,
   acceptsCode = false,
@@ -403,7 +403,7 @@ function ceilingReason(details: AuthMcpApprovalDetails, access: AuthMcpClientAcc
 }
 
 /** One access level in a radio group; `description` replaces the level's own, null hides it. */
-export function AccessOption({
+function AccessOption({
   access,
   selected,
   disabledReason,

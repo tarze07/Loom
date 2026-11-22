@@ -51,7 +51,7 @@ export const MCP_APPS: readonly McpApp[] = [
     logo: pokeLogo,
     handoff: {
       kind: "open",
-      link: (url) => `https://poke.com/integrations/new?name=Loom%20Code&url=${encoded(url)}`,
+      link: (url) => `https://poke.com/integrations/new?name=Loom&url=${encoded(url)}`,
     },
     steps: ["Open poke.com/integrations/new.", "Paste the URL and add the integration."],
     docs: "https://poke.com/docs/mcp-servers",
@@ -63,7 +63,7 @@ export const MCP_APPS: readonly McpApp[] = [
     handoff: {
       kind: "open",
       link: (url) =>
-        `https://claude.ai/customize/connectors?modal=add-custom-connector&connectorName=Loom%20Code&connectorUrl=${encoded(url)}`,
+        `https://claude.ai/customize/connectors?modal=add-custom-connector&connectorName=Loom&connectorUrl=${encoded(url)}`,
     },
     steps: [
       "In Claude, open Customize, then Connectors.",
@@ -177,9 +177,6 @@ export const MCP_APPS: readonly McpApp[] = [
     docs: "https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp",
   },
 ];
-
-/** The "Something else…" choice: the URL and general steps only. */
-export const OTHER_MCP_APP_STEPS = ["Add a remote MCP server with OAuth."] as const;
 
 /**
  * The primary button for `app`: its label, the https page it opens, and what it copies first.

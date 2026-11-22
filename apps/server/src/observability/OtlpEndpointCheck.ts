@@ -1,8 +1,4 @@
-import type {
-  OtlpEndpointCheckInput,
-  OtlpEndpointCheckResult,
-  OtlpSignal,
-} from "@loom/contracts";
+import type { OtlpEndpointCheckInput, OtlpEndpointCheckResult, OtlpSignal } from "@loom/contracts";
 import { layerOtlpSerialization } from "@loom/shared/observability";
 import * as Clock from "effect/Clock";
 import * as Context from "effect/Context";
@@ -21,7 +17,7 @@ export class OtlpEndpointCheck extends Context.Service<
   {
     readonly check: (input: OtlpEndpointCheckInput) => Effect.Effect<OtlpEndpointCheckResult>;
   }
->()("t3/observability/OtlpEndpointCheck") {}
+>()("loom/observability/OtlpEndpointCheck") {}
 
 const emptyExport = (
   serialization: OtlpSerialization.OtlpSerialization["Service"],

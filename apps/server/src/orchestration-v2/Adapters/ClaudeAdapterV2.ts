@@ -222,10 +222,7 @@ import {
 import * as McpProviderSession from "@loom/provider-core/server/mcpSession";
 import * as McpProviderSessions from "@loom/provider-core/server/McpProviderSessions";
 import * as IdAllocator from "@loom/provider-core/server/IdAllocator";
-import {
-  makeProviderFailure,
-  makeProviderRetryTurnItem,
-} from "@loom/provider-core/server/failure";
+import { makeProviderFailure, makeProviderRetryTurnItem } from "@loom/provider-core/server/failure";
 import { turnScopedSelectionTransition } from "@loom/provider-core/server/selectionTransition";
 import { providerMessageTextWithAttachmentPaths } from "@loom/provider-core/server/attachmentPrompt";
 import * as ProviderAdapter from "@loom/provider-core/server/ProviderAdapter";
@@ -756,7 +753,7 @@ export interface ClaudeAgentSdkQueryRunnerShape {
 export class ClaudeAgentSdkQueryRunner extends Context.Service<
   ClaudeAgentSdkQueryRunner,
   ClaudeAgentSdkQueryRunnerShape
->()("t3/orchestration-v2/Adapters/ClaudeAdapterV2/ClaudeAgentSdkQueryRunner") {}
+>()("loom/orchestration-v2/Adapters/ClaudeAdapterV2/ClaudeAgentSdkQueryRunner") {}
 
 export interface ClaudeAgentSdkSessionForkInput {
   readonly sessionId: string;
@@ -2098,9 +2095,7 @@ export function makeClaudeQueryOptions(input: {
             ? ""
             : LOOM_ORCHESTRATION_INSTRUCTIONS +
               CLAUDE_BACKGROUND_WAIT_INSTRUCTIONS +
-              (deviceInstructions
-                ? `\n${LOOM_DEVICE_TOOL_INSTRUCTIONS_WITH_TOOL_SEARCH}\n`
-                : "")),
+              (deviceInstructions ? `\n${LOOM_DEVICE_TOOL_INSTRUCTIONS_WITH_TOOL_SEARCH}\n` : "")),
         ...launchAppendSystemPrompt,
       ].join("\n\n"),
     },
@@ -2244,7 +2239,7 @@ export function claudeMcpQueryOverrides(input: {
   return {
     allowedTools: Array.from(new Set([...(input.allowedTools ?? []), ...mcpAllowedTools])),
     mcpServers: {
-      "loom": {
+      loom: {
         type: "http",
         url: session.endpoint,
         headers: {

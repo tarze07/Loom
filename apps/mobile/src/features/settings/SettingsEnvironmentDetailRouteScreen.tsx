@@ -1,5 +1,4 @@
-import * as Dialog from "../../components/ui/Dialog";
-import { useAtom, useAtomValue } from "@effect/atom-react";
+import { useAtomValue } from "@effect/atom-react";
 import { useNavigation, type StaticScreenProps } from "@react-navigation/native";
 import {
   AuthProvidersManageScope,
@@ -9,8 +8,6 @@ import {
 } from "@loom/contracts";
 import { settlePromise, squashAtomCommandFailure } from "@loom/client-runtime/state/runtime";
 import { sessionPermissionsUnavailableMessage } from "@loom/shared/authScopeOptions";
-import * as Cause from "effect/Cause";
-import * as Exit from "effect/Exit";
 import { AsyncResult } from "effect/reactivity";
 import { useRef, useState } from "react";
 import { Linking, View } from "react-native";
@@ -19,8 +16,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AppText as Text } from "../../components/ui/AppText";
 import { ProviderIcon } from "../../components/ProviderIcon";
 import { ScreenScrollView } from "../../components/ui/ScreenScrollView";
-import { appAtomRegistry } from "../../state/atom-registry";
-import { environmentPresentations } from "../../state/presentation";
 import { serverEnvironment } from "../../state/server";
 import { environmentSession, useEnvironmentScope, readEnvironmentScope } from "../../state/session";
 import { useAtomCommand } from "../../state/use-atom-command";
@@ -73,7 +68,6 @@ function EnvironmentDetail({ environmentId }: { readonly environmentId: Environm
   const canManageProviders = useEnvironmentScope(environmentId, AuthProvidersManageScope);
   const canRead = useEnvironmentScope(environmentId, AuthOrchestrationReadScope);
   const busy = !connected || pending !== null || providerBusy;
-  const disabled = !allowed || busy;
   const version = config?.environment.serverVersion;
   const managedPolicy = config?.managedPolicy;
   const supportUrl = managedPolicy?.supportUrl;

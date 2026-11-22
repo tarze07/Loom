@@ -1,11 +1,7 @@
 import { SessionPermissions } from "./SessionPermissions";
 import { ChevronRightIcon, EllipsisIcon, RouteIcon } from "lucide-react";
-import { useAtomValue } from "@effect/atom-react";
-import { useEffect, useEffectEvent, useState } from "react";
-import {
-  type EnvironmentId,
-  resolveEnvironmentMachineKind,
-} from "@loom/contracts";
+import { useState } from "react";
+import { type EnvironmentId, resolveEnvironmentMachineKind } from "@loom/contracts";
 import {
   connectionRoutes,
   hasSavedBearerRoute,
@@ -15,8 +11,6 @@ import {
 
 import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
 import { cn } from "../../lib/utils";
-import { SettingsRow } from "./settingsLayout";
-import { searchableSetting } from "./settingsSearch";
 import { EnvironmentIconMenu } from "./EnvironmentIconPicker";
 import { EnvironmentRoutesList } from "./EnvironmentRoutesList";
 import {
@@ -30,7 +24,7 @@ import { Menu, MenuItem, MenuPopup, MenuSeparator, MenuTrigger } from "../ui/men
 import { Switch } from "../ui/switch";
 import { stackedThreadToast, toastManager } from "../ui/toast";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
-import { Button, InlineButton } from "../ui/button";
+import { Button } from "../ui/button";
 import { resolveServerConfigVersionMismatch } from "~/versionSkew";
 import { environmentCatalog } from "~/connection/catalog";
 import { type EnvironmentPresentation } from "~/state/environments";
@@ -137,9 +131,8 @@ export function SavedBackendListRow({
   const status = savedBackendStatus(environment);
   const serverVersion = environment.serverConfig?.environment.serverVersion ?? null;
   const retryNow = useAtomCommand(environmentCatalog.retryNow);
-  const { diagnosis: currentDiagnosis, state: connectionState } = useConnectionDiagnosis(
-    environment,
-  );
+  const { diagnosis: currentDiagnosis, state: connectionState } =
+    useConnectionDiagnosis(environment);
   const diagnosis = currentDiagnosis;
   const prepared = usePreparedConnection(environmentId);
   const connectedTarget = isConnected && prepared._tag === "Some" ? prepared.value.target : null;
@@ -183,10 +176,7 @@ export function SavedBackendListRow({
                 <span
                   className={cn(
                     "min-w-0 truncate",
-                    enabled &&
-                      status.tone === "error" &&
-                      !diagnosis &&
-                      "text-destructive",
+                    enabled && status.tone === "error" && !diagnosis && "text-destructive",
                   )}
                 />
               }
@@ -256,6 +246,7 @@ export function SavedBackendListRow({
               hostLabel={environment.label}
               diagnosis={diagnosis}
               onRetry={() => void retryNow(environmentId)}
+              onAddRoute={() => onAddRoute(environment)}
             />
           ) : null}
           {routesOpen && (
@@ -333,5 +324,3 @@ export function SavedBackendListRow({
     </EnvironmentRow>
   );
 }
-
-

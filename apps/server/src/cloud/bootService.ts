@@ -578,24 +578,6 @@ const readSystemdUnitDirectory = Effect.fn("cloud.boot_service.read_systemd_unit
   Effect.orElseSucceed(() => undefined),
 );
 
-/** Where this platform's service manager keeps the unit, whether or not one is installed. */
-export const bootServiceUnitPath = Effect.fn("cloud.boot_service.unit_path")(function* () {
-  const path = yield* Path.Path;
-  const platform = yield* HostProcess.Platform;
-  const homeDir = yield* HostProcess.HomeDirectory;
-  if (homeDir === "") return undefined;
-  if (platform === "darwin") return launchdPlistPath(path, homeDir);
-  if (platform === "win32") {
-    const localAppData = (yield* HostProcess.Environment).LOCALAPPDATA ?? "";
-    return localAppData === "" ? undefined : scheduledTaskPath(path, localAppData);
-  }
-  if (platform !== "linux") return undefined;
-  const unitDir =
-    (yield* readSystemdUnitDirectory(yield* ProcessRunner.ProcessRunner, path)) ??
-    defaultSystemdUnitDir(path, homeDir, (yield* HostProcess.Environment).XDG_CONFIG_HOME ?? "");
-  return path.join(unitDir, BOOT_SERVICE_UNIT_FILE);
-});
-
 export class BootServiceUnsupportedError extends Schema.TaggedError<BootServiceUnsupportedError>()(
   "BootServiceUnsupportedError",
   { platform: Schema.String },
@@ -758,7 +740,7 @@ export class BootService extends Context.Service<
     readonly uninstall: Effect.Effect<boolean, BootServiceError>;
     readonly status: Effect.Effect<BootServiceStatus, BootServiceError>;
   }
->()("t3/cloud/bootService") {}
+>()("loom/cloud/bootService") {}
 
 export interface BootServiceHost {
   readonly execPath: string;

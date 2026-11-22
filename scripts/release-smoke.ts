@@ -84,12 +84,6 @@ function assertContains(haystack: string, needle: string, message: string): void
   }
 }
 
-function assertExists(path: string, message: string): void {
-  if (!NodeFS.existsSync(path)) {
-    throw new Error(message);
-  }
-}
-
 function assertPackageVersion(path: string, version: string): void {
   const packageJson = JSON.parse(NodeFS.readFileSync(path, "utf8")) as {
     readonly version?: unknown;

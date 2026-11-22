@@ -3,18 +3,9 @@ import {
   EnvironmentId,
   type ExecutionEnvironmentDescriptor,
 } from "@loom/contracts";
-import {
-  resolveRemoteWebSocketConnectionUrl,
-  type RemoteEnvironmentAuthError,
-} from "./remote.ts";
-import {
-  environmentMismatchError,
-  mapRemoteEnvironmentError,
-} from "../connection/errors.ts";
-import type {
-  ConnectionAttemptError,
-  PreparedHttpAuthorization,
-} from "../connection/model.ts";
+import { resolveRemoteWebSocketConnectionUrl } from "./remote.ts";
+import { environmentMismatchError, mapRemoteEnvironmentError } from "../connection/errors.ts";
+import type { ConnectionAttemptError, PreparedHttpAuthorization } from "../connection/model.ts";
 import { isNearbyAddress } from "../connection/routes.ts";
 import { fetchRemoteEnvironmentDescriptor } from "../environment/descriptor.ts";
 import * as ClientCapabilities from "../platform/capabilities.ts";
@@ -71,7 +62,7 @@ const fetchDescriptor = Effect.fn("clientRuntime.connection.remote.fetchDescript
   }).pipe(Effect.mapError((error) => mapRemoteEnvironmentError(error)));
 });
 
-export const make = Effect.gen(function* () {
+const make = Effect.gen(function* () {
   const presentation = yield* ClientCapabilities.ClientPresentation;
   const httpClient = yield* HttpClient.HttpClient;
 

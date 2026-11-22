@@ -6,7 +6,6 @@ import {
 } from "@loom/contracts";
 import { resolveWorktreeLoomHome } from "@loom/shared/devHome";
 import * as HostProcess from "@loom/shared/HostProcess";
-import { formatHostForUrl, isWildcardHost } from "@loom/shared/hostClassification";
 import { DEFAULT_SIGNAL_EXPORT } from "@loom/shared/observability";
 import { buildPairingAppLink } from "@loom/shared/remote";
 import * as OtelEnvironment from "@loom/shared/otelEnvironment";
@@ -24,7 +23,6 @@ import { FetchHttpClient, HttpClient, HttpClientRequest, HttpClientResponse } fr
 
 import * as EnvironmentAuth from "../auth/EnvironmentAuth.ts";
 import * as ServerConfig from "../config.ts";
-import * as ManagedLimits from "../policy/managedLimits.ts";
 import { resolveBaseDir } from "../os-jank.ts";
 import {
   type PersistedServerRuntimeState,

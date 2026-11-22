@@ -1,7 +1,6 @@
 import { useStableCallback } from "../../hooks/useStableCallback";
 import { type EnvironmentId } from "@loom/contracts";
 import { type EnvironmentConnectionPresentation } from "@loom/client-runtime/connection";
-import { useAtomValue } from "@effect/atom-react";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
@@ -17,7 +16,6 @@ import {
   useEnvironmentDisconnectDelay,
   useEnvironmentStateHeldFor,
 } from "../../hooks/useEnvironmentDisconnectDelay";
-import { serverEnvironment } from "../../state/server";
 import { type EnvironmentPresentation } from "../../state/environments";
 import type { ComposerBannerStackItem } from "./ComposerBannerStack";
 import { ENVIRONMENT_RECONNECT_WARNING_GRACE_MS } from "../ChatView.logic";
@@ -41,14 +39,8 @@ interface SystemComposerBannersInput {
 
 /** The composer banners about the machine itself: offline or reconnecting. */
 export function useSystemComposerBanners(input: SystemComposerBannersInput) {
-  const {
-    activeEnvironment,
-    activeEnvironmentUnavailable,
-    activeEnvironmentUnavailableState,
-    activeThreadEnvironmentId,
-    serverConfig,
-    hasMultipleRegisteredEnvironments,
-  } = input;
+  const { activeEnvironment, activeEnvironmentUnavailable, activeEnvironmentUnavailableState } =
+    input;
   const navigate = useNavigate();
   const retryEnvironment = useAtomCommand(environmentCatalog.retryNow, { reportFailure: false });
   const setEnvironmentEnabled = useAtomCommand(environmentCatalog.setEnabled, {
@@ -140,8 +132,7 @@ export function useSystemComposerBanners(input: SystemComposerBannersInput) {
       unavailableConnection !== null &&
       (unavailableConnection.phase === "connecting" ||
         unavailableConnection.phase === "reconnecting");
-    const suppressUnavailableBanner =
-      environmentReconnecting && !reconnectWarningGraceElapsed;
+    const suppressUnavailableBanner = environmentReconnecting && !reconnectWarningGraceElapsed;
     const showUnavailableBanner =
       activeEnvironmentUnavailableState !== null &&
       unavailableConnection !== null &&

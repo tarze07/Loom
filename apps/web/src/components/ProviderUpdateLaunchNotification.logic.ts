@@ -210,7 +210,7 @@ export interface ProviderUpdateRun {
   >;
 }
 
-export function getProviderUpdateRunOutcome(
+function getProviderUpdateRunOutcome(
   run: ProviderUpdateRun,
 ):
   | { readonly status: "interrupted" }

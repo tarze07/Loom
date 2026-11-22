@@ -1,8 +1,4 @@
-import {
-  ORCHESTRATION_PROTOCOL_VERSION,
-  type EnvironmentId,
-  type ExecutionEnvironmentDescriptor,
-} from "@loom/contracts";
+import { type EnvironmentId } from "@loom/contracts";
 import * as Effect from "effect/Effect";
 import * as SubscriptionRef from "effect/SubscriptionRef";
 
@@ -28,7 +24,3 @@ const reachOutdatedHost = Effect.fn("clientRuntime.connection.reachOutdatedHost"
 // The normal session cannot read config from a host behind the protocol gate.
 export const describeOutdatedHost = (environmentId: EnvironmentId) =>
   reachOutdatedHost(environmentId).pipe(Effect.map(({ descriptor }) => descriptor));
-
-export function isCompatibleDescriptor(descriptor: ExecutionEnvironmentDescriptor): boolean {
-  return (descriptor.orchestrationProtocolVersion ?? 1) === ORCHESTRATION_PROTOCOL_VERSION;
-}

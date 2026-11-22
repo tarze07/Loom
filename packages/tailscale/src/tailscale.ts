@@ -9,7 +9,7 @@ import * as Stream from "effect/Stream";
 import { HttpClient, HttpClientRequest, HttpClientResponse } from "effect/http";
 import { ChildProcess, ChildProcessSpawner } from "effect/process";
 
-export const DEFAULT_TAILSCALE_SERVE_PORT = 443;
+const DEFAULT_TAILSCALE_SERVE_PORT = 443;
 /**
  * Bounds `tailscale status` and `tailscale debug prefs`. Allows the 1.8-2.6 s
  * `tailscale status` has been measured at when Loom spawns it on Windows.
@@ -344,10 +344,6 @@ export const parseTailscaleExitNode = (
     }),
   );
 
-export const readTailscaleExitNode = readTailscaleOutput("status", ["status", "--json"]).pipe(
-  Effect.flatMap(parseTailscaleExitNode),
-);
-
 const TailscalePrefsJson = Schema.Struct({
   RunSSH: Schema.optional(Schema.Unknown),
   WantRunning: Schema.optional(Schema.Unknown),
@@ -465,45 +461,6 @@ export interface TailscaleServeRoute {
   /** The Tailscale Service it belongs to, or `foreground` for a `tailscale serve` still running. */
   readonly owner?: string;
 }
-
-/**
- * The `tailscale` arguments that turn `route` off; a foreground route has none, since it ends with
- * its command. A web route names its path: without one the CLI removes every handler on the port,
- * and answers its own confirmation prompt with yes when nobody is there to answer.
- */
-export const tailscaleServeOffArgs = (
-  route: TailscaleServeRoute,
-): ReadonlyArray<string> | undefined =>
-  route.owner === "foreground"
-    ? undefined
-    : [
-        "serve",
-        ...(route.owner === undefined ? [] : [`--service=${route.owner}`]),
-        ...(route.mount === undefined
-          ? [`--tcp=${route.servePort}`]
-          : [`--https=${route.servePort}`, `--set-path=${route.mount}`]),
-        "off",
-      ];
-
-/** Removes the web handler at `mount` on `servePort`, the root one `ensureTailscaleServe` adds by default. */
-export const disableTailscaleServe = Effect.fn("tailscale.disableTailscaleServe")(function* (
-  input: {
-    readonly servePort?: number;
-    readonly mount?: string;
-  } = {},
-): Effect.fn.Return<void, TailscaleCommandError, ChildProcessSpawner.ChildProcessSpawner> {
-  return yield* runTailscaleCommand(
-    tailscaleServeOffArgs({
-      servePort: input.servePort ?? DEFAULT_TAILSCALE_SERVE_PORT,
-      mount: input.mount ?? "/",
-    })!,
-    TAILSCALE_SERVE_TIMEOUT,
-  );
-});
-
-/** Removes a TCP forward on `servePort`; one port holds one forward, so nothing else goes. */
-export const disableTailscaleServeTcp = (servePort: number) =>
-  runTailscaleCommand(tailscaleServeOffArgs({ servePort })!, TAILSCALE_SERVE_TIMEOUT);
 
 const TailscaleServeConfigJson = Schema.Struct({
   TCP: Schema.optional(
@@ -642,20 +599,6 @@ export const parseTailscaleServeRoutesTo = (
   ];
 };
 
-/** The Serve routes that forward to the server bound at `target` on this machine. */
-export const readTailscaleServeRoutesTo = (target: {
-  readonly host: string;
-  readonly port: number;
-}) =>
-  readTailscaleOutput("serve", ["serve", "status", "--json"]).pipe(
-    Effect.flatMap((status) => {
-      const routes = parseTailscaleServeRoutesTo(status, target);
-      return routes === undefined
-        ? Effect.fail(new TailscaleStatusParseError({ cause: "unreadable serve status" }))
-        : Effect.succeed(routes);
-    }),
-  );
-
 /** A handler at the root of a Serve port: this server's, or another with the loopback port it dials. */
 export type TailscaleServeRootHolder =
   | { readonly ours: true }
@@ -696,19 +639,6 @@ export const parseTailscaleServeRootHolders = (
   );
   return [...tcp, ...web];
 };
-
-export const readTailscaleServeRootHolders = (
-  servePort: number,
-  target: { readonly host: string; readonly port: number },
-) =>
-  readTailscaleOutput("serve", ["serve", "status", "--json"]).pipe(
-    Effect.flatMap((status) => {
-      const holders = parseTailscaleServeRootHolders(status, servePort, target);
-      return holders === undefined
-        ? Effect.fail(new TailscaleStatusParseError({ cause: "unreadable serve status" }))
-        : Effect.succeed(holders);
-    }),
-  );
 
 export const probeTailscaleHttpsEndpoint = Effect.fn("tailscale.probeTailscaleHttpsEndpoint")(
   function* (input: { readonly baseUrl: string; readonly timeout?: Duration.Input }) {

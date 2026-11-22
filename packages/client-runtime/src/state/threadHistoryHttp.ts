@@ -1,6 +1,5 @@
 import type { ThreadId } from "@loom/contracts";
 import * as Effect from "effect/Effect";
-import * as Option from "effect/Option";
 
 import type { PreparedConnection } from "../connection/model.ts";
 import {

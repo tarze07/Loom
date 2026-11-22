@@ -1,8 +1,4 @@
-import {
-  PrimaryConnectionTarget,
-  RelayConnectionTarget,
-  SshConnectionTarget,
-} from "@loom/client-runtime/connection";
+import { PrimaryConnectionTarget, SshConnectionTarget } from "@loom/client-runtime/connection";
 import { buildRemoteOpenUrl, EnvironmentId } from "@loom/contracts";
 import { describe, expect, it } from "vite-plus/test";
 
@@ -149,7 +145,11 @@ describe("resolveRemoteOpenState", () => {
 
   it("uses the advertised login username in editor links over a relay", () => {
     const state = resolveRemoteOpenState({
-      target: new SshConnectionTarget({ environmentId, label: "server", connectionId: "ssh:server" }),
+      target: new SshConnectionTarget({
+        environmentId,
+        label: "server",
+        connectionId: "ssh:server",
+      }),
       sshTarget: null,
       isDesktopRenderer: false,
       remoteOpenTargets: [

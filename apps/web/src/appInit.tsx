@@ -1,8 +1,4 @@
-import {
-  scopedThreadKey,
-  scopeProjectRef,
-  scopeThreadRef,
-} from "@loom/client-runtime/environment";
+import { scopedThreadKey, scopeProjectRef, scopeThreadRef } from "@loom/client-runtime/environment";
 import type { ScopedThreadRef } from "@loom/contracts";
 import type { ClientSettings } from "@loom/contracts/settings";
 import { createBrowserHistory, createHashHistory } from "@tanstack/react-router";
@@ -138,12 +134,8 @@ function readOpenThreadRef(router: AppRouter): ScopedThreadRef | null {
  * Screen readers read it on Alt+Tab, so it can lead with the thread and what it's doing.
  */
 function startDocumentTitle(router: AppRouter): void {
-  const readOnGuestPage = () => router.state.matches.some((match) => match.routeId === "/guest");
   let openThreadRef = readOpenThreadRef(router);
-  let onGuestPage = readOnGuestPage();
   const write = () => {
-    // GuestPage titles the tab after the shared thread.
-    if (onGuestPage) return;
     const thread =
       openThreadRef === null
         ? null
@@ -191,15 +183,10 @@ function startDocumentTitle(router: AppRouter): void {
   // The draft store changes on every keystroke; only a new open thread matters here.
   const updateOpenThread = () => {
     const next = readOpenThreadRef(router);
-    const nextOnGuestPage = readOnGuestPage();
-    if (
-      nextOnGuestPage === onGuestPage &&
-      (next && scopedThreadKey(next)) === (openThreadRef && scopedThreadKey(openThreadRef))
-    ) {
+    if ((next && scopedThreadKey(next)) === (openThreadRef && scopedThreadKey(openThreadRef))) {
       return;
     }
     openThreadRef = next;
-    onGuestPage = nextOnGuestPage;
     watchOpenThread();
     write();
   };

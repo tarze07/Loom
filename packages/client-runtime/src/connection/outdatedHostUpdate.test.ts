@@ -1,11 +1,7 @@
-import {
-  EnvironmentId,
-  ExecutionEnvironmentDescriptor,
-} from "@loom/contracts";
+import { EnvironmentId, ExecutionEnvironmentDescriptor } from "@loom/contracts";
 import { describe, expect, it } from "@effect/vitest";
 import * as Effect from "effect/Effect";
 import * as Option from "effect/Option";
-import * as Schema from "effect/Schema";
 import * as SubscriptionRef from "effect/SubscriptionRef";
 
 import type { ConnectionCatalogEntry } from "./catalog.ts";

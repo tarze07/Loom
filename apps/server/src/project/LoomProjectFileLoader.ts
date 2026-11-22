@@ -31,7 +31,7 @@ export class LoomProjectFileLoader extends Context.Service<
     /** Never fails; missing/unreadable/invalid files return none, with warnings for invalid files. */
     readonly load: (workspaceRoot: string) => Effect.Effect<Option.Option<LoomProjectFile>>;
   }
->()("t3/project/LoomProjectFileLoader") {}
+>()("loom/project/LoomProjectFileLoader") {}
 
 const logLoomProjectFileLoadError = (error: LoomProjectFileLoadError) =>
   Effect.logWarning(error).pipe(
