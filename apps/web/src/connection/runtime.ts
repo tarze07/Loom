@@ -8,7 +8,7 @@ import { PullRequestDiffLoader } from "@loom/client-runtime/state/pull-requests"
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import { Atom } from "effect/reactivity";
-
+import * as SecureRandom from "effect/crypto/SecureRandom";
 
 import * as Runtime from "../lib/runtime";
 import * as BackgroundActivityReporter from "../lib/backgroundActivityReporter";
@@ -27,6 +27,7 @@ type ConnectionLayerSource =
   | typeof Connection.layer
   | typeof layerSnapshotLoader
   | typeof Runtime.layer
+  | typeof SecureRandom.layerWebCrypto
   | typeof ConnectionPlatform.layer
   | typeof BackgroundActivityReporter.layerObserver
   | typeof BackgroundActivityReporter.layer;
@@ -42,6 +43,7 @@ const layerProvidedClientConnection = layerSnapshotLoader.pipe(
   Layer.provideMerge(
     Layer.mergeAll(
       Runtime.layer,
+      SecureRandom.layerWebCrypto,
       layerProvidedConnectionPlatform,
       BackgroundActivityReporter.layerObserver,
     ),
