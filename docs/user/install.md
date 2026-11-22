@@ -30,7 +30,7 @@ one alone and stops. Set `LOOM_CHANNEL=nightly` to install the nightly train, or
 
 | Task                                  | Command                                                                 |
 | ------------------------------------- | ----------------------------------------------------------------------- |
-| Start the server and open the web app | `loom`                                                                    |
+| Start the server and open the web app | `loom`                                                                  |
 | Start the server without a browser    | `t3 serve`                                                              |
 | Use it from your other devices        | `t3 up` ([details](./remote-access.md))                                 |
 | Keep it running in the background     | `t3 service install` ([details](./background-service.md))               |
@@ -73,12 +73,12 @@ update it with `git pull` and a rebuild.
 Download a release from [GitHub Releases](https://github.com/tarze07/Loom/releases),
 or use a package manager:
 
-| Platform           | Install                                                      |
-| ------------------ | ------------------------------------------------------------ |
-| Windows            | `winget install Loom.Loom`                              |
+| Platform           | Install                                                    |
+| ------------------ | ---------------------------------------------------------- |
+| Windows            | `winget install Loom.Loom`                                 |
 | Windows (Scoop)    | `scoop install extras/loom`                                |
-| macOS              | `brew install --cask loom`                                |
-| Debian, Ubuntu     | `sudo apt install ./Loom-Code-*.deb`                           |
+| macOS              | `brew install --cask loom`                                 |
+| Debian, Ubuntu     | `sudo apt install ./Loom-Code-*.deb`                       |
 | Arch Linux         | `yay -S loom-bin`                                          |
 | Arch Linux nightly | `yay -S loom-nightly-bin`                                  |
 | Nix                | `nix profile add github:NixOS/nixpkgs/nixos-unstable#loom` |
@@ -169,7 +169,7 @@ Install Loom from the
 [App Store](https://apps.apple.com/us/app/loom-remote-claude-more/id6787819824) or
 [Google Play](https://play.google.com/store/apps/details?id=com.loom.app).
 The phone connects to a server on another machine. Follow
-[remote access](./remote-access.md) to link it through Loom Connect or a pairing URL.
+[remote access](./remote-access.md) to link it with a pairing URL.
 
 Store links and QR codes are also available in **Settings → About → Mobile app**
 on web and desktop. The store apps work with both stable and Nightly servers. Test builds are optional:
@@ -199,7 +199,7 @@ computer.
 | Grok Build  | Install [Grok Build CLI](https://x.ai/cli), then run `grok login`.                                                                                        |
 | Kiro        | Install [Kiro CLI](https://kiro.dev/docs/cli/), then run `kiro-cli login`.                                                                                |
 | OpenCode    | Install [OpenCode](https://opencode.ai), then run `opencode auth login`.                                                                                  |
-| Antigravity | Install and sign in with Google from Loom's provider settings.                                                                                         |
+| Antigravity | Install and sign in with Google from Loom's provider settings.                                                                                            |
 | Pi          | Install [Pi](./providers-pi.md#set-up-pi) with Node.js 22.19 or newer, then run `pi` and `/login`.                                                        |
 | Muse Code   | Install [Muse Code](https://dev.meta.ai/docs/muse-code) on the server, run `muse login`, then enable it in Settings → Providers.                          |
 | fx          | Install [fx](https://fx.sh) with `curl -fsSL https://fx.sh/setup.sh \| bash`, then run `fx login`.                                                        |

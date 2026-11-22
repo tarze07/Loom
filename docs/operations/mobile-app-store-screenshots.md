@@ -9,9 +9,8 @@ history. The app pairs with every server through its normal connection flow and 
 opens the production Home, Thread, ThreadTerminal, ThreadReview, and SettingsEnvironments routes.
 
 No screenshot-specific screen recreates application UI. `EXPO_PUBLIC_SHOWCASE=1` only enables the
-non-rendering pairing/readiness coordinator, disables terminal autofocus so captures do not contain
-the software keyboard, and supplies deterministic Loom Connect discovery rows to the real
-Environments screen. The local environment cards always come from real paired servers.
+non-rendering pairing/readiness coordinator and disables terminal autofocus so captures do not
+contain the software keyboard. The environment cards always come from real paired servers.
 
 ## Capture the default matrix
 
@@ -63,8 +62,8 @@ multiplies the run by six; only the native build is shared.
 
 The default matrix is:
 
-| Output folder                           | Capture target                 | Upload dimensions | Store slot                                |
-| --------------------------------------- | ------------------------------ | ----------------- | ----------------------------------------- |
+| Output folder                        | Capture target                 | Upload dimensions | Store slot                                |
+| ------------------------------------ | ------------------------------ | ----------------- | ----------------------------------------- |
 | `apple/iphone-6.9/dark/loom/`        | disposable iPhone 17 Pro Max   | 1320×2868         | App Store Connect iPhone 6.9-inch         |
 | `apple/iphone-6.5/dark/loom/`        | disposable iPhone 14 Plus      | 1284×2778         | App Store Connect iPhone 6.5-inch         |
 | `apple/iphone-duo-closed/dark/loom/` | iPhone Duo, folded portrait    | 1398×2034         | App Store Connect iPhone Duo              |

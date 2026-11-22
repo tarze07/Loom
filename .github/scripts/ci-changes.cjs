@@ -27,8 +27,6 @@ const EXTRA_OWNERS = [
   [/^native\/browser-secret\//, ["@loom/desktop"]],
   [/^native\/kde-snap-shot\//, ["@loom/desktop"]],
   [/^native\/libghostty-vt\//, ["@loom/web"]],
-  // apps/server/src/cloud/ConnectReachability.test.ts checks the guide's headings.
-  [/^docs\/user\/loom-connect-troubleshooting\.md$/, ["t3"]],
 ];
 const RUST = /^native\/(resource-monitor|kde-snap-shot|hyprland-snap-shot)\//;
 

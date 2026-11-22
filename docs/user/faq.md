@@ -25,11 +25,7 @@ Yes.
 
 ## How much does Loom cost?
 
-Nothing. There's no way to pay us to use Loom. You bring your own sub. It is free and open source (MIT). You still pay your provider like you already do. Loom Connect is free too, for now. Every account can connect up to 3 machines running Loom. Phones and browsers that connect to them do not count. Need more? Link a paid Loom Chat account. [More machines](#can-i-connect-more-than-3-machines-with-loom-connect) We don't want to charge for this, but if the bill gets unacceptable we may have to change course. If you hit limits or have issues, you can always fork it, self host, or use Tailscale. [Install](./install.md)
-
-## Can I connect more than 3 machines with Loom Connect?
-
-Yes. Link your Loom Chat account and Loom Connect raises your limit: up to 10 machines with Loom Chat Pro, or 100 with Premier. Open your account menu in Loom, go to **Loom Chat**, and select **Link Loom Chat**. Sign in to Loom Chat and approve. The free Loom Chat plan keeps the normal limit of 3. [More machines with Loom Chat](./remote-access.md#more-machines-with-loom-chat)
+Nothing. There's no way to pay us to use Loom. You bring your own sub. It is free and open source (MIT). You still pay your provider like you already do.
 
 ## Why is my Claude 5-hour limit draining so fast?
 
@@ -37,15 +33,11 @@ Loom drives Claude through Anthropic's Agent SDK. I confirmed it's a real bug on
 
 ## How do I use Loom remotely?
 
-Your agents run wherever Loom runs: your desktop, a server, a VPS. You connect to it from anywhere. I do this constantly. Less than 5% of my prompts run on my laptop. Run `t3 up` on that machine and you get really good remote support. Loom Connect is the easy path. LAN pairing and Tailscale work too, and [app.loom.local](https://app.loom.local) is the web client. [Remote access](./remote-access.md)
+Your agents run wherever Loom runs: your desktop, a server, a VPS. You connect to it from anywhere. I do this constantly. Less than 5% of my prompts run on my laptop. Run `t3 up` on that machine and you get really good remote support. LAN pairing and Tailscale both work, and [app.loom.local](https://app.loom.local) is the web client. [Remote access](./remote-access.md)
 
 ## How do I use Loom on my phone?
 
-Get the [iOS](https://apps.apple.com/us/app/loom-remote-claude-more/id6787819824) or [Android](https://play.google.com/store/apps/details?id=com.loom.app) app, then connect it to your computer with Loom Connect or a pairing link. The phone is a remote. Your computer does the work and needs to stay on. [Mobile setup](./install.md#mobile-app) · [Remote access](./remote-access.md)
-
-## Why does Loom Connect keep disconnecting?
-
-Loom Connect is our built-in alternative to Tailscale for remote connections. If it keeps dropping, open **Settings > Environments**, find the machine, and select **Details**. The first part marked as failed is the cause. I will not be disappointed if you set up Tailscale as a fallback (I do this personally). [Loom Connect troubleshooting](./loom-connect-troubleshooting.md)
+Get the [iOS](https://apps.apple.com/us/app/loom-remote-claude-more/id6787819824) or [Android](https://play.google.com/store/apps/details?id=com.loom.app) app, then connect it to your computer with a pairing link. The phone is a remote. Your computer does the work and needs to stay on. [Mobile setup](./install.md#mobile-app) · [Remote access](./remote-access.md)
 
 ## Will I get banned for using my subscription?
 
@@ -69,7 +61,7 @@ No. Loom is a serious developer tool. Locally runnable models are not capable of
 
 ## Does my code go to Loom servers?
 
-No. Your code and prompts go from your machine to your provider (Anthropic, OpenAI, etc.), not to us. With Loom Connect, traffic rides a Cloudflare tunnel (`cloudflared` on your machine). Our relay sets up the link. It does not proxy your HTTP or WebSocket sessions. Loom sends no product usage data, crash reports, or connection traces to Loom's servers. [Diagnostics export](./telemetry.md) describes the optional, self-hosted trace export.
+No. Your code and prompts go from your machine to your provider (Anthropic, OpenAI, etc.), not to us. Loom sends no product usage data, crash reports, or connection traces to Loom's servers. [Diagnostics export](./telemetry.md) describes the optional, self-hosted trace export.
 
 ## Worktrees are eating my disk. How do I clean them up?
 

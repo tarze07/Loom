@@ -45,11 +45,11 @@ Every user on the machine can read the policy, so do not put credentials in it.
 
 Use one of these per machine:
 
-| OS      | Native policy                                                                                        | Policy file                                       |
-| ------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| macOS   | Configuration profile for `com.loom.app`                                                       | `/Library/Application Support/Loom/policy.json` |
+| OS      | Native policy                                                                                   | Policy file                                     |
+| ------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| macOS   | Configuration profile for `com.loom.app`                                                        | `/Library/Application Support/Loom/policy.json` |
 | Windows | Group Policy template, or a `Policy` JSON value (both under `HKLM\SOFTWARE\Policies\Loom\Loom`) | `C:\Program Files\Loom\policy.json`             |
-| Linux   |                                                                                                      | `/etc/loom/policy.json`                         |
+| Linux   |                                                                                                 | `/etc/loom/policy.json`                         |
 
 Loom does not merge sources. If a machine has both a native policy and a policy file, Loom
 refuses to start until you remove one.
@@ -208,7 +208,7 @@ Loom can place under the limit. Users still choose which ACP Registry agent runs
 The limit decides which modes Loom asks the provider for. It is not a sandbox; see
 [What a policy does not cover](#what-a-policy-does-not-cover).
 
-### Clients and Loom Connect
+### Clients
 
 `clients` lists how the server may run:
 
