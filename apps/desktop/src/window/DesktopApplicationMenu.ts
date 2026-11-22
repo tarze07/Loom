@@ -31,7 +31,7 @@ export class DesktopApplicationMenu extends Context.Service<
 
 type DesktopApplicationMenuRuntimeServices = DesktopWindow.DesktopWindow;
 
-const { logMenuError } = makeComponentLogger("desktop-menu");
+const { logError: logMenuError } = makeComponentLogger("desktop-menu");
 
 const dispatchMenuAction = Effect.fn("desktop.menu.dispatchMenuAction")(function* (
   action: string,

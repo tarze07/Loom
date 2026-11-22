@@ -5,8 +5,10 @@ import {
   BoundedThreadSnapshotLoader,
   ThreadHistoryController,
 } from "@loom/client-runtime/state/threads";
+import * as SecureRandom from "effect/crypto/SecureRandom";
 import * as Layer from "effect/Layer";
 import { Atom } from "effect/reactivity";
+import * as Crypto from "expo-crypto";
 
 import type { FoundationHotModule } from "../lib/foundation-fast-refresh";
 import { hotSwappableAtomRuntime } from "../lib/hot-swappable-atom-runtime";
@@ -19,6 +21,12 @@ declare const module: { readonly hot?: FoundationHotModule } | undefined;
 
 const layerProvidedConnectionPlatform = ConnectionPlatform.layer.pipe(Layer.provide(Runtime.layer));
 
+// Hermes has no global WebCrypto, so draw secure bytes from expo-crypto.
+const layerSecureRandom = Layer.succeed(
+  SecureRandom.SecureRandom,
+  SecureRandom.make((size) => Crypto.getRandomValues(new Uint8Array(size))),
+);
+
 const layerSnapshotLoader = Layer.mergeAll(
   PullRequestDiffLoader.layer,
   BoundedThreadSnapshotLoader.layer,
@@ -30,6 +38,7 @@ type ConnectionLayerSource =
   | typeof Connection.layer
   | typeof layerSnapshotLoader
   | typeof Runtime.layer
+  | typeof layerSecureRandom
   | typeof ConnectionPlatform.layer
   | typeof BackgroundActivity.layerObserver
   | typeof BackgroundActivity.layerReporter;
@@ -47,6 +56,7 @@ const layerProvidedClientConnection = layerSnapshotLoader.pipe(
   Layer.provideMerge(
     Layer.mergeAll(
       Runtime.layer,
+      layerSecureRandom,
       layerProvidedConnectionPlatform,
       BackgroundActivity.layerObserver,
     ),
