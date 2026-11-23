@@ -6,7 +6,12 @@ import * as NodeNet from "node:net";
 import * as NodeOS from "node:os";
 
 import * as HostProcess from "@loom/shared/HostProcess";
-import { formatHostForUrl, isWildcardHost } from "@loom/shared/hostClassification";
+import {
+  formatHostForUrl,
+  isSharedAddressSpaceHost,
+  isTailnetHost,
+  isWildcardHost,
+} from "@loom/shared/hostClassification";
 
 import * as ServerConfig from "../config.ts";
 import { isLoopbackHost, isPrivateNetworkAddress, VIRTUAL_INTERFACE } from "../startupAccess.ts";
@@ -31,19 +36,14 @@ const WINDOWS_HOST_ADAPTER_MAC = /^(0a:00:27|00:50:56:c0:00):/i;
 // Other VPNs (Cloudflare WARP, some corporate clients) also use 100.64.0.0/10, so the
 // interface decides: Tailscale names it tailscale* or gives it an address in its fd7a:115c:a1e0::/48.
 const TAILSCALE_INTERFACE_NAME = /^tailscale/i;
-const TAILSCALE_ULA = /^fd7a:115c:a1e0:/i;
-const isCgnatAddress = (address: string): boolean => {
-  const [first, second] = address.split(".").map(Number);
-  return first === 100 && second !== undefined && second >= 64 && second <= 127;
-};
 
 function tailnetAddresses(interfaces: NetworkInterfacesMap): ReadonlySet<string> {
   return new Set(
     Object.entries(interfaces).flatMap(([name, entries = []]) =>
       TAILSCALE_INTERFACE_NAME.test(name) ||
-      entries.some((entry) => TAILSCALE_ULA.test(entry.address))
+      entries.some((entry) => entry.family === "IPv6" && isTailnetHost(entry.address))
         ? entries
-            .filter((entry) => entry.family === "IPv4" && isCgnatAddress(entry.address))
+            .filter((entry) => entry.family === "IPv4" && isSharedAddressSpaceHost(entry.address))
             .map((entry) => entry.address)
         : [],
     ),

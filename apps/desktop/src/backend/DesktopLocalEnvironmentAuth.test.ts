@@ -31,8 +31,6 @@ const config = {
     loomHome: "/tmp/t3",
     host: "127.0.0.1",
     desktopBootstrapToken: "desktop-bootstrap-token",
-    tailscaleServeEnabled: false,
-    tailscaleServePort: 443,
   },
   httpBaseUrl: new URL("http://127.0.0.1:3773"),
   captureOutput: true,

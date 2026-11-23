@@ -25,8 +25,6 @@ export interface DesktopSettings {
   readonly mainWindowBounds: DesktopWindowBounds | null;
   readonly mainWindowMaximized: boolean;
   readonly serverExposureMode: DesktopServerExposureMode;
-  readonly tailscaleServeEnabled: boolean;
-  readonly tailscaleServePort: number;
   readonly wslBackendEnabled: boolean;
   readonly wslDistro: string | null;
   // Requires restart because the pool chooses its primary spec at layer initialization.
@@ -38,7 +36,6 @@ export interface DesktopSettingsChange {
   readonly changed: boolean;
 }
 
-const DEFAULT_TAILSCALE_SERVE_PORT = 443;
 // Fits half and third tiles of common scaled displays (down to 480x432 DIP) on
 // Wayland, where Electron's client-side frame adds 32x42 DIP to the enforced
 // minimum. The web layout already handles phone widths.
@@ -64,8 +61,6 @@ export const DEFAULT_DESKTOP_SETTINGS: DesktopSettings = {
   mainWindowBounds: null,
   mainWindowMaximized: false,
   serverExposureMode: "local-only",
-  tailscaleServeEnabled: false,
-  tailscaleServePort: DEFAULT_TAILSCALE_SERVE_PORT,
   wslBackendEnabled: false,
   wslDistro: null,
   wslOnly: false,
@@ -84,8 +79,6 @@ const DesktopSettingsDocument = Schema.Struct({
   mainWindowBounds: Schema.optionalKey(Schema.NullOr(DesktopWindowBoundsDocument)),
   mainWindowMaximized: Schema.optionalKey(Schema.Boolean),
   serverExposureMode: Schema.optionalKey(DesktopServerExposureModeSchema),
-  tailscaleServeEnabled: Schema.optionalKey(Schema.Boolean),
-  tailscaleServePort: Schema.optionalKey(Schema.Number),
   wslBackendEnabled: Schema.optionalKey(Schema.Boolean),
   wslMode: Schema.optionalKey(Schema.Literals(["local", "wsl"])),
   wslDistro: Schema.optionalKey(Schema.NullOr(Schema.String)),
@@ -144,10 +137,6 @@ export class DesktopAppSettings extends Context.Service<
     readonly setServerExposureMode: (
       mode: DesktopServerExposureMode,
     ) => Effect.Effect<DesktopSettingsChange, DesktopSettingsWriteError>;
-    readonly setTailscaleServe: (input: {
-      readonly enabled: boolean;
-      readonly port: Option.Option<number>;
-    }) => Effect.Effect<DesktopSettingsChange, DesktopSettingsWriteError>;
     readonly setWslBackendEnabled: (
       enabled: boolean,
     ) => Effect.Effect<DesktopSettingsChange, DesktopSettingsWriteError>;
@@ -164,12 +153,6 @@ export class DesktopAppSettings extends Context.Service<
     readonly applyWslWindowsFallbackInMemory: Effect.Effect<DesktopSettingsChange>;
   }
 >()("@loom/desktop/settings/DesktopAppSettings") {}
-
-function normalizeTailscaleServePort(value: unknown): number {
-  return typeof value === "number" && Number.isInteger(value) && value >= 1 && value <= 65_535
-    ? value
-    : DEFAULT_TAILSCALE_SERVE_PORT;
-}
 
 function normalizeWslDistro(value: unknown): string | null {
   return typeof value === "string" && isValidDistroName(value) ? value : null;
@@ -193,8 +176,6 @@ function normalizeDesktopSettingsDocument(parsed: DesktopSettingsDocument): Desk
     mainWindowMaximized: mainWindowBounds !== null && parsed.mainWindowMaximized === true,
     serverExposureMode:
       parsed.serverExposureMode === "network-accessible" ? "network-accessible" : "local-only",
-    tailscaleServeEnabled: parsed.tailscaleServeEnabled === true,
-    tailscaleServePort: normalizeTailscaleServePort(parsed.tailscaleServePort),
     wslBackendEnabled,
     wslDistro: normalizeWslDistro(parsed.wslDistro),
     wslOnly: parsed.wslOnly === true,
@@ -222,12 +203,6 @@ function toDesktopSettingsDocument(
   }
   if (settings.serverExposureMode !== defaults.serverExposureMode) {
     document.serverExposureMode = settings.serverExposureMode;
-  }
-  if (settings.tailscaleServeEnabled !== defaults.tailscaleServeEnabled) {
-    document.tailscaleServeEnabled = settings.tailscaleServeEnabled;
-  }
-  if (settings.tailscaleServePort !== defaults.tailscaleServePort) {
-    document.tailscaleServePort = settings.tailscaleServePort;
   }
   if (settings.wslBackendEnabled !== defaults.wslBackendEnabled) {
     document.wslBackendEnabled = settings.wslBackendEnabled;
@@ -267,23 +242,6 @@ function setMainWindowBounds(
         ...settings,
         mainWindowBounds: bounds,
         mainWindowMaximized: isMaximized,
-      };
-}
-
-function setTailscaleServe(
-  settings: DesktopSettings,
-  input: { readonly enabled: boolean; readonly port: Option.Option<number> },
-): DesktopSettings {
-  const port = Option.match(input.port, {
-    onNone: () => settings.tailscaleServePort,
-    onSome: normalizeTailscaleServePort,
-  });
-  return settings.tailscaleServeEnabled === input.enabled && settings.tailscaleServePort === port
-    ? settings
-    : {
-        ...settings,
-        tailscaleServeEnabled: input.enabled,
-        tailscaleServePort: port,
       };
 }
 
@@ -475,11 +433,6 @@ export const make = Effect.gen(function* () {
 
       return yield* persist((settings) => setServerExposureMode(settings, mode));
     }),
-    setTailscaleServe: Effect.fn("desktop.settings.setTailscaleServe")(function* (input) {
-      yield* Effect.annotateCurrentSpan(input);
-
-      return yield* persist((settings) => setTailscaleServe(settings, input));
-    }),
     setWslBackendEnabled: Effect.fn("desktop.settings.setWslBackendEnabled")(function* (enabled) {
       yield* Effect.annotateCurrentSpan({ enabled });
 
@@ -543,9 +496,6 @@ export const layerTest = (initialSettings: DesktopSettings = DEFAULT_DESKTOP_SET
             return update((settings) => setServerExposureMode(settings, mode));
           },
         ),
-        setTailscaleServe: Effect.fn("DesktopAppSettings.setTailscaleServe")(function (input) {
-          return update((settings) => setTailscaleServe(settings, input));
-        }),
         setWslBackendEnabled: Effect.fn("DesktopAppSettings.setWslBackendEnabled")(
           function (enabled) {
             return update((settings) => setWslBackendEnabled(settings, enabled));

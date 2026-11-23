@@ -62,8 +62,6 @@ const makeDesktopBootstrap = (
   loomHome: "/tmp/loom-bootstrap-home",
   host: "127.0.0.1",
   desktopBootstrapToken: "desktop-bootstrap-token",
-  tailscaleServeEnabled: false,
-  tailscaleServePort: 443,
   ...overrides,
 });
 
