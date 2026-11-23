@@ -23,10 +23,10 @@ describe("sourceControlClients.parseChangeRequestUrl", () => {
 
   it("reads a GitCafe pull request at its canonical /pull/ path and the older /pulls/ path", () => {
     for (const path of ["pull", "pulls"]) {
-      const url = `https://git.cafe/tarze07/Loom/${path}/23897`;
+      const url = `https://git.cafe/tarze07/loom/${path}/23897`;
       expect(parse(url), path).toEqual({
         host: "git.cafe",
-        repository: "tarze07/Loom",
+        repository: "tarze07/loom",
         number: 23897,
       });
       expect(kindOf(url), path).toBe("gitcafe");
@@ -167,9 +167,9 @@ describe("sourceControlClients.parseChangeRequestUrl", () => {
   it("claims nothing it cannot be sure of", () => {
     for (const link of [
       "https://github.com/loom/loom/issues/123",
-      "https://git.cafe/tarze07/Loom/issues/23897",
-      "https://git.cafe/tarze07/Loom/pull/abc",
-      "https://git.cafe/tarze07/Loom",
+      "https://git.cafe/tarze07/loom/issues/23897",
+      "https://git.cafe/tarze07/loom/pull/abc",
+      "https://git.cafe/tarze07/loom",
       "https://github.com/loom/loom/commit/0a1b2c3",
       "https://github.com/loom/loom",
       "https://github.com/loom/loom/pull/abc",
@@ -190,13 +190,13 @@ describe("sourceControlClients.parseChangeRequestUrl", () => {
 });
 
 describe("sourceControlClients.isSameChangeRequest", () => {
-  const linked = "https://github.com/tarze07/Loom/pull/42";
+  const linked = "https://github.com/tarze07/loom/pull/42";
 
   it("matches the same pull request whatever its case or trailing path", () => {
     expect(
       sourceControlClients.isSameChangeRequest(
         linked,
-        "https://github.com/tarze07/Loom/pull/42/files",
+        "https://github.com/tarze07/loom/pull/42/files",
       ),
     ).toBe(true);
   });
@@ -274,7 +274,7 @@ describe("sourceControlClients.recognizeRemote", () => {
     expect(kindOfRemote("https://gitlab.github.example/o/r")).toBe("github");
     expect(kindOfRemote("https://bitbucket.gitlab.example/o/r")).toBe("gitlab");
     expect(kindOfRemote("https://bitbucket.visualstudio.com/p/_git/r")).toBe("azure-devops");
-    expect(kindOfRemote("git@git.cafe:tarze07/Loom.git")).toBe("gitcafe");
+    expect(kindOfRemote("git@git.cafe:tarze07/loom.git")).toBe("gitcafe");
     expect(kindOfRemote("https://origin.cursor.com/acme/web.git")).toBe("cursor-origin");
   });
 

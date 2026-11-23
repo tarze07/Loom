@@ -945,9 +945,9 @@ describe("environment shell synchronization", () => {
     Effect.gen(function* () {
       const link = (number: number): ThreadPullRequestLink => ({
         host: "github.com",
-        repository: "tarze07/Loom",
+        repository: "tarze07/loom",
         number,
-        url: `https://github.com/tarze07/Loom/pull/${number}`,
+        url: `https://github.com/tarze07/loom/pull/${number}`,
         source: "agent",
         linkedAt: "2026-06-20T00:00:00.000Z",
         snapshot: null,
@@ -1040,9 +1040,9 @@ describe("environment shell synchronization", () => {
     Effect.gen(function* () {
       const link = (number: number): ThreadPullRequestLink => ({
         host: "github.com",
-        repository: "tarze07/Loom",
+        repository: "tarze07/loom",
         number,
-        url: `https://github.com/tarze07/Loom/pull/${number}`,
+        url: `https://github.com/tarze07/loom/pull/${number}`,
         source: "agent",
         linkedAt: "2026-06-20T00:00:00.000Z",
         snapshot: null,

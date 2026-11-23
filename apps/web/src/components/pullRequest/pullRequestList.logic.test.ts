@@ -55,9 +55,9 @@ function entry(
     host: "github.com",
     projectId: "project-1",
     projectTitle: "loom",
-    repository: "tarze07/Loom",
+    repository: "tarze07/loom",
     title: "Add the pull requests page",
-    url: `https://github.com/tarze07/Loom/pull/${overrides.number}`,
+    url: `https://github.com/tarze07/loom/pull/${overrides.number}`,
     author: { login: "octocat", name: null, avatarUrl: null },
     headBranch: `feat/branch-${overrides.number}`,
     baseBranch: "main",
@@ -101,7 +101,7 @@ describe("visible pull request line-count targets", () => {
     );
     expect([...keys]).toEqual([secondKey]);
     expect(pullRequestStatsBatches(entriesByKey, keys)[0]?.input.refs).toEqual([
-      { projectId: "project-1", repository: "tarze07/Loom", number: 2 },
+      { projectId: "project-1", repository: "tarze07/loom", number: 2 },
     ]);
   });
 
@@ -667,7 +667,7 @@ describe("pull request list overrides", () => {
   const entry = (number: number, state: "open" | "closed" | "merged") =>
     ({
       host: "github.com",
-      repository: "tarze07/Loom",
+      repository: "tarze07/loom",
       number,
       state,
       isDraft: false,

@@ -14,7 +14,7 @@ const labels = new Map([
 function project(
   id: string,
   environmentId = nucbox,
-  canonicalKey: string | null = "github.com/tarze07/Loom",
+  canonicalKey: string | null = "github.com/tarze07/loom",
 ) {
   return {
     id: ProjectId.make(id),
@@ -76,7 +76,7 @@ describe("pull request project filter choices", () => {
   // regression: #9948 project filter deduplication must not merge across hosts
   it("keeps repositories on different hosts separate", () => {
     const choices = pullRequestFilterProjects(
-      [project("github"), project("enterprise", nucbox, "git.example.com/tarze07/Loom")],
+      [project("github"), project("enterprise", nucbox, "git.example.com/tarze07/loom")],
       labels,
     );
 

@@ -74,7 +74,7 @@ const encodeEffectRequest = Schema.encodeSync(Schema.fromJsonString(Orchestratio
 
 const pullRequest = (number: number) => ({
   host: "github.com",
-  repository: "tarze07/Loom",
+  repository: "tarze07/loom",
   number,
 });
 
@@ -107,7 +107,7 @@ const watch = (threadId: ThreadId, number: number) =>
       threadId,
       ...pullRequest(number),
       watching: true,
-      link: { url: `https://github.com/tarze07/Loom/pull/${number}`, source: "agent" },
+      link: { url: `https://github.com/tarze07/loom/pull/${number}`, source: "agent" },
     });
   });
 

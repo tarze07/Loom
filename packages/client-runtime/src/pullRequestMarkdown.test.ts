@@ -293,7 +293,7 @@ describe("change request media urls", () => {
     ["https://example.com/a.png", "https://example.com/a.png"],
     ["docs/a.png", "docs/a.png"],
   ])("resolves %s against the forge", (url, expected) => {
-    expect(resolveChangeRequestMediaUrl(url, "https://git.cafe/tarze07/Loom/pulls/31251")).toBe(
+    expect(resolveChangeRequestMediaUrl(url, "https://git.cafe/tarze07/loom/pulls/31251")).toBe(
       expected,
     );
   });

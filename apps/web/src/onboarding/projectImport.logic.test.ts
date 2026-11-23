@@ -74,12 +74,12 @@ describe("partitionOnboardingProjects", () => {
 describe("groupOnboardingProjects", () => {
   it("groups clones by origin, keeps local repos separate, and folds non-git folders away", () => {
     const main = candidate("/code/loom", {
-      git: github("tarze07/Loom"),
+      git: github("tarze07/loom"),
       threadCount: 79,
       lastActiveAt: "2026-08-21T12:00:00.000Z",
     });
     const clone = candidate("/code/clones/loom-2", {
-      git: github("tarze07/Loom"),
+      git: github("tarze07/loom"),
       threadCount: 13,
       lastActiveAt: "2026-08-10T12:00:00.000Z",
     });
@@ -109,7 +109,7 @@ describe("groupOnboardingProjects", () => {
         lastActiveAt: "2026-08-22T00:00:00.000Z",
       },
       {
-        label: "tarze07/Loom",
+        label: "tarze07/loom",
         paths: ["/code/loom", "/code/clones/loom-2"],
         threadCount: 92,
         lastActiveAt: "2026-08-21T12:00:00.000Z",

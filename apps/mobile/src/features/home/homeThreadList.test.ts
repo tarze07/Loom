@@ -119,11 +119,11 @@ describe("home project scopes", () => {
     const localEnvironmentId = EnvironmentId.make("environment-local");
     const remoteEnvironmentId = EnvironmentId.make("environment-remote");
     const repositoryIdentity = {
-      canonicalKey: "github.com/tarze07/Loom",
+      canonicalKey: "github.com/tarze07/loom",
       locator: {
         source: "git-remote" as const,
         remoteName: "origin",
-        remoteUrl: "git@github.com:tarze07/Loom.git",
+        remoteUrl: "git@github.com:tarze07/loom.git",
       },
     };
     const projects = [

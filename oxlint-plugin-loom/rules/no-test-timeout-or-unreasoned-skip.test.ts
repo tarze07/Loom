@@ -33,7 +33,7 @@ describe(RULE, () => {
       // quarantine: #1234 flakes on Windows until the pty fix lands
       it.skip("pending", () => {});
 
-      // https://github.com/tarze07/Loom/issues/42
+      // https://github.com/tarze07/loom/issues/42
       describe.only("focused", () => {});
     `,
   );

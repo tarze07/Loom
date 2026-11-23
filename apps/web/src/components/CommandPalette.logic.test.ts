@@ -262,7 +262,7 @@ describe("buildThreadActionItems", () => {
 
     expect(search("new thread in loom", false)[0]).toEqual(["Suggestions", ["New thread in loom"]]);
     expect(search("new thread", false).map(([label]) => label)).not.toContain("Suggestions");
-    expect(search("t3", true)).toEqual([["Projects", ["loom"]]]);
+    expect(search("loom", true)).toEqual([["Projects", ["loom"]]]);
     expect(search("add project", true)).toEqual([["Actions", ["Add project"]]]);
   });
 
@@ -795,7 +795,7 @@ describe("filterPinnedBrowseEntries", () => {
   });
 });
 
-it.each(["#10839", "10839", "tarze07/Loom#10839", "https://github.com/tarze07/Loom/pull/10839"])(
+it.each(["#10839", "10839", "tarze07/loom#10839", "https://github.com/tarze07/loom/pull/10839"])(
   "finds linked threads from PR query %s",
   (query) => {
     const items = buildThreadActionItems({
@@ -805,9 +805,9 @@ it.each(["#10839", "10839", "tarze07/Loom#10839", "https://github.com/tarze07/Lo
           pullRequests: [
             {
               host: "github.com",
-              repository: "tarze07/Loom",
+              repository: "tarze07/loom",
               number: 10839,
-              url: "https://github.com/tarze07/Loom/pull/10839",
+              url: "https://github.com/tarze07/loom/pull/10839",
               source: "manual",
               linkedAt: "2026-09-08T00:00:00Z",
               snapshot: null,

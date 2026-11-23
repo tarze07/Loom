@@ -37,7 +37,7 @@ describe("findPromptLinkProjects", () => {
     ];
     const ids = (owner: string, name: string) =>
       findPromptLinkProjects(projects, { owner, name }).map((project) => project.id);
-    expect(ids("pingdotgg", "loom")).toEqual(["recent", "older"]);
+    expect(ids("tarze07", "Loom")).toEqual(["recent", "older"]);
     expect(ids("me", "loom")).toEqual(["fork"]);
     expect(ids("gitlab", "x")).toEqual([]);
   });
@@ -49,7 +49,7 @@ describe("findPromptLinkProjects", () => {
       { id: "gitlab", repositoryIdentity: identity("gitlab.com/tarze07/Loom") },
     ];
     expect(
-      findPromptLinkProjects(projects, { owner: "pingdotgg", name: "loom" }).map(
+      findPromptLinkProjects(projects, { owner: "tarze07", name: "Loom" }).map(
         (project) => project.id,
       ),
     ).toEqual(["gitcafe", "staging"]);

@@ -11,7 +11,7 @@ import * as GitHubPullRequestEvents from "./gitHubPullRequestEvents.ts";
 import { GitHubApiNotFoundError, GitHubApiResponseError } from "./GitHubRequestPolicy.ts";
 import * as GitHubRest from "./GitHubRest.ts";
 
-const target = { host: "github.com", repository: "tarze07/Loom", number: 15 };
+const target = { host: "github.com", repository: "tarze07/loom", number: 15 };
 
 const sse = (...frames: ReadonlyArray<readonly [string, string]>) =>
   frames.map(([event, data]) => `event: ${event}\ndata: ${data}\n\n`).join("");
@@ -114,7 +114,7 @@ it.effect("follows a pull request across a refused app token, reconnects, and re
       "https://api.github.com/event-subscriptions/2/events Bearer app-token",
     ]);
     assert.deepEqual(posts[0], {
-      resource_url: "https://github.com/tarze07/Loom/pull/15",
+      resource_url: "https://github.com/tarze07/loom/pull/15",
       event_types: [
         "com.github.pull_request.review.submitted.v1",
         "com.github.pull_request.head.changed.v1",

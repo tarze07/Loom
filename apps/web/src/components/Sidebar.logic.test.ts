@@ -1542,7 +1542,7 @@ describe("resolveSidebarRouteReveal", () => {
 describe("sidebarFolderExpansionKeys", () => {
   it("honors a collapse the legacy sidebar saved under a member's cwd", () => {
     const keys = sidebarFolderExpansionKeys({
-      projectKey: "github.com/tarze07/Loom",
+      projectKey: "github.com/tarze07/loom",
       memberProjects: [{ physicalProjectKey: "local:/code/loom", workspaceRoot: "/code/loom" }],
     });
     const cwdKey = keys.at(-1)!;

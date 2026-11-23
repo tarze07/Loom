@@ -108,11 +108,11 @@ describe("cloneUrlForProtocol", () => {
   });
 
   it("switches between scp-style SSH and HTTPS", () => {
-    expect(cloneUrlForProtocol("git@github.com:tarze07/Loom.git", "https")).toBe(
-      "https://github.com/tarze07/Loom.git",
+    expect(cloneUrlForProtocol("git@github.com:tarze07/loom.git", "https")).toBe(
+      "https://github.com/tarze07/loom.git",
     );
-    expect(cloneUrlForProtocol("https://github.com/tarze07/Loom.git", "ssh")).toBe(
-      "git@github.com:tarze07/Loom.git",
+    expect(cloneUrlForProtocol("https://github.com/tarze07/loom.git", "ssh")).toBe(
+      "git@github.com:tarze07/loom.git",
     );
     expect(cloneUrlForProtocol("ssh://git@gitlab.com/group/sub/repo.git", "https")).toBe(
       "https://gitlab.com/group/sub/repo.git",

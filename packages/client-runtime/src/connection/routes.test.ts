@@ -19,6 +19,7 @@ import {
   isNearbyAddress,
   mergeLearnedRoutes,
   pendingRouteOrder,
+  routeHttpBaseUrl,
   routeKeepsItsHost,
   routesAfterRemoving,
   sendsTokenInClear,
@@ -142,12 +143,14 @@ describe("learned routes", () => {
   };
   const ids = (routes: ReadonlyArray<ConnectionRoute> | null) =>
     routes?.map((route) => connectionRouteId(route.target)) ?? null;
-  const profileOf = (route: ConnectionRoute) => Option.getOrThrow(route.profile);
 
   it("replaces a learned LAN address when the server reports a new one", () => {
     const entry = pairedEntry([
       LAN,
-      learned(`learned:${ENVIRONMENT_ID}:http://192.168.1.10:3773`, "http://192.168.1.10:3773/"),
+      learned(
+        `learned:${ENVIRONMENT_ID}:http://192.168.1.10:3773@lan`,
+        "http://192.168.1.10:3773/",
+      ),
     ]);
     const moved = mergeLearnedRoutes({
       entry,
@@ -155,13 +158,13 @@ describe("learned routes", () => {
       reported: [{ httpBaseUrl: "http://10.0.0.42:3773/" }],
       allowInsecure: true,
     });
-    expect(ids(moved)).toEqual([`learned:${ENVIRONMENT_ID}:http://10.0.0.42:3773`, "lan"]);
+    expect(ids(moved)).toEqual(["lan", `learned:${ENVIRONMENT_ID}:http://10.0.0.42:3773@lan`]);
   });
 
   it("keeps a learned route where the user moved it while the server reports it", () => {
-    const lan = { httpBaseUrl: "http://192.168.1.10:3773/" };
+    const lan = { httpBaseUrl: "http://192.168.1.20:3773/" };
     const learnedLan = learned(
-      `learned:${ENVIRONMENT_ID}:http://192.168.1.10:3773`,
+      `learned:${ENVIRONMENT_ID}:http://192.168.1.20:3773@lan`,
       lan.httpBaseUrl,
     );
     const reordered = entryWithRoutes(pairedEntry([LAN, learnedLan]), [learnedLan, LAN]);
@@ -180,9 +183,9 @@ describe("learned routes", () => {
       allowInsecure: true,
     });
     expect(ids(next)).toEqual([
-      `learned:${ENVIRONMENT_ID}:http://100.101.102.103:3773`,
-      `learned:${ENVIRONMENT_ID}:http://192.168.1.10:3773`,
+      `learned:${ENVIRONMENT_ID}:http://192.168.1.20:3773@lan`,
       "lan",
+      `learned:${ENVIRONMENT_ID}:http://100.101.102.103:3773@lan`,
     ]);
   });
 
@@ -272,8 +275,8 @@ describe("learned routes", () => {
       reported: [{ kind: "lan", httpBaseUrl: `${lanOrigin}/` }],
       allowInsecure: true,
     });
-    // The stale route is gone; the address is learned again with the paired token.
-    expect(ids(routes)).toEqual([`learned:${ENVIRONMENT_ID}:${lanOrigin}`, "public"]);
+    // The stale route is gone, and the HTTPS-paired token is not lent to plain HTTP again.
+    expect(ids(routes)).toEqual(["public"]);
   });
 
   it("keeps plain HTTP routes that don't borrow the active HTTPS-paired token", () => {
@@ -355,7 +358,9 @@ describe("learned routes", () => {
       reported: [{ httpBaseUrl: "https://desk.local:3773/" }],
       allowInsecure: true,
     });
-    expect(moved).not.toBeNull();
-    expect(profileOf(moved![0]!)).toMatchObject({ httpBaseUrl: "https://desk.local:3773/" });
+    expect(moved?.map(routeHttpBaseUrl)).toEqual([
+      "http://192.168.1.10:3773/",
+      "https://desk.local:3773/",
+    ]);
   });
 });

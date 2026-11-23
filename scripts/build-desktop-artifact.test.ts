@@ -1468,7 +1468,9 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
 
   it("parses Windows bsdtar member listings with CRLF line endings", () => {
     assert.deepStrictEqual(
-      parseWslRuntimeArchiveMembers("./loom-1.2.3-linux-x64/t3\r\nt3-1.2.3-linux-x64/client/\r\n"),
+      parseWslRuntimeArchiveMembers(
+        "./loom-1.2.3-linux-x64/t3\r\nloom-1.2.3-linux-x64/client/\r\n",
+      ),
       ["loom-1.2.3-linux-x64/t3", "loom-1.2.3-linux-x64/client"],
     );
   });

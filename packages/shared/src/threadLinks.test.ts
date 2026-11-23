@@ -209,7 +209,7 @@ describe("hosted thread links", () => {
     expect(link).toBe("https://app.loom.local/threads/env%2E1/thread%3Adelegated%2Fmcp%253A1%2E");
     expect(parseThreadLinkHref(link)).toEqual(thread);
     expect(hostedThreadLink(thread, "https://preview.loom.local/")).toMatch(
-      /^https:\/\/preview\.loom\.codes\/threads\//,
+      /^https:\/\/preview\.loom\.local\/threads\//,
     );
   });
 

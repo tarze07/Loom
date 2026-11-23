@@ -412,7 +412,7 @@ describe("pullRequestProjectChoices", () => {
     environmentId,
     title: "loom",
     workspaceRoot: `/work/${id}`,
-    repositoryIdentity: { canonicalKey: "github.com/tarze07/Loom" },
+    repositoryIdentity: { canonicalKey: "github.com/tarze07/loom" },
   });
   const projects = [project("main", laptop), project("worktree", laptop), project("main", desktop)];
   const choices = (

@@ -42,11 +42,11 @@ describe("GitCafe change request URLs", () => {
 
   it("reads its canonical /pull/ path and the older /pulls/ path on its own hosts", () => {
     for (const path of ["pull", "pulls"]) {
-      expect(parse(`https://git.cafe/tarze07/Loom/${path}/23897`), path).toEqual({
+      expect(parse(`https://git.cafe/tarze07/loom/${path}/23897`), path).toEqual({
         host: "git.cafe",
-        repository: "tarze07/Loom",
+        repository: "tarze07/loom",
         number: 23897,
-        repositoryUrl: "https://git.cafe/tarze07/Loom",
+        repositoryUrl: "https://git.cafe/tarze07/loom",
       });
     }
     expect(parse("https://staging.git.cafe/team/repo/pull/7/files")).toMatchObject({
@@ -60,9 +60,9 @@ describe("GitCafe change request URLs", () => {
     for (const url of [
       "https://github.com/team/repo/pull/7",
       "https://forge.example/team/repo/pulls/7",
-      "https://git.cafe/tarze07/Loom/issues/23897",
-      "https://git.cafe/tarze07/Loom/pull/abc",
-      "https://git.cafe/tarze07/Loom",
+      "https://git.cafe/tarze07/loom/issues/23897",
+      "https://git.cafe/tarze07/loom/pull/abc",
+      "https://git.cafe/tarze07/loom",
     ]) {
       expect(parse(url), url).toBeNull();
     }

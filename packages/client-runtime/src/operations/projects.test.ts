@@ -38,11 +38,11 @@ describe("add project shared logic", () => {
     );
 
     for (const input of [
-      "tarze07/Loom",
+      "tarze07/loom",
       "mona-cat_octo/repo",
       "pingdotgg",
-      "https://github.com/tarze07/Loom.git",
-      "git@github.com:tarze07/Loom.git",
+      "https://github.com/tarze07/loom.git",
+      "git@github.com:tarze07/loom.git",
     ]) {
       expect(githubIncompleteOwnerRepositoryMessage(github, input)).toBeNull();
     }
@@ -59,7 +59,7 @@ describe("add project shared logic", () => {
     expect(normalizePastedCloneUrl("imputnet/helium")).toBe(
       "https://github.com/imputnet/helium.git",
     );
-    expect(normalizePastedCloneUrl("  tarze07/Loom  ")).toBe("https://github.com/tarze07/Loom.git");
+    expect(normalizePastedCloneUrl("  tarze07/loom  ")).toBe("https://github.com/tarze07/loom.git");
   });
 
   it("keeps explicit clone URLs and local paths unchanged", () => {
@@ -84,12 +84,12 @@ describe("add project shared logic", () => {
 
   it("clones the repository when given a page URL copied from the browser", () => {
     for (const [pageUrl, pageRoute, repository] of [
-      ["https://github.com/tarze07/Loom/tree/main", "/tree/", "loom"],
+      ["https://github.com/tarze07/loom/tree/main", "/tree/", "loom"],
       ["https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main", "/-/", "gitlab-runner"],
-      ["https://git.cafe/tarze07/Loom/tree/main", "/tree/", "loom"],
+      ["https://git.cafe/tarze07/loom/tree/main", "/tree/", "loom"],
       ["https://gitlab.example.test/g/p/-/blob/main/src/branch/x", "/-/", "p"],
       ["https://code.company.test/g/p/-/tree/main", "/-/", "p"],
-      ["https://github.com/tarze07/Loom/tree/release.git", "/tree/", "loom"],
+      ["https://github.com/tarze07/loom/tree/release.git", "/tree/", "loom"],
     ] as const) {
       const cloneUrl = normalizePastedCloneUrl(pageUrl);
       expect(cloneUrl).not.toContain(pageRoute);

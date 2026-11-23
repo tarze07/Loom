@@ -671,11 +671,11 @@ it("lists link tools only while a case turns the beta on, and sends chips as Loo
   });
   assert.notInclude(
     off.loom.map((tool) => tool.name),
-    "mcp__loom__t3_environment_link",
+    "mcp__loom__loom_environment_link",
   );
   assert.include(
     on.loom.map((tool) => tool.name),
-    "mcp__loom__t3_environment_link",
+    "mcp__loom__loom_environment_link",
   );
 
   const testCase: McpToolUseCase = {

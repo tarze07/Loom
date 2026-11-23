@@ -36,10 +36,10 @@ const LIST_RESULT: PullRequestListResult = {
       host: "github.com",
       projectId: "project-1" as PullRequestListResult["entries"][number]["projectId"],
       projectTitle: "loom",
-      repository: "tarze07/Loom",
+      repository: "tarze07/loom",
       number: 1,
       title: "Add a pull requests page",
-      url: "https://github.com/tarze07/Loom/pull/1",
+      url: "https://github.com/tarze07/loom/pull/1",
       author: { login: "octocat", name: null, avatarUrl: null },
       headBranch: "feat/page",
       baseBranch: "main",
@@ -56,7 +56,7 @@ const LIST_RESULT: PullRequestListResult = {
   ],
   errors: [],
   truncated: false,
-  nextCursors: { "github.com tarze07/Loom": "2026-07-02T00:00:00Z|1|1" },
+  nextCursors: { "github.com tarze07/loom": "2026-07-02T00:00:00Z|1|1" },
 };
 
 describe("PullRequestListResult", () => {
