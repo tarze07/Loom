@@ -1,9 +1,4 @@
-import type {
-  KeybindingCommand,
-  ProjectId,
-  ProjectScript,
-  EnvironmentId,
-} from "@loom/contracts";
+import type { KeybindingCommand, ProjectId, ProjectScript, EnvironmentId } from "@loom/contracts";
 import { AuthSettingsWriteScope, EnvironmentAuthorizationError } from "@loom/contracts";
 import type { UnifiedSettings } from "@loom/contracts/settings";
 import {

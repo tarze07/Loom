@@ -1855,7 +1855,10 @@ describe("AcpAdapterV2", () => {
     {
       // Without a `mode` category, Loom derives no mode state and only the config option switches.
       modeIds: "Copilot URL collaboration_mode",
-      environment: { LOOM_ACP_COPILOT_MODES: "1", LOOM_ACP_MODE_OPTION_CATEGORY: "collaboration_mode" },
+      environment: {
+        LOOM_ACP_COPILOT_MODES: "1",
+        LOOM_ACP_MODE_OPTION_CATEGORY: "collaboration_mode",
+      },
       planModeId: "https://agentclientprotocol.com/protocol/session-modes#plan",
       buildModeId: "https://agentclientprotocol.com/protocol/session-modes#agent",
     },
@@ -4065,7 +4068,9 @@ describe("AcpAdapterV2", () => {
       Effect.gen(function* () {
         const harness = yield* makePromptInactivityHarness({
           environment: (runtimeOrdinal) =>
-            runtimeOrdinal === 1 ? { LOOM_ACP_EMIT_TRACKED_TOOL_CALL_KIND_THEN_HANG: "execute" } : {},
+            runtimeOrdinal === 1
+              ? { LOOM_ACP_EMIT_TRACKED_TOOL_CALL_KIND_THEN_HANG: "execute" }
+              : {},
         });
         yield* harness.startTurn(1);
         yield* harness.runtime.events.pipe(
@@ -5139,8 +5144,9 @@ describe("AcpAdapterV2", () => {
           ? replacementMcpServer.env
           : undefined;
       assert.equal(
-        replacementMcpEnvironment?.find((variable) => variable.name === "LOOM_ACP_MCP_AUTHORIZATION")
-          ?.value,
+        replacementMcpEnvironment?.find(
+          (variable) => variable.name === "LOOM_ACP_MCP_AUTHORIZATION",
+        )?.value,
         "Bearer rollback-target-token",
       );
       const snapshotAfterRollback = yield* runtime.readThreadSnapshot({

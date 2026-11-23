@@ -116,12 +116,7 @@ function getAppStateFromPath(path: string, options: Parameters<typeof getStateFr
 }
 
 const appLinking = {
-  prefixes: [
-    Linking.createURL("/"),
-    "loom://",
-    "loom-dev://",
-    "loom-preview://",
-  ],
+  prefixes: [Linking.createURL("/"), "loom://", "loom-dev://", "loom-preview://"],
   config: { initialRouteName: "Home" },
   filter: (url: string) => shouldHandleAppLink(url),
   getInitialURL: async () => (await Linking.getInitialURL()) ?? (await launchWorkspaceURL()),

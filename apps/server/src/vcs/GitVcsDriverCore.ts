@@ -4665,17 +4665,22 @@ export const makeGitVcsDriverCore = Effect.fn("makeGitVcsDriverCore")(function* 
           options?.submodules ?? null,
           options?.submodules != null
             ? null
-            : yield* fileSystem.readFileString(path.join(worktreePath, LOOM_PROJECT_FILE_NAME)).pipe(
-                Effect.flatMap((contents) => {
-                  const file = parseLoomProjectFile(contents);
-                  return file === null
-                    ? Effect.logWarning("loom.json is invalid; initializing submodules recursively", {
-                        worktreePath,
-                      }).pipe(Effect.as(null))
-                    : Effect.succeed(file);
-                }),
-                Effect.orElseSucceed(() => null),
-              ),
+            : yield* fileSystem
+                .readFileString(path.join(worktreePath, LOOM_PROJECT_FILE_NAME))
+                .pipe(
+                  Effect.flatMap((contents) => {
+                    const file = parseLoomProjectFile(contents);
+                    return file === null
+                      ? Effect.logWarning(
+                          "loom.json is invalid; initializing submodules recursively",
+                          {
+                            worktreePath,
+                          },
+                        ).pipe(Effect.as(null))
+                      : Effect.succeed(file);
+                  }),
+                  Effect.orElseSucceed(() => null),
+                ),
         );
     if (hasSubmodules && submoduleMode.value === "none" && progress?.onSubmodulesDisabled) {
       yield* progress.onSubmodulesDisabled({

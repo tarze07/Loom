@@ -155,15 +155,15 @@ describe("learned routes", () => {
       reported: [{ httpBaseUrl: "http://10.0.0.42:3773/" }],
       allowInsecure: true,
     });
-    expect(ids(moved)).toEqual([
-      `learned:${ENVIRONMENT_ID}:http://10.0.0.42:3773`,
-      "lan",
-    ]);
+    expect(ids(moved)).toEqual([`learned:${ENVIRONMENT_ID}:http://10.0.0.42:3773`, "lan"]);
   });
 
   it("keeps a learned route where the user moved it while the server reports it", () => {
     const lan = { httpBaseUrl: "http://192.168.1.10:3773/" };
-    const learnedLan = learned(`learned:${ENVIRONMENT_ID}:http://192.168.1.10:3773`, lan.httpBaseUrl);
+    const learnedLan = learned(
+      `learned:${ENVIRONMENT_ID}:http://192.168.1.10:3773`,
+      lan.httpBaseUrl,
+    );
     const reordered = entryWithRoutes(pairedEntry([LAN, learnedLan]), [learnedLan, LAN]);
     expect(
       mergeLearnedRoutes({
@@ -296,10 +296,7 @@ describe("learned routes", () => {
       reported: [{ kind: "lan", httpBaseUrl: "http://10.0.0.42:3773/" }],
       allowInsecure: true,
     });
-    expect(ids(routes)).toEqual([
-      "lan",
-      `learned:${ENVIRONMENT_ID}:http://10.0.0.42:3773@lan`,
-    ]);
+    expect(ids(routes)).toEqual(["lan", `learned:${ENVIRONMENT_ID}:http://10.0.0.42:3773@lan`]);
   });
 
   it("skips plain HTTP from an HTTPS page and never learns loopback", () => {
@@ -337,7 +334,10 @@ describe("learned routes", () => {
     expect(learnedLan).toBeNull();
     const withLearned = pairedEntry([
       LAN,
-      learned(`learned:${ENVIRONMENT_ID}:https://desk.tail1234.ts.net@lan`, "https://desk.tail1234.ts.net/"),
+      learned(
+        `learned:${ENVIRONMENT_ID}:https://desk.tail1234.ts.net@lan`,
+        "https://desk.tail1234.ts.net/",
+      ),
     ]);
     expect(pullRequestRoutingConnectionKey(withLearned)).toBe(
       pullRequestRoutingConnectionKey(pairedEntry([LAN])),

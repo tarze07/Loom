@@ -302,10 +302,7 @@ describe("sourceControlClients repository keys", () => {
   it.each([
     ["git@github.com:Loom/Loom.git", "github.com/loom/loom"],
     ["ssh://git@gitlab.company.com:2222/team/project.git", "gitlab.company.com/team/project"],
-    [
-      "git@ssh.dev.azure.com:v3/Loom/Platform/Loom",
-      "dev.azure.com/loom/platform/_git/loom",
-    ],
+    ["git@ssh.dev.azure.com:v3/Loom/Platform/Loom", "dev.azure.com/loom/platform/_git/loom"],
     [
       "Loom@vs-ssh.visualstudio.com:v3/Loom/Platform/Loom",
       "loom.visualstudio.com/platform/_git/loom",

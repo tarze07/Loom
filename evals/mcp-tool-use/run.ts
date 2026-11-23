@@ -524,7 +524,7 @@ const claudeQueryOptions = (model: Model, device = true, browser = true) => {
     nativeThreadId: "mcp-tool-use-eval",
     resume: false,
     cwd: null,
-    mcpServers: { "loom": { type: "http", url: "http://127.0.0.1/mcp" } },
+    mcpServers: { loom: { type: "http", url: "http://127.0.0.1/mcp" } },
     deviceToolsAvailable: device,
     browserToolsAvailable: browser,
   };

@@ -483,12 +483,7 @@ export const createThread = Effect.fn("EnvironmentCommands.createThread")(functi
 });
 
 function simpleThreadCommand(
-  type:
-    | "thread.archive"
-    | "thread.unarchive"
-    | "thread.settle"
-    | "thread.pin"
-    | "thread.unpin",
+  type: "thread.archive" | "thread.unarchive" | "thread.settle" | "thread.pin" | "thread.unpin",
   input: ThreadCommandInput,
 ) {
   return allocateCommandId(input).pipe(

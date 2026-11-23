@@ -118,7 +118,9 @@ export function presentConnectionDiagnosis(
   add("Attempts", input.state.attempt > 0 ? input.state.attempt : null);
   add(
     "Next retry",
-    input.state.retryAt === null ? null : DateTime.formatIso(DateTime.makeUnsafe(input.state.retryAt)),
+    input.state.retryAt === null
+      ? null
+      : DateTime.formatIso(DateTime.makeUnsafe(input.state.retryAt)),
   );
   add("App version", input.clientVersion);
   add("Host version", input.serverVersion);

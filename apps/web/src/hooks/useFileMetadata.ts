@@ -1,8 +1,4 @@
-import {
-  AuthFilesystemReadScope,
-  type EnvironmentId,
-  type ScopedThreadRef,
-} from "@loom/contracts";
+import { AuthFilesystemReadScope, type EnvironmentId, type ScopedThreadRef } from "@loom/contracts";
 import { resolvePathLinkTarget, splitFilePathPosition } from "@loom/shared/fileLinks";
 import {
   isAbsolutePath,

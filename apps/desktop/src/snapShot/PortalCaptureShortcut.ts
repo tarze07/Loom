@@ -162,9 +162,7 @@ export class PortalCaptureShortcut {
     if (this.managedByHyprland)
       throw new Error("Change the capture binding in your Hyprland config, then save it.");
     if (!this.hasSession || this.version < 2)
-      throw new Error(
-        "Open your desktop's shortcut settings and allow Loom's capture shortcut.",
-      );
+      throw new Error("Open your desktop's shortcut settings and allow Loom's capture shortcut.");
     await this.call({
       destination: this.owner,
       path: PATH,

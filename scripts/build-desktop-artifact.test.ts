@@ -1356,7 +1356,9 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
     Effect.scoped(
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
-        const stageDistDir = yield* fs.makeTempDirectoryScoped({ prefix: "loom-mac-payload-test-" });
+        const stageDistDir = yield* fs.makeTempDirectoryScoped({
+          prefix: "loom-mac-payload-test-",
+        });
         const error = yield* validateMacPackagedPayload({ stageDistDir }).pipe(Effect.flip);
 
         assert.instanceOf(error, MacPackagedAppMissingError);
@@ -1368,7 +1370,9 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
     Effect.scoped(
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
-        const stageDistDir = yield* fs.makeTempDirectoryScoped({ prefix: "loom-mac-payload-test-" });
+        const stageDistDir = yield* fs.makeTempDirectoryScoped({
+          prefix: "loom-mac-payload-test-",
+        });
         yield* fs.makeDirectory(`${stageDistDir}/mac-arm64/Loom.app/Contents/Resources`, {
           recursive: true,
         });
@@ -1393,7 +1397,9 @@ it.layer(NodeServices.layer)("build-desktop-artifact", (it) => {
         assert.instanceOf(error, BundleNotSelfContainedError);
         assert.include(error.output, "loom-deliberately-missing-package");
 
-        const emptyStage = yield* fs.makeTempDirectoryScoped({ prefix: "loom-linux-payload-test-" });
+        const emptyStage = yield* fs.makeTempDirectoryScoped({
+          prefix: "loom-linux-payload-test-",
+        });
         const missing = yield* validateLinuxPackagedPayload({ stageDistDir: emptyStage }).pipe(
           Effect.flip,
         );

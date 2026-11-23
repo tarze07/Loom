@@ -2,11 +2,7 @@ import { ThreadContextDragGhost } from "./chat/ThreadContextDragGhost";
 import { threadPullRequestLinkMode } from "@loom/client-runtime/thread-pull-request-compatibility";
 import { visibleThreadPullRequests } from "@loom/shared/threadPullRequests";
 
-import {
-  scopedThreadKey,
-  scopeProjectRef,
-  scopeThreadRef,
-} from "@loom/client-runtime/environment";
+import { scopedThreadKey, scopeProjectRef, scopeThreadRef } from "@loom/client-runtime/environment";
 import {
   canCreateProjectInEnvironment,
   getCloneDestinationBrowsePath,
@@ -1617,7 +1613,6 @@ function OpenCommandPaletteDialog(props: {
       },
     });
   }
-
 
   actionItems.push({
     kind: "action",

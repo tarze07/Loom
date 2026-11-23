@@ -19,10 +19,7 @@ import * as Schema from "effect/Schema";
 import * as TestClock from "effect/testing/TestClock";
 import type { HttpClient } from "effect/http";
 
-import {
-  type PreparedConnection,
-  type PreparedHttpAuthorization,
-} from "../connection/model.ts";
+import { type PreparedConnection, type PreparedHttpAuthorization } from "../connection/model.ts";
 import { type RemoteEnvironmentRequestError } from "../rpc/http.ts";
 import * as RpcHttp from "../rpc/http.ts";
 import * as PullRequestDiffLoader from "./pullRequestDiffHttp.ts";

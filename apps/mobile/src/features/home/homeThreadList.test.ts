@@ -1,7 +1,4 @@
-import type {
-  EnvironmentProject,
-  EnvironmentThreadShell,
-} from "@loom/client-runtime/state/shell";
+import type { EnvironmentProject, EnvironmentThreadShell } from "@loom/client-runtime/state/shell";
 import { EnvironmentId, ProjectId, ProviderInstanceId, ThreadId } from "@loom/contracts";
 import { describe, expect, it } from "vite-plus/test";
 

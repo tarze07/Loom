@@ -327,9 +327,9 @@ describe("linkRequestTarget", () => {
       kind: "address",
     });
     expect(linkRequestTarget({ url: "not a url" }, [box], null)).toEqual({ kind: "address" });
-    expect(linkRequestTarget({ url: "blob:https://box.loomconnect.example/1" }, [box], null)).toEqual(
-      { kind: "address" },
-    );
+    expect(
+      linkRequestTarget({ url: "blob:https://box.loomconnect.example/1" }, [box], null),
+    ).toEqual({ kind: "address" });
     // A private address two machines share names neither.
     const mini = { ...box, environmentId: EnvironmentId.make("environment-mini") };
     expect(linkRequestTarget({ url: "http://10.0.0.2:3773" }, [box, mini], null)).toEqual({

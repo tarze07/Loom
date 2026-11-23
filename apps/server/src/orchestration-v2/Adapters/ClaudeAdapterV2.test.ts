@@ -572,7 +572,7 @@ describe("ClaudeAdapterV2 runtime query policy", () => {
 
 describe("ClaudeAdapterV2 MCP query overrides", () => {
   const LOOM_MCP_SERVERS = {
-    "loom": {
+    loom: {
       type: "http",
       url: "http://127.0.0.1:43123/mcp",
       headers: {
@@ -683,7 +683,7 @@ describe("ClaudeAdapterV2 native protocol logging", () => {
     assert.deepEqual(overrides, {
       allowedTools: ["Read", "mcp__loom__*"],
       mcpServers: {
-        "loom": {
+        loom: {
           type: "http",
           url: "http://127.0.0.1:43123/mcp",
           headers: {
@@ -747,7 +747,7 @@ describe("ClaudeAdapterV2 device instructions", () => {
       resume: false,
       cwd: "/workspace",
       ...(input.mcp
-        ? { mcpServers: { "loom": { type: "http" as const, url: "http://127.0.0.1/mcp" } } }
+        ? { mcpServers: { loom: { type: "http" as const, url: "http://127.0.0.1/mcp" } } }
         : {}),
       deviceToolsAvailable: input.deviceToolsAvailable,
       environment: {},
@@ -1169,7 +1169,9 @@ describe("ClaudeAdapterV2 append-system-prompt-file launch argument", () => {
     Effect.scoped(
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
-        const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "loom-claude-append-cwd-" });
+        const cwd = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "loom-claude-append-cwd-",
+        });
         yield* fileSystem.writeFileString(NodePath.join(cwd, "rules.md"), "File sentinel\n");
         const plain = yield* startTurnWithLaunchArgs("", cwd);
         const { exit, opened } = yield* startTurnWithLaunchArgs(
@@ -1322,7 +1324,9 @@ describe("ClaudeAdapterV2 append-system-prompt-file launch argument", () => {
     Effect.scoped(
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
-        const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "loom-claude-append-cwd-" });
+        const cwd = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "loom-claude-append-cwd-",
+        });
         const { exit, opened } = yield* startTurnWithLaunchArgs(launchArgs, cwd);
         assert.lengthOf(opened, 0);
         assert.isTrue(Exit.isFailure(exit));
@@ -1356,7 +1360,9 @@ describe("ClaudeAdapterV2 provider installation gate", () => {
           instanceId,
           settings: DEFAULT_CLAUDE_SETTINGS,
           environment: {},
-          attachmentsDir: yield* fileSystem.makeTempDirectoryScoped({ prefix: "loom-claude-gate-" }),
+          attachmentsDir: yield* fileSystem.makeTempDirectoryScoped({
+            prefix: "loom-claude-gate-",
+          }),
           fileSystem,
           path: yield* Path.Path,
           random: yield* SecureRandom.SecureRandom,
@@ -2942,7 +2948,7 @@ describe("ClaudeAdapterV2 MCP credential channel", () => {
             resume: false,
             cwd: null,
             environment: { PATH: "/usr/bin" },
-            mcpServers: { "loom": loomMcpServer },
+            mcpServers: { loom: loomMcpServer },
           }),
           pathToClaudeCodeExecutable: "/opt/claude/cli.js",
           spawnClaudeCodeProcess: cli.spawn,
@@ -2991,7 +2997,7 @@ describe("ClaudeAdapterV2 MCP credential channel", () => {
 
       assert.deepInclude(cli.controlRequests, {
         subtype: "mcp_set_servers",
-        servers: { "loom": loomMcpServer },
+        servers: { loom: loomMcpServer },
       });
       assert.deepInclude(
         cli.controlRequests.find((request) => Reflect.get(request, "subtype") === "initialize"),
@@ -4139,7 +4145,9 @@ describe("ClaudeAdapterV2 background wake turns", () => {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const home = yield* fileSystem.makeTempDirectoryScoped({ prefix: "loom-claude-remote-" });
-        const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "loom-claude-remote-cwd-" });
+        const cwd = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "loom-claude-remote-cwd-",
+        });
         const remoteFile = path.join(home, "remote-settings.json");
         const sdk = yield* Effect.promise(() =>
           vi.importActual<typeof ClaudeSdk>("@anthropic-ai/claude-agent-sdk"),
@@ -4235,7 +4243,9 @@ describe("ClaudeAdapterV2 background wake turns", () => {
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;
         const home = yield* fileSystem.makeTempDirectoryScoped({ prefix: "loom-claude-launch-" });
-        const cwd = yield* fileSystem.makeTempDirectoryScoped({ prefix: "loom-claude-launch-cwd-" });
+        const cwd = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "loom-claude-launch-cwd-",
+        });
         const sdk = yield* Effect.promise(() =>
           vi.importActual<typeof ClaudeSdk>("@anthropic-ai/claude-agent-sdk"),
         );
@@ -4835,7 +4845,9 @@ describe("ClaudeAdapterV2 background wake turns", () => {
         );
 
         // Project settings beat user settings, and the process env applies only when no file sets it.
-        const project = yield* fileSystem.makeTempDirectoryScoped({ prefix: "loom-claude-project-" });
+        const project = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "loom-claude-project-",
+        });
         yield* fileSystem.makeDirectory(path.join(project, ".claude"));
         yield* fileSystem.writeFileString(
           path.join(project, ".claude", "settings.json"),
@@ -5093,7 +5105,9 @@ describe("ClaudeAdapterV2 background wake turns", () => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const homePath = yield* fs.makeTempDirectoryScoped({ prefix: "loom-claude-skill-dispatch-" });
+        const homePath = yield* fs.makeTempDirectoryScoped({
+          prefix: "loom-claude-skill-dispatch-",
+        });
         for (const [name, userOnly] of [
           ["interrogate", true],
           ["implement", true],
@@ -9090,7 +9104,9 @@ describe("ClaudeAdapterV2 background wake turns", () => {
         const fileSystem = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         const home = yield* fileSystem.makeTempDirectoryScoped({ prefix: "loom-claude-compact-" });
-        const project = yield* fileSystem.makeTempDirectoryScoped({ prefix: "loom-claude-compact-" });
+        const project = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "loom-claude-compact-",
+        });
         if (userSettings !== undefined) {
           yield* fileSystem.writeFileString(path.join(home, "settings.json"), userSettings);
         }

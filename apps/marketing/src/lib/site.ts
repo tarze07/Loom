@@ -3,8 +3,7 @@ export const GITHUB_REPOSITORY_URL = "https://github.com/tarze07/Loom";
 export const IOS_APP_STORE_URL =
   "https://apps.apple.com/us/app/loom-remote-claude-more/id6787819824";
 
-export const ANDROID_PLAY_STORE_URL =
-  "https://play.google.com/store/apps/details?id=com.loom.app";
+export const ANDROID_PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.loom.app";
 
 // Runs at build time, so each deploy picks up the current count.
 async function fetchGithubStars(): Promise<string> {

@@ -504,8 +504,7 @@ function UserTimelineRow({ row }: { row: Extract<TimelineRow, { kind: "message" 
     unknownAttachments.length === 0 &&
     regularImages.length + userVideos.length > 0;
   // Media sent with words sits above the bubble as its own shape, like a chat app.
-  const mediaAboveText =
-    !folded && !mediaOnly && regularImages.length + userVideos.length > 0;
+  const mediaAboveText = !folded && !mediaOnly && regularImages.length + userVideos.length > 0;
   const standaloneMedia = mediaOnly || mediaAboveText;
   // A lone image keeps its own shape; a 4:3 crop hides most of a wide screenshot.
   const loneImage = standaloneMedia && userVideos.length === 0 && regularImages.length === 1;
@@ -838,10 +837,7 @@ function UserTimelineRow({ row }: { row: Extract<TimelineRow, { kind: "message" 
       data-user-message-attribution={folded ? "agent" : undefined}
     >
       {userMessage.attribution === "loom" ? (
-        <p
-          className="me-1 text-2xs text-muted-foreground/70"
-          data-user-message-attribution="loom"
-        >
+        <p className="me-1 text-2xs text-muted-foreground/70" data-user-message-attribution="loom">
           Sent by Loom
         </p>
       ) : null}

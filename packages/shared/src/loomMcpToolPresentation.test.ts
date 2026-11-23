@@ -46,9 +46,9 @@ describe("resolveLoomMcpToolDefinition", () => {
     expect(
       resolveLoomMcpToolDefinition("mcp__loom__preview_act", { action: "type" })?.labels,
     ).toEqual(resolveLoomMcpToolDefinition("preview_type")?.labels);
-    expect(resolveLoomMcpToolDefinition("loom_thread_transfer", { action: "fork" })?.displayName).toBe(
-      resolveLoomMcpToolDefinition("loom_thread_fork")?.displayName,
-    );
+    expect(
+      resolveLoomMcpToolDefinition("loom_thread_transfer", { action: "fork" })?.displayName,
+    ).toBe(resolveLoomMcpToolDefinition("loom_thread_fork")?.displayName);
     expect(resolveLoomMcpToolDefinition("preview_act", { action: "unknown" })?.labels[2]).toBe(
       "Used",
     );

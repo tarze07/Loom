@@ -1,8 +1,5 @@
 import { isClientHostEnvironment } from "./clientHostEnvironment";
-import {
-  PrimaryConnectionTarget,
-  SshConnectionTarget,
-} from "@loom/client-runtime/connection";
+import { PrimaryConnectionTarget, SshConnectionTarget } from "@loom/client-runtime/connection";
 import { EnvironmentId } from "@loom/contracts";
 import { Atom, AtomRegistry } from "effect/reactivity";
 import { describe, expect, it } from "vite-plus/test";

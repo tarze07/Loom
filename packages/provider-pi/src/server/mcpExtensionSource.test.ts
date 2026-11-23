@@ -330,8 +330,7 @@ describe("Pi tool discovery permissions", () => {
       assert.equal(confirmations.length, 4);
       bridge.setBridgeSourcePath("/user/extensions/replacement.ts");
       assert.equal(
-        (await hook({ toolName: "mcp__loom__orchestrator_capabilities", input: {} }, ctx))
-          ?.block,
+        (await hook({ toolName: "mcp__loom__orchestrator_capabilities", input: {} }, ctx))?.block,
         true,
       );
       assert.equal(

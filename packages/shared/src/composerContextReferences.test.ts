@@ -63,8 +63,9 @@ describe("labels and reference links", () => {
         ?.label,
     ).toHaveLength(200);
     expect(
-      collectComposerContextReferences(`[${"x".repeat(199)}😀tail](loom-context://v1/file/ctx_1)`)[0]
-        ?.label,
+      collectComposerContextReferences(
+        `[${"x".repeat(199)}😀tail](loom-context://v1/file/ctx_1)`,
+      )[0]?.label,
     ).toBe("x".repeat(199));
   });
 

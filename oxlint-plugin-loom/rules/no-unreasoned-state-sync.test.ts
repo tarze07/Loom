@@ -2,8 +2,7 @@ import { assert, describe } from "@effect/vitest";
 
 import { createOxlintRuleHarness } from "../test/utils.ts";
 
-const reports = (output: string) =>
-  output.match(/loom\(no-unreasoned-state-sync\)/g)?.length ?? 0;
+const reports = (output: string) => output.match(/loom\(no-unreasoned-state-sync\)/g)?.length ?? 0;
 const lint = (filename: string) =>
   createOxlintRuleHarness("loom/no-unreasoned-state-sync", { filename });
 

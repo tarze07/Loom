@@ -1,8 +1,5 @@
 import type { FileDiffContentsLoader, FileDiffMetadata } from "@pierre/diffs";
-import {
-  excerptExpansionOldContents,
-  type DiffRow,
-} from "@loom/client-runtime/review-guide-tour";
+import { excerptExpansionOldContents, type DiffRow } from "@loom/client-runtime/review-guide-tour";
 import type { PullRequestReviewGuideExcerpt } from "@loom/contracts";
 
 // Other hunks shift old-side context; expand against an excerpt-matching old side.

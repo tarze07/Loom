@@ -1,8 +1,5 @@
 import type { EnvironmentThreadShell } from "@loom/client-runtime/state/shell";
-import {
-  capitalizeTerm,
-  sourceControlClients,
-} from "@loom/client-runtime/source-control-clients";
+import { capitalizeTerm, sourceControlClients } from "@loom/client-runtime/source-control-clients";
 import {
   pullRequestListLines,
   resolveThreadPullRequestChains,

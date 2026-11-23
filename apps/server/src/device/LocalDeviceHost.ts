@@ -10,10 +10,7 @@ import {
 } from "@loom/contracts";
 import { waitForHttpReady } from "@loom/shared/httpReadiness";
 import * as HostProcess from "@loom/shared/HostProcess";
-import {
-  resolveNodeExecutable,
-  type NodeRuntimeUnavailableError,
-} from "@loom/shared/nodeRuntime";
+import { resolveNodeExecutable, type NodeRuntimeUnavailableError } from "@loom/shared/nodeRuntime";
 import * as NetService from "@loom/shared/Net";
 import { isCommandAvailable } from "@loom/shared/shell";
 import * as Clock from "effect/Clock";

@@ -260,10 +260,7 @@ describe("buildThreadActionItems", () => {
         ],
       }).map((group) => [group.label, group.items.map((item) => item.title)]);
 
-    expect(search("new thread in loom", false)[0]).toEqual([
-      "Suggestions",
-      ["New thread in loom"],
-    ]);
+    expect(search("new thread in loom", false)[0]).toEqual(["Suggestions", ["New thread in loom"]]);
     expect(search("new thread", false).map(([label]) => label)).not.toContain("Suggestions");
     expect(search("t3", true)).toEqual([["Projects", ["loom"]]]);
     expect(search("add project", true)).toEqual([["Actions", ["Add project"]]]);
@@ -798,46 +795,44 @@ describe("filterPinnedBrowseEntries", () => {
   });
 });
 
-it.each([
-  "#10839",
-  "10839",
-  "tarze07/Loom#10839",
-  "https://github.com/tarze07/Loom/pull/10839",
-])("finds linked threads from PR query %s", (query) => {
-  const items = buildThreadActionItems({
-    threads: [
-      makeThread({
-        title: "Implementation",
-        pullRequests: [
-          {
-            host: "github.com",
-            repository: "tarze07/Loom",
-            number: 10839,
-            url: "https://github.com/tarze07/Loom/pull/10839",
-            source: "manual",
-            linkedAt: "2026-09-08T00:00:00Z",
-            snapshot: null,
-            stack: null,
-          },
-        ],
-      }),
-      makeThread({ id: ThreadId.make("unrelated"), title: "Other work" }),
-    ],
-    projectByKey: new Map(),
-    icon: null,
-    runThread: async () => undefined,
-  });
-  const groups = filterCommandPaletteGroups({
-    activeGroups: [],
-    query,
-    isInSubmenu: false,
-    projectSearchItems: [],
-    threadSearchItems: items,
-  });
-  expect(groups.flatMap((group) => group.items.map((item) => item.title))).toEqual([
-    "Implementation",
-  ]);
-});
+it.each(["#10839", "10839", "tarze07/Loom#10839", "https://github.com/tarze07/Loom/pull/10839"])(
+  "finds linked threads from PR query %s",
+  (query) => {
+    const items = buildThreadActionItems({
+      threads: [
+        makeThread({
+          title: "Implementation",
+          pullRequests: [
+            {
+              host: "github.com",
+              repository: "tarze07/Loom",
+              number: 10839,
+              url: "https://github.com/tarze07/Loom/pull/10839",
+              source: "manual",
+              linkedAt: "2026-09-08T00:00:00Z",
+              snapshot: null,
+              stack: null,
+            },
+          ],
+        }),
+        makeThread({ id: ThreadId.make("unrelated"), title: "Other work" }),
+      ],
+      projectByKey: new Map(),
+      icon: null,
+      runThread: async () => undefined,
+    });
+    const groups = filterCommandPaletteGroups({
+      activeGroups: [],
+      query,
+      isInSubmenu: false,
+      projectSearchItems: [],
+      threadSearchItems: items,
+    });
+    expect(groups.flatMap((group) => group.items.map((item) => item.title))).toEqual([
+      "Implementation",
+    ]);
+  },
+);
 
 describe("command palette search return", () => {
   const picker = { addonIcon: null, groups: [] };

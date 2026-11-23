@@ -498,7 +498,8 @@ const CODEX_TEST_RUNTIME_POLICY = ProviderAdapter.ProviderAdapterV2RuntimePolicy
 });
 const LOOM_THREAD_ENV_KEY = "shell_environment_policy.set.LOOM_THREAD_ID";
 const threadEnvOf = (params: unknown) =>
-  Predicate.hasProperty(params, "config") && Predicate.hasProperty(params.config, LOOM_THREAD_ENV_KEY)
+  Predicate.hasProperty(params, "config") &&
+  Predicate.hasProperty(params.config, LOOM_THREAD_ENV_KEY)
     ? params.config[LOOM_THREAD_ENV_KEY]
     : undefined;
 
@@ -1811,7 +1812,7 @@ describe("CodexAdapterV2 post-settle continuation", () => {
         "mcp_servers.extra.command": "cat",
       };
       for (const recordedMcp of [
-        { mcp_servers: { "loom": recordedServer } },
+        { mcp_servers: { loom: recordedServer } },
         { "mcp_servers.loom": recordedServer, "mcp_servers.extra.command": "echo" },
       ]) {
         const entries = codexReplayPreamble({

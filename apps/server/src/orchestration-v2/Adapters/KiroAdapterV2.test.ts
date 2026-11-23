@@ -47,10 +47,7 @@ import {
   makeAcpReplayCompletenessAssertion,
   makeAcpReplayRuntime,
 } from "./AcpAdapterV2.testkit.ts";
-import {
-  makeProviderReplayGate,
-  type ProviderReplayGate,
-} from "@loom/provider-testing/replayGate";
+import { makeProviderReplayGate, type ProviderReplayGate } from "@loom/provider-testing/replayGate";
 import { readProviderReplayTranscript } from "@loom/provider-testing/replayTranscript";
 import { KiroSettings } from "@loom/provider-kiro/settings";
 import {

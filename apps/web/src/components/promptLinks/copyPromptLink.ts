@@ -1,10 +1,6 @@
 import type { EnvironmentProject } from "@loom/client-runtime/state/shell";
 import { isAttachmentOnlyBootstrapPrompt } from "@loom/shared/composerContextReferences";
-import {
-  type ModelSelection,
-  repositoryGroupingKeyOf,
-  type ServerProvider,
-} from "@loom/contracts";
+import { type ModelSelection, repositoryGroupingKeyOf, type ServerProvider } from "@loom/contracts";
 import {
   buildNewThreadLink,
   parsePromptLinkRepository,

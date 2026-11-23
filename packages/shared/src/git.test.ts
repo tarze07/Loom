@@ -18,15 +18,9 @@ import {
 
 describe("normalizeGitRemoteUrl", () => {
   it("canonicalizes equivalent GitHub remotes across protocol variants", () => {
-    expect(normalizeGitRemoteUrl("git@github.com:Loom/Loom.git")).toBe(
-      "github.com/loom/loom",
-    );
-    expect(normalizeGitRemoteUrl("https://github.com/Loom/Loom.git")).toBe(
-      "github.com/loom/loom",
-    );
-    expect(normalizeGitRemoteUrl("ssh://git@github.com/Loom/Loom")).toBe(
-      "github.com/loom/loom",
-    );
+    expect(normalizeGitRemoteUrl("git@github.com:Loom/Loom.git")).toBe("github.com/loom/loom");
+    expect(normalizeGitRemoteUrl("https://github.com/Loom/Loom.git")).toBe("github.com/loom/loom");
+    expect(normalizeGitRemoteUrl("ssh://git@github.com/Loom/Loom")).toBe("github.com/loom/loom");
     expect(normalizeGitRemoteUrl("https://github.com/Loom/Loom.git?view=compact")).toBe(
       "github.com/loom/loom",
     );

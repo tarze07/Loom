@@ -327,7 +327,11 @@ describe("ConnectionCatalogDocument", () => {
     );
     const withSsh = registerConnectionInCatalog(
       withBearer,
-      new SshConnectionRegistration({ target: sshTarget, profile: sshProfile, credential: BEARER_CREDENTIAL }),
+      new SshConnectionRegistration({
+        target: sshTarget,
+        profile: sshProfile,
+        credential: BEARER_CREDENTIAL,
+      }),
       [BEARER_TARGET, sshTarget],
     );
     expect(catalogRoutes(withSsh, ENVIRONMENT_ID)).toEqual([BEARER_TARGET, sshTarget]);

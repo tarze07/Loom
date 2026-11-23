@@ -1551,9 +1551,9 @@ function windowsVswherePrerequisiteScript(arch: typeof BuildArch.Type): string {
 export const preflightWindowsDesktopBuild = Effect.fn("preflightWindowsDesktopBuild")(
   function* (input: { readonly arch: typeof BuildArch.Type; readonly bundlesWslRuntime: boolean }) {
     const rustTarget = resolveResourceMonitorRustTargets("win", input.arch)[0]!;
-    const reuseResourceMonitor = yield* Config.Boolean(
-      "LOOM_DESKTOP_REUSE_RESOURCE_MONITOR",
-    ).pipe(Config.withDefault(false));
+    const reuseResourceMonitor = yield* Config.Boolean("LOOM_DESKTOP_REUSE_RESOURCE_MONITOR").pipe(
+      Config.withDefault(false),
+    );
     const python = yield* resolvePythonForNodeGyp();
     const checks = yield* Effect.all(
       {
@@ -2312,8 +2312,7 @@ export const createBuildConfig = Effect.fn("createBuildConfig")(function* (
         NSAutoFillRequiresTextContentTypeForOneTimeCodeOnMac: true,
         NSLocalNetworkUsageDescription:
           "Loom connects to devices on your local network for remote environments and commands run by terminals and coding agents.",
-        NSCalendarsUsageDescription:
-          "Commands you run in Loom may need access to your calendars.",
+        NSCalendarsUsageDescription: "Commands you run in Loom may need access to your calendars.",
         NSCalendarsFullAccessUsageDescription:
           "Commands you run in Loom may need to read and write your calendar events.",
         NSCalendarsWriteOnlyAccessUsageDescription:

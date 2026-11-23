@@ -29,8 +29,7 @@ export const fr: Messages = {
     downloadForLinux: "Télécharger pour Linux",
     sourceLink: "Volez notre code (légalement)",
     alsoOnPhone: "Aussi sur votre téléphone :",
-    screenshotAlt:
-      "Loom exécutant des sous-agents Claude, Codex, Muse et Gemini dans un même fil",
+    screenshotAlt: "Loom exécutant des sous-agents Claude, Codex, Muse et Gemini dans un même fil",
     endorsementsTitle: "Toléré par plus de {users} devs",
     endorsementsSub: "Certains en ont même parlé sur X.",
     endorsementsLabel: "Avis de développeurs",

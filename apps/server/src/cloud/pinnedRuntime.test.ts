@@ -381,7 +381,9 @@ it.layer(NodeServices.layer)("ensurePinnedRuntimeInstalled", (it) => {
 
 it("isVersionExecutable accepts only <version>/t3, never another drive or program", () => {
   const win32 = NodePath.win32 as unknown as Path.Path;
-  assert.isTrue(isVersionExecutable(win32, "C:\\t3\\versions", "C:\\t3\\versions\\1.0.0\\loom.exe"));
+  assert.isTrue(
+    isVersionExecutable(win32, "C:\\t3\\versions", "C:\\t3\\versions\\1.0.0\\loom.exe"),
+  );
   assert.isFalse(isVersionExecutable(win32, "C:\\t3\\versions", "D:\\loom.exe"));
   assert.isFalse(
     isVersionExecutable(win32, "C:\\t3\\versions", "C:\\t3\\versions\\1.0.0\\node.exe"),

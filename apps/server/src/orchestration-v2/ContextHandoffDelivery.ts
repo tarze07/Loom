@@ -1,7 +1,4 @@
-import type {
-  OrchestrationV2ContextHandoff,
-  OrchestrationV2ProviderThread,
-} from "@loom/contracts";
+import type { OrchestrationV2ContextHandoff, OrchestrationV2ProviderThread } from "@loom/contracts";
 import type * as ProviderAdapter from "@loom/provider-core/server/ProviderAdapter";
 import { ContextHandoffBudgetError } from "@loom/provider-core/server/failure";
 import * as Effect from "effect/Effect";

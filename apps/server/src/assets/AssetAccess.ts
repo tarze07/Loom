@@ -31,10 +31,7 @@ import {
   type ImageDimensions,
 } from "@loom/shared/imageDimensions";
 import { MCP_APP_MAX_HTML_BYTES } from "@loom/shared/mcpApp";
-import {
-  isProjectFaviconPath,
-  PROJECT_FAVICON_FALLBACK_MARKER,
-} from "@loom/shared/projectFavicon";
+import { isProjectFaviconPath, PROJECT_FAVICON_FALLBACK_MARKER } from "@loom/shared/projectFavicon";
 import { isNetworkPath } from "@loom/shared/path";
 import { MAX_TOOL_OUTPUT_IMAGE_BASE64_LENGTH, toolOutputImages } from "@loom/shared/toolOutput";
 import * as Clock from "effect/Clock";

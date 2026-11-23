@@ -3,10 +3,7 @@ import {
   pullRequestDiffPathMatches,
   pullRequestLinkCommit,
 } from "@loom/shared/pullRequestAnchor";
-import {
-  capitalizeTerm,
-  sourceControlClients,
-} from "@loom/client-runtime/source-control-clients";
+import { capitalizeTerm, sourceControlClients } from "@loom/client-runtime/source-control-clients";
 import type { CodeViewItem, DiffLineAnnotation, SelectedLineRange } from "@pierre/diffs";
 import type { CodeViewAnnotationArgs, CodeViewDiffItem } from "@pierre/diffs/react";
 import type {

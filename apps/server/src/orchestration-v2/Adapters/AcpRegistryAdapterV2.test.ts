@@ -34,10 +34,7 @@ import * as EffectAcpErrors from "effect-acp/errors";
 import { makeProviderFailure } from "@loom/provider-core/server/failure";
 import * as McpProviderSessions from "@loom/provider-core/server/McpProviderSessions";
 import * as TestProviderHost from "@loom/provider-testing/TestProviderHost";
-import {
-  makeProviderReplayGate,
-  type ProviderReplayGate,
-} from "@loom/provider-testing/replayGate";
+import { makeProviderReplayGate, type ProviderReplayGate } from "@loom/provider-testing/replayGate";
 import type { ProviderContinuationRequest } from "@loom/provider-core/server/ProviderContinuationRequests";
 import * as ServerSettings from "../../serverSettings.ts";
 import type { AcpRegistryLiveConfiguration } from "@loom/provider-acp-registry/testing";
@@ -1385,10 +1382,13 @@ describe("AcpRegistryAdapterV2", () => {
         new: stdio("Bearer opened-token"),
         load: stdio("Bearer rotated-token"),
       });
-      assert.deepEqual(yield* sessionMcpServers({ agentId: "gemini" }, { LOOM_ACP_MCP_HTTP: "1" }), {
-        new: stdio("Bearer opened-token"),
-        load: stdio("Bearer rotated-token"),
-      });
+      assert.deepEqual(
+        yield* sessionMcpServers({ agentId: "gemini" }, { LOOM_ACP_MCP_HTTP: "1" }),
+        {
+          new: stdio("Bearer opened-token"),
+          load: stdio("Bearer rotated-token"),
+        },
+      );
     }).pipe(Effect.provide(layerTest), Effect.scoped),
   );
 

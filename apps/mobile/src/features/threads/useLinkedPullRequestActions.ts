@@ -2,20 +2,14 @@ import {
   pullRequestLinkProject,
   resolveLinkPullRequestInput,
 } from "@loom/client-runtime/pull-request-link-input";
-import type {
-  EnvironmentProject,
-  EnvironmentThreadShell,
-} from "@loom/client-runtime/state/shell";
+import type { EnvironmentProject, EnvironmentThreadShell } from "@loom/client-runtime/state/shell";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
   type AtomCommandResult,
 } from "@loom/client-runtime/state/runtime";
 import { planThreadPullRequestMutation } from "@loom/client-runtime/thread-pull-request-compatibility";
-import {
-  capitalizeTerm,
-  sourceControlClients,
-} from "@loom/client-runtime/source-control-clients";
+import { capitalizeTerm, sourceControlClients } from "@loom/client-runtime/source-control-clients";
 import { AuthOrchestrationOperateScope, type ThreadPullRequestLink } from "@loom/contracts";
 import * as Clipboard from "expo-clipboard";
 

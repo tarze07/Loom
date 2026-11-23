@@ -1,11 +1,5 @@
-import {
-  formatFilePathForClipboard,
-  type MediaActionId,
-} from "@loom/client-runtime/media-actions";
-import {
-  mediaReferenceFileName,
-  type MediaReference,
-} from "@loom/client-runtime/media-reference";
+import { formatFilePathForClipboard, type MediaActionId } from "@loom/client-runtime/media-actions";
+import { mediaReferenceFileName, type MediaReference } from "@loom/client-runtime/media-reference";
 import { resolveAssetUrl } from "@loom/client-runtime/state/assets";
 import { settlePromise, squashAtomCommandFailure } from "@loom/client-runtime/state/runtime";
 import {

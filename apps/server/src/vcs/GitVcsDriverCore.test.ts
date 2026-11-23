@@ -5725,7 +5725,10 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
           "# test\n",
         );
         assert.equal(
-          yield* driver.readConfigValue(worktreePath, "branch.feature/locked-config.loom-merge-base"),
+          yield* driver.readConfigValue(
+            worktreePath,
+            "branch.feature/locked-config.loom-merge-base",
+          ),
           null,
         );
         assert.equal(yield* fileSystem.exists(pathService.join(cwd, ".git/config.lock")), true);
@@ -6906,7 +6909,10 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
         assert.strictEqual(status.branchChanges?.deletions, 0);
         // gh pr create consumes this setting verbatim as the hosted target branch.
         assert.equal(
-          yield* driver.readConfigValue(worktreePath, "branch.feature/from-upstream.loom-merge-base"),
+          yield* driver.readConfigValue(
+            worktreePath,
+            "branch.feature/from-upstream.loom-merge-base",
+          ),
           "release",
         );
         assert.equal(changes.baseRef, "upstream/release");

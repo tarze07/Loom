@@ -12,11 +12,7 @@ import {
   type EnvironmentThreadStatus,
   type ThreadHistoryMeta,
 } from "@loom/client-runtime/state/threads";
-import {
-  arrayElementsEqual,
-  parseThreadKey,
-  threadKey,
-} from "@loom/client-runtime/state/entities";
+import { arrayElementsEqual, parseThreadKey, threadKey } from "@loom/client-runtime/state/entities";
 import type { ScopedProjectRef, ScopedThreadRef } from "@loom/contracts";
 import type {
   EnvironmentId,

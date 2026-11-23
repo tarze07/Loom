@@ -121,7 +121,9 @@ describe("device hub proxy", () => {
     async (path) => {
       const { handler, requests } = fixture([AuthOrchestrationReadScope]);
       const response = await handler(
-        new Request(`http://loom.test/api/device-hub${path}`, { headers: { upgrade: "websocket" } }),
+        new Request(`http://loom.test/api/device-hub${path}`, {
+          headers: { upgrade: "websocket" },
+        }),
       );
       expect(response.status).toBe(403);
       expect(requests).toEqual([]);

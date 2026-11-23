@@ -1,7 +1,4 @@
-import {
-  presentThreadShell,
-  type EnvironmentThreadShell,
-} from "@loom/client-runtime/state/shell";
+import { presentThreadShell, type EnvironmentThreadShell } from "@loom/client-runtime/state/shell";
 import type { LocalThreadMessage } from "../lib/threadActivity";
 import { DEFAULT_PROVIDER_INTERACTION_MODE, DEFAULT_RUNTIME_MODE } from "@loom/contracts";
 import { threadKey } from "@loom/client-runtime/state/entities";

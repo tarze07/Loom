@@ -1,8 +1,4 @@
-import type {
-  EnvironmentId,
-  ServerSettingsPatch,
-  UsageModelPriceOverride,
-} from "@loom/contracts";
+import type { EnvironmentId, ServerSettingsPatch, UsageModelPriceOverride } from "@loom/contracts";
 
 export interface UsagePriceTarget {
   readonly environmentId: EnvironmentId;

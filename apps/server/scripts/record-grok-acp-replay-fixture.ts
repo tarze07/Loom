@@ -374,7 +374,10 @@ function normalizeEntries(input: {
 const DEFAULT_GROK_SETTINGS = Schema.decodeSync(GrokSettings)({});
 
 const RecorderEnv = Config.all({
-  LOOM_GROK_BIN: Config.String("LOOM_GROK_BIN").pipe(Config.option, Config.map(Option.getOrUndefined)),
+  LOOM_GROK_BIN: Config.String("LOOM_GROK_BIN").pipe(
+    Config.option,
+    Config.map(Option.getOrUndefined),
+  ),
   HOME: Config.String("HOME").pipe(Config.option, Config.map(Option.getOrUndefined)),
   USER: Config.String("USER").pipe(Config.option, Config.map(Option.getOrUndefined)),
 });

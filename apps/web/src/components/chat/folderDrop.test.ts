@@ -1,7 +1,4 @@
-import {
-  BearerConnectionTarget,
-  SshConnectionTarget,
-} from "@loom/client-runtime/connection";
+import { BearerConnectionTarget, SshConnectionTarget } from "@loom/client-runtime/connection";
 import { EnvironmentId } from "@loom/contracts";
 import { describe, expect, it } from "vite-plus/test";
 

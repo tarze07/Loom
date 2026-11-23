@@ -28,11 +28,18 @@ const results = (state: SupervisorConnectionState) =>
 
 describe("presentConnectionDiagnosis", () => {
   it("reports this device as offline before any other hop", () => {
-    const state = { ...backoff(new ConnectionBlockedError({
-      reason: "authentication",
-      detail: "Refused.",
-    })), network: "offline" as const };
-    expect(diagnose(state)?.headline).toBe("This device is offline or could not prepare the connection");
+    const state = {
+      ...backoff(
+        new ConnectionBlockedError({
+          reason: "authentication",
+          detail: "Refused.",
+        }),
+      ),
+      network: "offline" as const,
+    };
+    expect(diagnose(state)?.headline).toBe(
+      "This device is offline or could not prepare the connection",
+    );
     expect(results(state)?.[0]).toBe("device:failed");
   });
 

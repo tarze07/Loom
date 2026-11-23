@@ -1,8 +1,4 @@
-import {
-  EnvironmentId,
-  managedCapabilityDenial,
-  type ManagedPolicySummary,
-} from "@loom/contracts";
+import { EnvironmentId, managedCapabilityDenial, type ManagedPolicySummary } from "@loom/contracts";
 import { describe, expect, it, vi } from "vite-plus/test";
 
 import "~/index.css";

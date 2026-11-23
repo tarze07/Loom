@@ -1,8 +1,5 @@
 import type { EnvironmentShellSummary } from "@loom/client-runtime/state/shell";
-import {
-  BearerConnectionProfile,
-  BearerConnectionTarget,
-} from "@loom/client-runtime/connection";
+import { BearerConnectionProfile, BearerConnectionTarget } from "@loom/client-runtime/connection";
 import { EnvironmentId } from "@loom/contracts";
 import { describe, expect, it } from "@effect/vitest";
 import * as Option from "effect/Option";

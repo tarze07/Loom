@@ -11,7 +11,8 @@ interface NativeKeyboardCommandsProps extends ViewProps {
   ) => void;
 }
 
-const NativeKeyboardCommands = requireNativeView<NativeKeyboardCommandsProps>("LoomKeyboardCommands");
+const NativeKeyboardCommands =
+  requireNativeView<NativeKeyboardCommandsProps>("LoomKeyboardCommands");
 
 export function LoomKeyboardCommands(
   props: PropsWithChildren<{

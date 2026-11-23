@@ -1,7 +1,4 @@
-import {
-  requireSettingsSecretLiteral,
-  type SettingsSecretUnresolvedError,
-} from "@loom/contracts";
+import { requireSettingsSecretLiteral, type SettingsSecretUnresolvedError } from "@loom/contracts";
 import { normalizeHost } from "@loom/source-control-core/server/pullRequestUtils";
 import * as Cache from "effect/Cache";
 import * as Context from "effect/Context";

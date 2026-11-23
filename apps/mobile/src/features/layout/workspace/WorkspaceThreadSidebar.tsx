@@ -1,7 +1,4 @@
-import type {
-  EnvironmentProject,
-  EnvironmentThreadShell,
-} from "@loom/client-runtime/state/shell";
+import type { EnvironmentProject, EnvironmentThreadShell } from "@loom/client-runtime/state/shell";
 import { EnvironmentId, ThreadId } from "@loom/contracts";
 import { useNavigation, useNavigationState } from "@react-navigation/native";
 

@@ -45,10 +45,7 @@ export const renderCliShim = (input: {
       "setlocal EnableExtensions DisableDelayedExpansion",
       // Ctrl-C skips codepage restoration, so switch to UTF-8 only for non-ASCII install paths.
       ...(utf8
-        ? [
-            `for /f "tokens=2 delims=:." %%c in ('chcp') do set "loompage=%%c"`,
-            "chcp 65001 >nul",
-          ]
+        ? [`for /f "tokens=2 delims=:." %%c in ('chcp') do set "loompage=%%c"`, "chcp 65001 >nul"]
         : []),
       `set "LOOM_CLI_PATH=${cmdText(input.shimPath)}"`,
       `if not defined LOOM_HOME set "LOOM_HOME=${cmdText(input.loomHome)}"`,

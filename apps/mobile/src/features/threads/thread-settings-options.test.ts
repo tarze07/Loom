@@ -1,7 +1,4 @@
-import {
-  getPromptControlledTraits,
-  getTraitSelectChange,
-} from "@loom/client-runtime/model-traits";
+import { getPromptControlledTraits, getTraitSelectChange } from "@loom/client-runtime/model-traits";
 import {
   ProviderInstanceId,
   type ManagedPolicySummary,

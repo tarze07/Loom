@@ -436,7 +436,10 @@ it.layer(NodeServices.layer)("DesktopCliCommand", (it) => {
       // PATH alone.
       const besideHome = yield* fs.makeTempDirectoryScoped();
       yield* fs.makeDirectory(path.join(besideHome, ".local", "bin"), { recursive: true });
-      yield* fs.writeFileString(path.join(besideHome, ".local", "bin", "loom.cmd"), "@echo off\r\n");
+      yield* fs.writeFileString(
+        path.join(besideHome, ".local", "bin", "loom.cmd"),
+        "@echo off\r\n",
+      );
       const beside = fakePowerShell("C:\\Tools");
       yield* (yield* commandIn({ home: besideHome, platform: "win32" }, beside.spawner))
         .installOnFirstLaunch;

@@ -1,10 +1,6 @@
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import { assert, describe, it } from "@effect/vitest";
-import {
-  ProviderDriverKind,
-  ProviderInstanceId,
-  type ProviderInstallState,
-} from "@loom/contracts";
+import { ProviderDriverKind, ProviderInstanceId, type ProviderInstallState } from "@loom/contracts";
 import * as HostProcess from "@loom/shared/HostProcess";
 import * as Effect from "effect/Effect";
 import * as Deferred from "effect/Deferred";
@@ -229,7 +225,9 @@ describe("provider installation routing", () => {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const platform = yield* HostProcess.Platform;
-      const directory = yield* fs.makeTempDirectoryScoped({ prefix: "loom-provider-install-route-" });
+      const directory = yield* fs.makeTempDirectoryScoped({
+        prefix: "loom-provider-install-route-",
+      });
       const binary = platform === "win32" ? "agy-test.exe" : "agy-test";
       const executable = path.join(directory, binary);
       yield* fs.writeFileString(executable, "test");

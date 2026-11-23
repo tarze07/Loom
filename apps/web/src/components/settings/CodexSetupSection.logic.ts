@@ -1,8 +1,4 @@
-import type {
-  ChatGptHandoffState,
-  ProviderAuthState,
-  ProviderInstallState,
-} from "@loom/contracts";
+import type { ChatGptHandoffState, ProviderAuthState, ProviderInstallState } from "@loom/contracts";
 
 export function readCodexSetupMode(config: unknown): "managed" | "existing" {
   return config !== null &&

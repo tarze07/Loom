@@ -63,7 +63,7 @@ describe("workspace connection status", () => {
           environmentId: "environment-2" as never,
           environmentLabel: "Sleeping laptop",
           displayUrl: "",
-            isEnabled: true,
+          isEnabled: true,
           connectionState: "reconnecting",
           connectionError: "Could not reach sleeping laptop",
           connectionErrorTraceId: null,

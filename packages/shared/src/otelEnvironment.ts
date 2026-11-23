@@ -322,9 +322,7 @@ export const isRelayTracingEnabled = (env: Readonly<Record<string, string | unde
   Config.all({
     ...sdkFlags,
   }).pipe(
-    Effect.map(
-      ({ t3, spec }) => !(t3.value ?? spec.value ?? false),
-    ),
+    Effect.map(({ t3, spec }) => !(t3.value ?? spec.value ?? false)),
     Effect.provide(ConfigProvider.layer(ConfigProvider.fromEnvRecord(env))),
     Effect.orDie,
     Effect.runSync,

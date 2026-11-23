@@ -2,10 +2,7 @@ import {
   classifyMarkdownImageSource,
   markdownImageSourceFragment,
 } from "@loom/client-runtime/markdown-images";
-import {
-  audioMimeTypeFromExtension,
-  mediaMimeTypeFromExtension,
-} from "@loom/shared/mediaPreview";
+import { audioMimeTypeFromExtension, mediaMimeTypeFromExtension } from "@loom/shared/mediaPreview";
 import { splitFilePathPosition } from "@loom/shared/fileLinks";
 import { parseMarkdownFileLink } from "@loom/shared/markdownLinks";
 import {

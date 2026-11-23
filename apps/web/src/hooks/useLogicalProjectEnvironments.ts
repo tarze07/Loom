@@ -1,11 +1,7 @@
 import { availableScratchWorkspaceRoot } from "@loom/client-runtime/operations/projects";
 import { isScratchProject } from "@loom/client-runtime/state/projects";
 import type { EnvironmentProject } from "@loom/client-runtime/state/shell";
-import {
-  type EnvironmentId,
-  type ProjectId,
-  resolveEnvironmentMachineKind,
-} from "@loom/contracts";
+import { type EnvironmentId, type ProjectId, resolveEnvironmentMachineKind } from "@loom/contracts";
 
 import type { EnvironmentOption } from "../components/BranchToolbar.logic";
 import {

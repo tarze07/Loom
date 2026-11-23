@@ -1,7 +1,4 @@
-import type {
-  EnvironmentPresentation,
-  PreparedConnection,
-} from "@loom/client-runtime/connection";
+import type { EnvironmentPresentation, PreparedConnection } from "@loom/client-runtime/connection";
 import { PrimaryConnectionTarget } from "@loom/client-runtime/connection";
 import type { ServerConfig } from "@loom/contracts";
 import { EnvironmentId } from "@loom/contracts";

@@ -1,9 +1,5 @@
 import type { ClientSettings } from "@loom/contracts/settings";
-import type {
-  AssistantCitation,
-  EnvironmentId,
-  ResolvedKeybindingsConfig,
-} from "@loom/contracts";
+import type { AssistantCitation, EnvironmentId, ResolvedKeybindingsConfig } from "@loom/contracts";
 import type { ComposerPathSearchTarget } from "@loom/client-runtime/state/threads";
 import {
   serializeAssistantCitation,

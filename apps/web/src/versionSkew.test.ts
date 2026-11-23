@@ -20,7 +20,6 @@ describe("versionSkew", () => {
     branding.APP_VERSION = "0.0.34";
   });
 
-
   it("returns a mismatch when the server is behind the client", () => {
     expect(resolveVersionMismatch("0.0.33")).toEqual({
       clientVersion: "0.0.34",

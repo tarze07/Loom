@@ -1,8 +1,5 @@
 import { squashAtomCommandFailure } from "@loom/client-runtime/state/runtime";
-import {
-  findProjectByPath,
-  inferProjectTitleFromPath,
-} from "@loom/client-runtime/state/projects";
+import { findProjectByPath, inferProjectTitleFromPath } from "@loom/client-runtime/state/projects";
 import type { DesktopAppActivationRequest } from "@loom/contracts";
 
 import { handleDesktopAppActivationRequest } from "../desktopAppActivation";

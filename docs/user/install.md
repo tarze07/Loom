@@ -28,9 +28,9 @@ installer or the desktop app did not create is already there, it leaves that
 one alone and stops. Set `LOOM_CHANNEL=nightly` to install the nightly train, or
 `LOOM_VERSION` to pin an exact version.
 
-| Task                                  | Command                                                                 |
-| ------------------------------------- | ----------------------------------------------------------------------- |
-| Start the server and open the web app | `loom`                                                                  |
+| Task                                  | Command                                                                   |
+| ------------------------------------- | ------------------------------------------------------------------------- |
+| Start the server and open the web app | `loom`                                                                    |
 | Start the server without a browser    | `loom serve`                                                              |
 | Use it from your other devices        | `loom up` ([details](./remote-access.md))                                 |
 | Keep it running in the background     | `loom service install` ([details](./background-service.md))               |

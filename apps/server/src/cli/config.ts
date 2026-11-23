@@ -1,9 +1,5 @@
 import * as NetService from "@loom/shared/Net";
-import {
-  OtlpHeadersFromString,
-  OtlpProtocol,
-  type SignalExport,
-} from "@loom/shared/observability";
+import { OtlpHeadersFromString, OtlpProtocol, type SignalExport } from "@loom/shared/observability";
 import * as OtelEnvironment from "@loom/shared/otelEnvironment";
 import { parsePersistedServerObservabilitySettings } from "@loom/shared/serverSettings";
 import { DesktopBackendBootstrap, PortSchema } from "@loom/contracts";
@@ -85,9 +81,7 @@ export const traceFileConfig = Config.String("LOOM_TRACE_FILE").pipe(
   Config.option,
   Config.map(Option.getOrUndefined),
 );
-export const traceMaxFilesConfig = Config.Int("LOOM_TRACE_MAX_FILES").pipe(
-  Config.withDefault(10),
-);
+export const traceMaxFilesConfig = Config.Int("LOOM_TRACE_MAX_FILES").pipe(Config.withDefault(10));
 
 const EnvServerConfig = Config.all({
   logLevel: Config.LogLevel("LOOM_LOG_LEVEL").pipe(Config.withDefault("Info")),
@@ -109,9 +103,7 @@ const EnvServerConfig = Config.all({
     Config.option,
     Config.map(Option.getOrUndefined),
   ),
-  otlpExportIntervalMs: Config.Int("LOOM_OTLP_EXPORT_INTERVAL_MS").pipe(
-    Config.withDefault(10_000),
-  ),
+  otlpExportIntervalMs: Config.Int("LOOM_OTLP_EXPORT_INTERVAL_MS").pipe(Config.withDefault(10_000)),
   otlpHeaders: Config.schema(OtlpHeadersFromString, "LOOM_OTLP_HEADERS").pipe(
     Config.option,
     Config.map(Option.getOrUndefined),

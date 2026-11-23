@@ -1,7 +1,4 @@
-import {
-  mapAtomCommandResult,
-  type AtomCommandResult,
-} from "@loom/client-runtime/state/runtime";
+import { mapAtomCommandResult, type AtomCommandResult } from "@loom/client-runtime/state/runtime";
 import type { ScopedThreadRef } from "@loom/contracts";
 
 import type { BrowserSettingsReadError, OpenPreviewMutation } from "~/browser/openFileInPreview";

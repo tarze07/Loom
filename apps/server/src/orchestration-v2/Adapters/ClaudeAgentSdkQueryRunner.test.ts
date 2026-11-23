@@ -222,7 +222,7 @@ const resumedMcpQueryInput = {
     tools: [],
     permissionMode: "default",
     mcpServers: {
-      "loom": {
+      loom: {
         type: "http",
         url: "http://localhost:3773/mcp",
         headers: { Authorization: "Bearer test-mcp-credential" },
