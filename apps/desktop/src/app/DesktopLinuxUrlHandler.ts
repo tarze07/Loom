@@ -99,9 +99,9 @@ export function renderUrlHandlerDesktopEntry(input: {
 // Docks may look up the Wayland app id without a desktop entry; icon theme lookups are case-sensitive.
 const LINUX_THEME_ICON_SIZE = "256x256";
 
-function linuxThemeIconNames(desktopEntryName: string): readonly string[] {
-  const appId = desktopEntryName.replace(/\.desktop$/u, "");
-  return [...new Set([appId.toLowerCase(), appId])];
+// Wayland matches the window's app id, X11 and the launcher match the desktop entry name.
+function linuxThemeIconNames(desktopEntryName: string, appId: string): readonly string[] {
+  return [...new Set([appId, desktopEntryName.replace(/\.desktop$/u, "")])];
 }
 
 const sameBytes = (left: Uint8Array, right: Uint8Array): boolean =>
@@ -220,9 +220,10 @@ export const make = Effect.gen(function* () {
     const source = yield* assets.resolveResourcePath(`icons/${LINUX_THEME_ICON_SIZE}.png`);
     if (Option.isNone(source)) return;
     const icon = yield* fileSystem.readFile(source.value);
-    const targets = linuxThemeIconNames(environment.linuxDesktopEntryName).map((name) =>
-      environment.path.join(themeIconDir, `${name}.png`),
-    );
+    const targets = linuxThemeIconNames(
+      environment.linuxDesktopEntryName,
+      environment.appUserModelId,
+    ).map((name) => environment.path.join(themeIconDir, `${name}.png`));
     let changed = false;
     for (const target of targets) {
       const current = yield* fileSystem.readFile(target).pipe(Effect.option);

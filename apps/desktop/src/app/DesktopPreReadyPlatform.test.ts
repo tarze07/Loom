@@ -191,7 +191,7 @@ describe("DesktopPreReadyPlatform", () => {
               DesktopConfig.layerTest({
                 XDG_DATA_HOME: "/xdg",
                 APPIMAGE: "/Applications/current.AppImage",
-                LOOM_DESKTOP_LAUNCHER_PATH: " /opt/Loom/loom ",
+                LOOM_DESKTOP_LAUNCHER_PATH: " /opt/Loom Desktop/loom ",
               }),
             ),
           ),
@@ -199,7 +199,7 @@ describe("DesktopPreReadyPlatform", () => {
         const entry = writeFileSyncMock.mock.calls.find(
           ([path]) => path === "/xdg/applications/com.loom.Loom.desktop",
         )?.[1];
-        assert.include(entry, 'Exec="/opt/Loom/loom" %U');
+        assert.include(entry, 'Exec="/opt/Loom Desktop/loom" %U');
       }),
     ).pipe(Effect.ensuring(Effect.sync(() => vi.unstubAllEnvs())));
   });

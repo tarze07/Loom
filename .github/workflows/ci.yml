@@ -58,6 +58,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-ci-deps
+      # The desktop tests compile the native libsecret helper.
+      - uses: ./.github/actions/setup-apt-mirrors
+      - run: sudo apt-get update && sudo apt-get install -y libsecret-1-dev
       - name: Test affected packages
         env:
           PACKAGES: ${{ needs.changes.outputs.test_packages }}
