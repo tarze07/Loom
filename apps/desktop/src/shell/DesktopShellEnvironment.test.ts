@@ -806,6 +806,36 @@ describe("DesktopShellEnvironment", () => {
     }),
   );
 
+  it.effect("publishes no lowercase proxy names on Windows, where they alias HTTPS_PROXY", () =>
+    Effect.gen(function* () {
+      const env: NodeJS.ProcessEnv = {
+        PATH: "C:\\Windows\\System32",
+        HTTPS_PROXY: "http://proxy.corp.internal:8080",
+      };
+
+      yield* runShellEnvironment({
+        env,
+        platform: "win32",
+        handler: () => envOutput({ PATH: "C:\\Shell\\Bin" }),
+        use: (service) =>
+          Effect.gen(function* () {
+            yield* service.installIntoProcess;
+            yield* service.awaitDiscovery;
+            const snapshot = yield* Stream.runHead(service.updates);
+            assert.isTrue(Option.isSome(snapshot));
+            if (Option.isSome(snapshot)) {
+              assert.equal(
+                snapshot.value.environment.HTTPS_PROXY,
+                "http://proxy.corp.internal:8080",
+              );
+              assert.notProperty(snapshot.value.environment, "https_proxy");
+            }
+            return true;
+          }),
+      });
+    }),
+  );
+
   it.effect("prefers login-shell desktop session hints over inherited values on linux", () =>
     Effect.gen(function* () {
       const env: NodeJS.ProcessEnv = {
