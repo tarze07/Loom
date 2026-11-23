@@ -263,6 +263,25 @@ function autoSettlementConfigured(settings: import("@loom/contracts").ServerSett
   );
 }
 
+const MISSING_SOURCE_CONTROL_CREDENTIAL_TAG =
+  /^(?:GitHub|GitLab|Bitbucket|AzureDevOps|Forgejo|GitCafe)(?:CliMissing|NotSignedIn|HostDisabled|CredentialsMissing|Unauthorized)Error$/;
+
+function isSourceControlUnavailableError(error: unknown): boolean {
+  if (typeof error !== "object" || error === null) return false;
+  const record = error as { readonly _tag?: unknown; readonly cause?: unknown };
+  if (typeof record._tag === "string" && MISSING_SOURCE_CONTROL_CREDENTIAL_TAG.test(record._tag)) {
+    return true;
+  }
+  return record.cause !== undefined && record.cause !== error
+    ? isSourceControlUnavailableError(record.cause)
+    : false;
+}
+
+/** @internal Exported for tests. */
+export function isSourceControlUnavailableCause(cause: Cause.Cause<unknown>): boolean {
+  return isSourceControlUnavailableError(Cause.squash(cause));
+}
+
 /** @internal Exported for tests. */
 export function autoSettlementSettingsKey(
   settings: import("@loom/contracts").ServerSettings,
@@ -398,6 +417,14 @@ export const make = Effect.gen(function* () {
       { concurrency: 8 },
     ))
       .filter((thread) => thread !== null)
+      .filter((thread) => {
+        const projectSettings = resolveProjectSettings(settings, thread.projectId).settings;
+        return (
+          projectSettings.sidebarAutoSettleOnMerge ||
+          (projectSettings.sidebarAutoSettleAfterDays !== null &&
+            projectSettings.sidebarAutoSettleKeepPullRequests)
+        );
+      })
       .filter((thread) => visibleThreadPullRequests(thread.pullRequests ?? []).length === 0)
       .filter(
         (thread) =>
@@ -550,10 +577,18 @@ export const make = Effect.gen(function* () {
           Effect.catchCauseIf(
             (cause) => !Cause.hasInterruptsOnly(cause),
             (cause) =>
-              Effect.logWarning("automatic thread settlement skipped", {
-                threadIds: group.map((thread) => thread.id),
-                cause: Cause.pretty(cause),
-              }),
+              isSourceControlUnavailableCause(cause)
+                ? Effect.logDebug(
+                    "automatic thread settlement skipped (source control unavailable)",
+                    {
+                      threadIds: group.map((thread) => thread.id),
+                      reason: Cause.squash(cause),
+                    },
+                  )
+                : Effect.logWarning("automatic thread settlement skipped", {
+                    threadIds: group.map((thread) => thread.id),
+                    cause: Cause.pretty(cause),
+                  }),
           ),
         ),
       { concurrency: 8, discard: true },

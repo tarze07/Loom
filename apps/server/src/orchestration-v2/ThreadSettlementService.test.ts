@@ -1,5 +1,6 @@
-import { SourceControlProviderKind } from "@loom/contracts";
+import { SourceControlProviderError, SourceControlProviderKind } from "@loom/contracts";
 import { assert, describe, expect, it } from "@effect/vitest";
+import * as Cause from "effect/Cause";
 import * as DateTime from "effect/DateTime";
 import {
   DEFAULT_SERVER_SETTINGS,
@@ -2018,4 +2019,68 @@ describe("isSnoozed", () => {
       }),
     ).toBeNull();
   });
+});
+
+describe("isSourceControlUnavailableCause", () => {
+  it("recognizes wrapped missing-credential and disabled-host source control errors", () => {
+    for (const tag of [
+      "GitHubCliMissingError",
+      "GitHubNotSignedInError",
+      "GitHubHostDisabledError",
+    ]) {
+      const wrapped = new SourceControlProviderError({
+        provider: SourceControlProviderKind.make("github"),
+        operation: "listChangeRequests",
+        cwd: "/repo",
+        detail: "No GitHub credential on the server.",
+        cause: { _tag: tag },
+      });
+      expect(ThreadSettlementService.isSourceControlUnavailableCause(Cause.fail(wrapped))).toBe(
+        true,
+      );
+    }
+
+    const networkError = new SourceControlProviderError({
+      provider: SourceControlProviderKind.make("github"),
+      operation: "listChangeRequests",
+      cwd: "/repo",
+      detail: "Timed out",
+      cause: new Error("ETIMEDOUT"),
+    });
+    expect(ThreadSettlementService.isSourceControlUnavailableCause(Cause.fail(networkError))).toBe(
+      false,
+    );
+  });
+
+  it.effect("skips branch pull request lookups when PR-based auto-settlement is disabled", () =>
+    Effect.scoped(
+      Effect.gen(function* () {
+        const thread = shell({
+          id: ThreadId.make("no-pr-lookup-thread"),
+          branch: "feature/local-only",
+          updatedAt: at(-1 * DAY_MS),
+        });
+        const lookups = yield* Ref.make(0);
+        const fixture = yield* makeHarness({
+          snapshot: makeSnapshot([thread]),
+          settings: {
+            ...DEFAULT_SERVER_SETTINGS,
+            sidebarAutoSettleOnMerge: false,
+            sidebarAutoSettleAfterDays: 7,
+            sidebarAutoSettleKeepPullRequests: false,
+          },
+          onBranchPullRequest: () =>
+            Ref.update(lookups, (count) => count + 1).pipe(Effect.as(null)),
+        });
+
+        yield* Effect.gen(function* () {
+          const service = yield* ThreadSettlementService.ThreadSettlementServiceV2;
+          yield* startHarness(service, fixture.activation, fixture.snapshotReads);
+          yield* service.drain;
+        }).pipe(Effect.provide(fixture.layer));
+
+        assert.strictEqual(yield* Ref.get(lookups), 0);
+      }),
+    ),
+  );
 });
