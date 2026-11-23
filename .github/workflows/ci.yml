@@ -1,0 +1,97 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      typecheck: ${{ steps.detect.outputs.typecheck }}
+      test: ${{ steps.detect.outputs.test }}
+      test_packages: ${{ steps.detect.outputs.test_packages }}
+      test_web: ${{ steps.detect.outputs.test_web }}
+      test_server: ${{ steps.detect.outputs.test_server }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - id: detect
+        uses: ./.github/actions/ci-changes
+
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-ci-deps
+      - run: vp fmt --check
+      - run: vp lint --report-unused-disable-directives
+      - run: vp run knip:check
+
+  typecheck:
+    needs: changes
+    if: needs.changes.outputs.typecheck == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-ci-deps
+      # Four concurrent checkers exhaust a standard runner's memory.
+      - run: vp run -r --concurrency-limit 2 typecheck
+
+  test:
+    needs: changes
+    if: needs.changes.outputs.test == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-ci-deps
+      - name: Test affected packages
+        env:
+          PACKAGES: ${{ needs.changes.outputs.test_packages }}
+        run: |
+          if [[ -z "$PACKAGES" ]]; then
+            # Empty means every tested package except those with their own job below.
+            PACKAGES=$(node -e '
+              const { readWorkspace } = require("./.github/scripts/ci-changes.cjs");
+              const own = new Set(["loom", "@loom/web", "@loom/monorepo"]);
+              const names = readWorkspace().filter((p) => p.hasTest && !own.has(p.name));
+              console.log(names.map((p) => p.name).join(" "));
+            ')
+          fi
+          filters=()
+          for name in $PACKAGES; do filters+=(--filter "$name"); done
+          vp run "${filters[@]}" test
+
+  test-server:
+    needs: changes
+    if: needs.changes.outputs.test_server == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-ci-deps
+      - run: vp run --filter loom test
+
+  test-web:
+    needs: changes
+    if: needs.changes.outputs.test_web == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-ci-deps
+      - run: vp exec --filter @loom/web playwright install --with-deps chromium
+      - run: vp run --filter @loom/web test
