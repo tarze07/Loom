@@ -37,7 +37,7 @@ export class DesktopAppSshUnsupportedError extends Schema.TaggedError<DesktopApp
   {},
 ) {
   override get message(): string {
-    return "`t3 app` only controls a desktop app on the same machine. It cannot run over SSH.";
+    return "`loom app` only controls a desktop app on the same machine. It cannot run over SSH.";
   }
 }
 
@@ -60,7 +60,7 @@ export class DesktopAppUnreachableError extends Schema.TaggedError<DesktopAppUnr
   },
 ) {
   override get message(): string {
-    return "Could not reach the Loom desktop app. Start or update the desktop app on this machine, then run `t3 app` again. A running Loom server is not enough.";
+    return "Could not reach the Loom desktop app. Start or update the desktop app on this machine, then run `loom app` again. A running Loom server is not enough.";
   }
 }
 

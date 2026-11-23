@@ -103,7 +103,7 @@ export const reconcileService = Effect.fn("cli.service.reconcile")(function* (op
     return { changed: false, status } satisfies ServiceReconcileResult;
   }
   if (status.supported && !status.installed) {
-    // A new service listens on this machine only, until `t3 up` opens the local network.
+    // A new service listens on this machine only, until `loom up` opens the local network.
     const { entries } = yield* readServiceEnv(baseDir);
     if (entries.LOOM_LAN === undefined && entries.LOOM_HOST === undefined) {
       yield* writeServiceEnv(baseDir, { LOOM_LAN: "false" });
@@ -143,7 +143,7 @@ function formatProtection(
   return [
     protection.unprotected === undefined
       ? `  Memory protection: on${protection.setByProtect ? " (t3 service protect)" : ""}`
-      : `  Memory protection: off, ${protection.unprotected} grants none. Run \`t3 service protect\`.`,
+      : `  Memory protection: off, ${protection.unprotected} grants none. Run \`loom service protect\`.`,
     ...(protection.oomScoreAdj === undefined ? [] : [`  OOM score: ${protection.oomScoreAdj}`]),
   ];
 }
@@ -157,7 +157,7 @@ function formatServiceStatus(
     return "Loom service\n  Status: unavailable on this machine\n  Supported on: Linux with systemd, macOS with launchd, Windows with Task Scheduler";
   }
   if (!status.installed) {
-    return "Loom service\n  Status: not installed\n  Next: Run `t3 service install`.";
+    return "Loom service\n  Status: not installed\n  Next: Run `loom service install`.";
   }
   if (status.otherBaseDir !== undefined) {
     return [
@@ -183,7 +183,7 @@ function formatServiceStatus(
       `  Logs: ${status.logPath}`,
       ...formatProtection(protection),
       ...problems,
-      `  Next: Run \`t3 update ${installedVersion}\` to match it, or pass \`--allow-downgrade\` to \`t3 service install\` explicitly.`,
+      `  Next: Run \`loom update ${installedVersion}\` to match it, or pass \`--allow-downgrade\` to \`loom service install\` explicitly.`,
     ].join("\n");
   }
   return [
@@ -193,7 +193,7 @@ function formatServiceStatus(
     `  Logs: ${status.logPath}`,
     ...formatProtection(protection),
     ...problems,
-    ...(status.current ? [] : ["  Next: Run `t3 service install` to repair it."]),
+    ...(status.current ? [] : ["  Next: Run `loom service install` to repair it."]),
   ].join("\n");
 }
 
@@ -216,7 +216,7 @@ const serviceReconcileFlags = {
 
 const serviceInstallCommand = Command.make("install", serviceReconcileFlags).pipe(
   Command.withDescription(
-    "Install Loom as a background service for this user. `t3 up` also chooses how your other devices reach it.",
+    "Install Loom as a background service for this user. `loom up` also chooses how your other devices reach it.",
   ),
   Command.withHandler((flags) =>
     runServiceCommand(
@@ -231,7 +231,7 @@ const serviceInstallCommand = Command.make("install", serviceReconcileFlags).pip
         }
         yield* Console.log(formatServiceChange(result));
         if (!result.previouslyInstalled) {
-          yield* Console.log("Run `t3 up` to choose how your other devices reach it.");
+          yield* Console.log("Run `loom up` to choose how your other devices reach it.");
         }
       }),
     ),
@@ -239,14 +239,14 @@ const serviceInstallCommand = Command.make("install", serviceReconcileFlags).pip
 );
 
 const serviceUpdateCommand = Command.make("update", serviceReconcileFlags).pipe(
-  Command.withDescription("Deprecated. Run `t3 update` to move to a newer release."),
+  Command.withDescription("Deprecated. Run `loom update` to move to a newer release."),
   Command.unlisted,
   Command.withHandler((flags) =>
     runServiceCommand(
       flags,
       Effect.gen(function* () {
         yield* Console.log(
-          "`t3 service update` is deprecated: run `t3 update` to move to a newer release, or `t3 service install` to repair the service. Repairing now.",
+          "`loom service update` is deprecated: run `loom update` to move to a newer release, or `loom service install` to repair the service. Repairing now.",
         );
         const result = yield* reconcileService({ allowDowngrade: flags.allowDowngrade });
         if (!result.changed) {
@@ -263,7 +263,7 @@ const serviceUpdateCommand = Command.make("update", serviceReconcileFlags).pipe(
 
 const serviceRestartCommand = Command.make("restart", projectLocationFlags).pipe(
   Command.withDescription(
-    "Restart the background service. Picks up a version installed by `t3 update` that was not restarted at the time.",
+    "Restart the background service. Picks up a version installed by `loom update` that was not restarted at the time.",
   ),
   Command.withHandler((flags) =>
     runServiceCommand(
@@ -370,7 +370,7 @@ const serviceProtectCommand = Command.make("protect", {
       // Before resolving config, which creates Loom directories that root would then own.
       if ((yield* HostProcess.UserId) === 0) {
         return yield* Console.log(
-          "Run `t3 service protect` as the user that runs Loom, without sudo. It asks for sudo when it needs root.",
+          "Run `loom service protect` as the user that runs Loom, without sudo. It asks for sudo when it needs root.",
         );
       }
       return yield* runServiceCommand(
@@ -407,7 +407,7 @@ const serviceProtectCommand = Command.make("protect", {
             if (!(yield* confirm(flags.yes, "Remove Loom service protection?"))) return;
             yield* ServiceProtection.removeProtection(installed);
             return yield* Console.log(
-              "Removed Loom service protection. The server's OOM score returns to normal after `t3 service restart`.",
+              "Removed Loom service protection. The server's OOM score returns to normal after `loom service restart`.",
             );
           }
 
@@ -416,7 +416,7 @@ const serviceProtectCommand = Command.make("protect", {
               "Keeps Loom running when agents fill this machine's memory:",
               "  - reserves memory for the Loom server, so the kernel takes memory from agents first",
               "  - makes the out-of-memory killer pick agents before the server",
-              "It adds systemd drop-in files and changes nothing else. Undo with `t3 service protect --undo`.",
+              "It adds systemd drop-in files and changes nothing else. Undo with `loom service protect --undo`.",
             ].join("\n"),
           );
           const names = remote.map((unit) => unit.replace(/\.service$/, "")).join(" and ");
@@ -442,7 +442,7 @@ const serviceProtectCommand = Command.make("protect", {
           if (!(yield* confirm(flags.yes, "Apply these settings?"))) return;
           yield* ServiceProtection.applyProtection(plan);
           yield* Console.log(
-            "Protected Loom. Memory protection applies now; the server takes its OOM score after `t3 service restart`. Undo with `t3 service protect --undo`.",
+            "Protected Loom. Memory protection applies now; the server takes its OOM score after `loom service restart`. Undo with `loom service protect --undo`.",
           );
         }).pipe(Effect.provide(ProcessRunner.layer)),
       );

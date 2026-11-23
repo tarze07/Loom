@@ -99,7 +99,7 @@ export LOOM_BITBUCKET_API_TOKEN="your-token"
 
 For a background service, put these `KEY=VALUE` entries in
 [`service.env`](./background-service.md#configure-the-service-environment)
-under Loom home, then run `t3 service restart`. Service installation and updates
+under Loom home, then run `loom service restart`. Service installation and updates
 preserve that file.
 
 ### Azure DevOps

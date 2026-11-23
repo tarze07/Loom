@@ -27,7 +27,7 @@ version of `loom` on that machine — through the desktop app, npm, or the
 [install scripts](https://loom.local/install.sh) — then restart the server the
 way you started it. A server installed as a
 [background service](./background-service.md) restarts with
-`t3 service restart`.
+`loom service restart`.
 
 ## Mobile app
 

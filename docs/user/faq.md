@@ -13,7 +13,7 @@ Bring your own: Claude Code, Codex, Cursor, Grok Build, OpenCode, Google Antigra
 We were inspired by the Codex desktop app, Conductor, Claude Desktop, and Cursor Glass, but none met our bar. What you get:
 
 - Bring your own sub. Claude, Codex, and whatever else you already have installed.
-- Best in class remote. Run `t3 up` on any box and drive it from anywhere.
+- Best in class remote. Run `loom up` on any box and drive it from anywhere.
 - Best in class mobile app.
 - Truly 100% open source. If we go the wrong direction, fork it.
 
@@ -33,7 +33,7 @@ Loom drives Claude through Anthropic's Agent SDK. I confirmed it's a real bug on
 
 ## How do I use Loom remotely?
 
-Your agents run wherever Loom runs: your desktop, a server, a VPS. You connect to it from anywhere. I do this constantly. Less than 5% of my prompts run on my laptop. Run `t3 up` on that machine and you get really good remote support. LAN pairing and Tailscale both work, and [app.loom.local](https://app.loom.local) is the web client. [Remote access](./remote-access.md)
+Your agents run wherever Loom runs: your desktop, a server, a VPS. You connect to it from anywhere. I do this constantly. Less than 5% of my prompts run on my laptop. Run `loom up` on that machine and you get really good remote support. LAN pairing and Tailscale both work, and [app.loom.local](https://app.loom.local) is the web client. [Remote access](./remote-access.md)
 
 ## How do I use Loom on my phone?
 

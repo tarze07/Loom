@@ -155,7 +155,7 @@ export class ThemeTargetMissingError extends Schema.TaggedError<ThemeTargetMissi
   {},
 ) {
   override get message(): string {
-    return "Provide a theme id or file, or run `t3 theme clear` to remove the theme.";
+    return "Provide a theme id or file, or run `loom theme clear` to remove the theme.";
   }
 }
 
@@ -176,7 +176,7 @@ const resolveThemePaths = Effect.fn(function* (explicitBaseDir: Option.Option<st
     baseDirIsExplicit: Option.isSome(configuredBaseDir),
   });
   // A dev server with an implicit home keeps its state in `dev`; follow it unless a
-  // `userdata` server is running too, the same order `t3 pair` checks.
+  // `userdata` server is running too, the same order `loom pair` checks.
   let derivedPaths = userdataPaths;
   if (
     Option.isNone(configuredBaseDir) &&

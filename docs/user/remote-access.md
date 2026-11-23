@@ -11,32 +11,32 @@ On a desktop host, open **Settings → Sharing & access**, enable **Network acce
 then create a pairing link using an address the other device can reach. Changing
 network access restarts the desktop app. You can turn it off in the same place.
 
-For a command-line host, run `t3 up`. It asks how your other devices reach the
+For a command-line host, run `loom up`. It asks how your other devices reach the
 machine, then runs Loom as a [background service](./background-service.md).
 Choose the local network, or skip the question:
 
 ```bash
-t3 up --lan
+loom up --lan
 ```
 
-Run `t3 up` again to change your choice, and `t3 status` to see it. In scripts,
+Run `loom up` again to change your choice, and `loom status` to see it. In scripts,
 name the choice with `--lan` or `--no-lan`, or pass `--yes` for the defaults;
-without a terminal and with nothing set up, `t3 up` stops and names the flags. A
+without a terminal and with nothing set up, `loom up` stops and names the flags. A
 needed restart runs without asking and stops running agent turns.
-`t3 status --json` prints the settings, and `t3 up --help` lists every flag.
+`loom status --json` prints the settings, and `loom up --help` lists every flag.
 
 Instead of the background service, you can keep the desktop app running with
 its local environment enabled. Closing the desktop app's last window stops its
 local server.
 
-For a server in a terminal, run `t3 serve --lan`. Either way, Loom then
+For a server in a terminal, run `loom serve --lan`. Either way, Loom then
 accepts connections from your local network and tailnet, so a pairing code is
 all that keeps other devices on them out.
 
 If a server is already running, generate a fresh link without restarting it:
 
 ```bash
-t3 pair
+loom pair
 ```
 
 Scan the QR code on your phone or paste the pairing URL into **Add environment**
@@ -75,7 +75,7 @@ current LAN and Tailscale addresses and adds them as routes. When the
 machine's LAN address changes, for example after it joins another Wi-Fi network,
 the learned route follows it. The machine must allow network access for its LAN
 address to be learned: **Network access** in the desktop app, or the
-[local network](./background-service.md#local-network-access) choice in `t3 up`.
+[local network](./background-service.md#local-network-access) choice in `loom up`.
 You can reorder a learned route, but not remove it; it
 goes away with the route it was learned through, or when the machine stops
 reporting that address.
@@ -123,13 +123,13 @@ HTTPS** in **Settings → Sharing & access**. Turn it off there to remove that r
 To start a command-line server with Tailscale HTTPS:
 
 ```bash
-t3 serve --tailscale-serve
+loom serve --tailscale-serve
 ```
 
 For an already-running server:
 
 ```bash
-t3 pair --tailscale
+loom pair --tailscale
 ```
 
 The pairing link uses an address such as `https://machine.tailnet.ts.net/`.
@@ -141,7 +141,7 @@ tailscale serve --https=443 --set-path=/ off
 ```
 
 If that port is already in use, choose another with
-`--tailscale-serve-port`. See `t3 pair --help` for other pairing options.
+`--tailscale-serve-port`. See `loom pair --help` for other pairing options.
 
 ### Hosted web app
 
@@ -177,8 +177,8 @@ running is left alone.
 
 Each desktop app keeps one session on the host for its SSH connection and reuses
 it when it reconnects. Revoke sessions you no longer use in **Settings →
-Sharing & access** on the host, or on a headless host with `t3 auth session list` and
-`t3 auth session revoke <id>`. A desktop that can still sign in over SSH pairs
+Sharing & access** on the host, or on a headless host with `loom auth session list` and
+`loom auth session revoke <id>`. A desktop that can still sign in over SSH pairs
 again on its next connect.
 
 For Antigravity's Google callback on a remote host, see
@@ -233,7 +233,7 @@ the server says so at startup, and browser tabs and HTML previews show the
 command to run on the host:
 
 ```sh
-sudo t3 browser setup
+sudo loom browser setup
 ```
 
 The server shows the exact line for how you started it, and keeps your `PATH`
@@ -245,14 +245,14 @@ reports what it would change.
 
 The browser runs in Chrome's sandbox by default. Chrome cannot start that sandbox
 as root. If your Loom server runs as root, run it as a nonroot user to keep
-sandboxing enabled. `t3 browser setup` does not fix this root restriction.
+sandboxing enabled. `loom browser setup` does not fix this root restriction.
 
 If you need to run as root, or cannot enable the sandbox on your host, set
 `LOOM_SERVER_BROWSER_SANDBOX=0` in the **Loom server's environment** and restart
 the server. This disables Chrome's sandbox. For a manual launch:
 
 ```sh
-LOOM_SERVER_BROWSER_SANDBOX=0 t3 serve
+LOOM_SERVER_BROWSER_SANDBOX=0 loom serve
 ```
 
 For a systemd service, add `Environment=LOOM_SERVER_BROWSER_SANDBOX=0` under
@@ -285,7 +285,7 @@ app has an address for that machine and is connected to it with a session that
 manages access there, it makes the pairing code itself; otherwise paste one
 from that machine's **Settings → Sharing & access**. An address you type always
 needs a pasted code. From a terminal, use
-`t3 environment link <address> --pairing-code <code> --access <mode>`.
+`loom environment link <address> --pairing-code <code> --access <mode>`.
 
 You can also ask an agent to link a machine by name, such as "delegate this to
 my vps". It shows a card in the thread where you pick the machine the same way
@@ -317,7 +317,7 @@ fails with that reason.
 On the host, **Settings → Sharing & access** lets authorized administrators create
 pairing links and revoke client sessions. Revoking an unused link prevents new
 pairings; revoke a device's session to remove its existing access. Command-line
-management is available through `t3 auth --help`.
+management is available through `loom auth --help`.
 
 When the app connects to more than one environment, choose one at the top of the
 page. A desktop app with **Local environment** off can manage a background
@@ -329,11 +329,11 @@ expires.
 To choose a token's permissions, pass `--scope` once for each scope you want:
 
 ```sh
-t3 pair --scope orchestration:read --scope filesystem:read
+loom pair --scope orchestration:read --scope filesystem:read
 ```
 
 The selected scopes replace the default permissions. The same option works with
-`t3 auth pairing create` and `t3 auth session issue`; each command's
+`loom auth pairing create` and `loom auth session issue`; each command's
 `--help` lists the available scopes. Without `--scope`, pairing tokens and issued
 bearer sessions get every permission, including managing access.
 A terminal or a full-access agent on the host can reach those as well, so a

@@ -9,7 +9,7 @@ To see the page again, go to **Settings → About → Welcome page** and select
 **Open**. Direct links, such as Settings, open normally before setup is done.
 
 The hosted app at app.loom.local does not open the page. With no computer connected,
-it asks you to run `t3 pair` on your computer and add the pairing link. To add
+it asks you to run `loom pair` on your computer and add the pairing link. To add
 more computers later, use **Settings → Environments**.
 
 If Loom cannot confirm the workspace during startup, it shows
