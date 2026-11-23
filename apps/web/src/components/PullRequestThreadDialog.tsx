@@ -1,8 +1,4 @@
-import {
-  AuthOrchestrationOperateScope,
-  type EnvironmentId,
-  type ThreadId,
-} from "@loom/contracts";
+import { AuthOrchestrationOperateScope, type EnvironmentId, type ThreadId } from "@loom/contracts";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,

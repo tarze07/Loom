@@ -714,10 +714,6 @@ export const OrchestratorMcpScheduledTask = Schema.Struct({
   schedule: ScheduledTaskSchedule,
   nextRunAt: Schema.NullOr(IsoDateTime),
   lastRunStatus: ScheduledTaskRunStatus,
-  webhookUrl: Schema.optional(Schema.String).annotate({
-    description:
-      "Public URL for the sender. Absent: no Loom Connect tunnel. The user must enable Loom Connect remote access.",
-  }),
   webhookSignature: Schema.optional(Schema.Literals(["none", "set"])),
   blockedByPolicy: Schema.optional(Schema.String).annotate({
     description: "Present when an administrator's policy stops this task from running.",

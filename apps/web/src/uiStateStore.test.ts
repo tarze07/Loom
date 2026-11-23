@@ -247,7 +247,7 @@ describe("uiStateStore persistence", () => {
   });
 
   it("restores the sidebar project scope across reloads", () => {
-    const keys = ["github.com/tarze07/Loom", "github.com/pingdotgg/uploadthing"];
+    const keys = ["github.com/tarze07/loom", "github.com/pingdotgg/uploadthing"];
     persistState(makeUiState({ sidebarProjectScopeKeys: keys }));
 
     const persisted = JSON.parse(
@@ -258,19 +258,19 @@ describe("uiStateStore persistence", () => {
   });
 
   it("keeps a single-project scope readable by older clients", () => {
-    persistState(makeUiState({ sidebarProjectScopeKeys: ["github.com/tarze07/Loom"] }));
+    persistState(makeUiState({ sidebarProjectScopeKeys: ["github.com/tarze07/loom"] }));
 
     const persisted = JSON.parse(
       localStorageStub.getItem(PERSISTED_STATE_KEY) ?? "{}",
     ) as PersistedUiState;
 
-    expect(persisted.sidebarProjectScopeKey).toBe("github.com/tarze07/Loom");
+    expect(persisted.sidebarProjectScopeKey).toBe("github.com/tarze07/loom");
   });
 
   it("restores a single-project scope saved before multi-project filtering", () => {
     expect(
-      parsePersistedState({ sidebarProjectScopeKey: "github.com/tarze07/Loom" })
+      parsePersistedState({ sidebarProjectScopeKey: "github.com/tarze07/loom" })
         .sidebarProjectScopeKeys,
-    ).toEqual(["github.com/tarze07/Loom"]);
+    ).toEqual(["github.com/tarze07/loom"]);
   });
 });

@@ -49,7 +49,9 @@ export function useNewTaskProjectDefaults(project: EnvironmentProject | null) {
   );
   const loomProjectFileData = loomProjectFileQuery.data as ProjectReadFileResult | null;
   const loomProjectFile =
-    loomProjectFileData === null || loomProjectFileData.exists === false || loomProjectFileData.truncated
+    loomProjectFileData === null ||
+    loomProjectFileData.exists === false ||
+    loomProjectFileData.truncated
       ? null
       : parseLoomProjectFile(loomProjectFileData.contents);
   const projectSettings = resolveProjectSettings(

@@ -5,10 +5,7 @@ import { isLiveSubagentTurnItem } from "@loom/client-runtime/state/subagentRunti
 import * as Equal from "effect/Equal";
 import { shallow } from "zustand/vanilla/shallow";
 import { claudeResumeCompactionAge } from "@loom/shared/claudeCompaction";
-import {
-  IDLE_COMPACTING_LABELS,
-  IDLE_COMPACTION_TITLES,
-} from "@loom/client-runtime/user-message";
+import { IDLE_COMPACTING_LABELS, IDLE_COMPACTION_TITLES } from "@loom/client-runtime/user-message";
 import type { HandoffTimelineRun } from "@loom/client-runtime/handoff";
 import { renderCodexDirectivesForCopy } from "@loom/shared/codexMarkdownDirectives";
 import {

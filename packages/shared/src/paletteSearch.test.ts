@@ -207,10 +207,10 @@ describe("scoreThreadSearch", () => {
   it("ranks a title holding the words above the app's own branch prefix and project name", () => {
     const busy = { activityAt: NOW, opens: { openedAt: NOW, score: 6, picks: [] } };
     expect(
-      rankTitles("t3 connect", [
+      rankTitles("loom connect", [
         thread("Diagnose Connect provisioning failures", {
           ...busy,
-          branch: "t3/diagnose-connect",
+          branch: "loom/diagnose-connect",
           projectTitle: "loom",
         }),
         thread("Loom Connect Tunnel Lifecycle Review", { projectTitle: "loom" }),
@@ -247,8 +247,8 @@ describe("scoreThreadSearch", () => {
       [],
     );
     // Words with digits still forgive one.
-    expect(rankTitles("t3coed", [thread("loom perf audit"), thread("Other")])).toEqual([
-      "loom perf audit",
+    expect(rankTitles("v8perd", [thread("v8perf audit"), thread("Other")])).toEqual([
+      "v8perf audit",
     ]);
     expect(rankTitles("oath2", [thread("Fix oauth2 redirect")])).toEqual(["Fix oauth2 redirect"]);
     // A typo beats a mid-word accident: "ilde" is "idle", not the middle of "Builder".
@@ -360,7 +360,7 @@ describe("scoreThreadSearch beyond Latin text and titles", () => {
     // Short words before a mere prefix are a coincidence.
     expect(rankTitles("inth", [thread("Show skill names in thread overview")])).toEqual([]);
     expect(rankTitles("tos", [thread("Move Client State to Server")])).toEqual([]);
-    expect(rankTitles("t3co", [thread("Loom vs Gemini")])).toEqual(["Loom vs Gemini"]);
+    expect(rankTitles("loomvs", [thread("Loom vs Gemini")])).toEqual(["Loom vs Gemini"]);
     expect(rankTitles('"sidebar lag"', [thread("Fix sidebar lag")])).toEqual(["Fix sidebar lag"]);
     // A pasted query with a separate accent mark matches the composed title.
     expect(rankTitles("cafe\u0301", [thread("Café menu")])).toEqual(["Café menu"]);

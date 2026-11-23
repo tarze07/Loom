@@ -369,45 +369,6 @@ describe("connection onboarding", () => {
     }).pipe(Effect.provide(layerPairingOnboarding())),
   );
 
-  it.effect(
-    "re-pairs an outdated self-updatable environment so its connection can be rechecked",
-    () =>
-      Effect.gen(function* () {
-        const registry = yield* EnvironmentRegistry.EnvironmentRegistry;
-        const onboarding = yield* Onboarding.ConnectionOnboarding;
-        yield* registerSwitchedOffEnvironment;
-        yield* registry.setCompatibility(
-          PAIRED_ENVIRONMENT_ID,
-          new ConnectionBlockedError({
-            reason: "unsupported",
-            detail: "The saved server needs an update.",
-            serverUpdateRequired: true,
-          }),
-        );
-        expect(
-          (yield* SubscriptionRef.get(registry.entries)).get(PAIRED_ENVIRONMENT_ID),
-        ).toMatchObject({
-          enabled: false,
-          serverUpdateRequired: true,
-        });
-
-        const environmentId = yield* onboarding.registerPairing(PAIRING_INPUT);
-
-        expect(environmentId).toBe(PAIRED_ENVIRONMENT_ID);
-        const entry = (yield* SubscriptionRef.get(registry.entries)).get(environmentId);
-        expect(entry?.enabled).toBe(true);
-        expect(entry?.unsupportedReason).toBeUndefined();
-        expect(entry?.serverUpdateRequired).toBeUndefined();
-        expect(entry?.profile).toEqual(Option.some(PAIRED_PROFILE));
-      }).pipe(
-        Effect.provide(
-          layerPairingOnboarding({
-            protocolVersion: ORCHESTRATION_PROTOCOL_VERSION - 1,
-          }),
-        ),
-      ),
-  );
-
   it.effect.each([
     {
       kind: "primary",

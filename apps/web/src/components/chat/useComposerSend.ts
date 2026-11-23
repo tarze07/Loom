@@ -38,11 +38,7 @@ import {
   submitCodexFeedback,
   type CodexFeedbackSubmission,
 } from "@loom/client-runtime/state/threads";
-import {
-  scopedThreadKey,
-  scopeProjectRef,
-  scopeThreadRef,
-} from "@loom/client-runtime/environment";
+import { scopedThreadKey, scopeProjectRef, scopeThreadRef } from "@loom/client-runtime/environment";
 import { createModelSelection } from "@loom/shared/model";
 import { type SetStateAction, useLayoutEffect, useRef } from "react";
 import { flushSync } from "react-dom";
@@ -129,10 +125,7 @@ import {
   prepareTurnAttachments,
   restoreComposerDraft,
 } from "./chatViewSend";
-import type {
-  EnvironmentProject,
-  EnvironmentThreadShell,
-} from "@loom/client-runtime/state/shell";
+import type { EnvironmentProject, EnvironmentThreadShell } from "@loom/client-runtime/state/shell";
 import type { Dispatch } from "react";
 import type { ComposerThreadTarget } from "../../composerDraftStore";
 import type { ProviderInstanceEntry } from "../../providerInstances";

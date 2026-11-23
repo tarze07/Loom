@@ -6,7 +6,12 @@ import * as NodeNet from "node:net";
 import * as NodeOS from "node:os";
 
 import * as HostProcess from "@loom/shared/HostProcess";
-import { formatHostForUrl, isWildcardHost } from "@loom/shared/hostClassification";
+import {
+  formatHostForUrl,
+  isSharedAddressSpaceHost,
+  isTailnetHost,
+  isWildcardHost,
+} from "@loom/shared/hostClassification";
 
 import * as ServerConfig from "../config.ts";
 import { isLoopbackHost, isPrivateNetworkAddress, VIRTUAL_INTERFACE } from "../startupAccess.ts";
@@ -28,12 +33,29 @@ const isAdvertisableAddress = (address: string): boolean =>
 // Windows adapter names are mutable; Linux bridges can inherit these MACs.
 const WINDOWS_HOST_ADAPTER_MAC = /^(0a:00:27|00:50:56:c0:00):/i;
 
+// Other VPNs (Cloudflare WARP, some corporate clients) also use 100.64.0.0/10, so the
+// interface decides: Tailscale names it tailscale* or gives it an address in its fd7a:115c:a1e0::/48.
+const TAILSCALE_INTERFACE_NAME = /^tailscale/i;
+
+function tailnetAddresses(interfaces: NetworkInterfacesMap): ReadonlySet<string> {
+  return new Set(
+    Object.entries(interfaces).flatMap(([name, entries = []]) =>
+      TAILSCALE_INTERFACE_NAME.test(name) ||
+      entries.some((entry) => entry.family === "IPv6" && isTailnetHost(entry.address))
+        ? entries
+            .filter((entry) => entry.family === "IPv4" && isSharedAddressSpaceHost(entry.address))
+            .map((entry) => entry.address)
+        : [],
+    ),
+  );
+}
+
 export function resolveBoundEndpoints(input: {
   readonly platform: NodeJS.Platform;
   readonly host: string | undefined;
   readonly port: number;
   readonly interfaces: NetworkInterfacesMap;
-  /** A cloud VM's private network is its provider's, which no client shares. */
+  /** A cloud VM's private network is its provider's, which no client shares; only its tailnet is. */
   readonly onCloudVm?: boolean;
 }): ReadonlyArray<ServerDirectEndpoint> {
   if (isLoopbackHost(input.host)) return [];
@@ -49,12 +71,13 @@ export function resolveBoundEndpoints(input: {
         )
         .map((entry) => entry.address)
     : [input.host!].filter(isAdvertisableAddress);
-  // A cloud VM's only shared network was its tailnet; nothing advertisable remains.
-  if (input.onCloudVm) return [];
-  return [...new Set(addresses)].map((address) => ({
-    kind: "lan" as const,
-    httpBaseUrl: `http://${formatHostForUrl(address)}:${input.port}/`,
-  }));
+  const tailnet = tailnetAddresses(input.interfaces);
+  return [...new Set(addresses)]
+    .map((address) => ({
+      kind: tailnet.has(address) ? ("tailnet" as const) : ("lan" as const),
+      httpBaseUrl: `http://${formatHostForUrl(address)}:${input.port}/`,
+    }))
+    .filter((endpoint) => !input.onCloudVm || endpoint.kind === "tailnet");
 }
 
 /**

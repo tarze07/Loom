@@ -48,7 +48,7 @@ describe("parseNewThreadLink", () => {
       value: {
         kind: "new",
         prompt: { text: "Rate me", hiddenCharacters: 0 },
-        repository: { owner: "pingdotgg", name: "loom" },
+        repository: { owner: "tarze07", name: "Loom" },
         provider: "codex",
         model: "gpt-5",
       },
@@ -65,7 +65,7 @@ describe("parseNewThreadLink", () => {
         ok: true,
         value: {
           kind: "pull-request",
-          pullRequest: { owner: "pingdotgg", name: "loom", number: 42 },
+          pullRequest: { owner: "tarze07", name: "Loom", number: 42 },
           prompt: null,
         },
       });

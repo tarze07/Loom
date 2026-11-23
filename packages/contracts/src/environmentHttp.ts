@@ -510,7 +510,7 @@ class EnvironmentMcpOAuthHttpApi extends HttpApiGroup.make("mcpOAuth")
   .add(HttpApiEndpoint.get("authorize", "/oauth/mcp/authorize"))
   .add(
     HttpApiEndpoint.post("approval", "/oauth/mcp/approval", {
-      // The hosted app sends the owner's Loom Connect credential; the environment's own page uses its cookie.
+      // The hosted app sends its bearer credential; the environment's own page uses its cookie.
       headers: OptionalBearerHeaders,
       payload: AuthMcpAuthorizationRequest,
       success: [AuthMcpApprovalDetails, AuthMcpApprovalRedirect],
@@ -519,7 +519,7 @@ class EnvironmentMcpOAuthHttpApi extends HttpApiGroup.make("mcpOAuth")
   )
   .add(
     HttpApiEndpoint.post("decision", "/oauth/mcp/decision", {
-      // The hosted app sends the owner's Loom Connect credential; the environment's own page uses its cookie.
+      // The hosted app sends its bearer credential; the environment's own page uses its cookie.
       headers: OptionalBearerHeaders,
       payload: AuthMcpApprovalDecisionRequest,
       success: AuthMcpApprovalRedirect,

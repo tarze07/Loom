@@ -211,9 +211,9 @@
       "types": "./src/cliArgs.ts",
       "import": "./src/cliArgs.ts"
     },
-    "./connectAuth": {
-      "types": "./src/connectAuth.ts",
-      "import": "./src/connectAuth.ts"
+    "./hostedApp": {
+      "types": "./src/hostedApp.ts",
+      "import": "./src/hostedApp.ts"
     },
     "./symlink": {
       "types": "./src/symlink.ts",
@@ -529,9 +529,9 @@
     "test": "vp test run --config ../../vite.config.ts --dir ."
   },
   "dependencies": {
+    "@loom/contracts": "workspace:*",
     "@noble/curves": "catalog:",
     "@noble/hashes": "catalog:",
-    "@loom/contracts": "workspace:*",
     "effect": "catalog:",
     "ffi-rs": "1.3.2",
     "mdast-util-directive": "catalog:",

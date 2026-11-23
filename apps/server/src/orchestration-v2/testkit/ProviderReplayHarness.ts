@@ -72,10 +72,7 @@ import {
   type OrchestratorV2Scenario,
   type OrchestratorV2ScenarioResult,
 } from "./OrchestratorScenario.ts";
-import {
-  makeProviderReplayGate,
-  type ProviderReplayGate,
-} from "@loom/provider-testing/replayGate";
+import { makeProviderReplayGate, type ProviderReplayGate } from "@loom/provider-testing/replayGate";
 
 export function makeReplayServerConfig(
   scenario: string,
@@ -137,8 +134,6 @@ export function makeReplayServerConfig(
       devAllowedOrigins: [],
       noBrowser: false,
       startupPresentation: "browser",
-      tailscaleServeEnabled: false,
-      tailscaleServePort: 443,
       desktopBootstrapToken: undefined,
       autoBootstrapProjectFromCwd: false,
       logWebSocketEvents: false,

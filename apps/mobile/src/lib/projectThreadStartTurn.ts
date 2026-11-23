@@ -9,10 +9,7 @@ import {
   type ProviderInteractionMode,
   type RuntimeMode,
 } from "@loom/contracts";
-import {
-  deriveThreadTitleSeed,
-  threadTitleTextFromPrompt,
-} from "@loom/client-runtime/operations";
+import { deriveThreadTitleSeed, threadTitleTextFromPrompt } from "@loom/client-runtime/operations";
 
 import type { UploadedMobileAttachment } from "./attachmentUpload";
 

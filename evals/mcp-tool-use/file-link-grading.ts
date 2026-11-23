@@ -1,9 +1,6 @@
 import * as Schema from "effect/Schema";
 import { splitFilePathPosition } from "@loom/shared/fileLinks";
-import {
-  audioMimeTypeFromExtension,
-  mediaMimeTypeFromExtension,
-} from "@loom/shared/mediaPreview";
+import { audioMimeTypeFromExtension, mediaMimeTypeFromExtension } from "@loom/shared/mediaPreview";
 import {
   extractInlineCodeSpans,
   extractMarkdownLinkHrefs,

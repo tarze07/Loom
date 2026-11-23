@@ -1,11 +1,7 @@
 import type { DesktopBridge, DesktopCliCommandState } from "@loom/contracts";
 import { describe, expect, it, vi } from "vite-plus/test";
 
-import {
-  type BootErrorEnvironment,
-  buildErrorReport,
-  resolveTriageCommand,
-} from "./bootError";
+import { type BootErrorEnvironment, buildErrorReport, resolveTriageCommand } from "./bootError";
 
 const desktopWith = (getState: () => Promise<DesktopCliCommandState>) =>
   ({ cliCommand: { getState } }) as unknown as DesktopBridge;
@@ -31,7 +27,9 @@ describe("resolveTriageCommand", () => {
       resolveTriageCommand(desktopWith(async () => notOnPath("/Users/O'Neil/.loom/bin/t3"))),
     ).resolves.toBe(`'/Users/O'"'"'Neil/.loom/bin/t3' triage`);
     await expect(
-      resolveTriageCommand(desktopWith(async () => notOnPath("C:\\Users\\Me\\.loom\\bin\\loom.cmd"))),
+      resolveTriageCommand(
+        desktopWith(async () => notOnPath("C:\\Users\\Me\\.loom\\bin\\loom.cmd")),
+      ),
     ).resolves.toBe("C:\\Users\\Me\\.loom\\bin\\loom.cmd triage");
     await expect(
       resolveTriageCommand(
@@ -113,4 +111,3 @@ describe("buildErrorReport", () => {
     expect(report).toContain("Time: 2026-10-26T00:00:00.000Z");
   });
 });
-

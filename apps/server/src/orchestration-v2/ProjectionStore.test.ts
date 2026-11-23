@@ -1513,7 +1513,7 @@ it.effect("SQL shells flag only an active turn blocked solely on Loom thread wai
       id: TurnItemId.make("item:thread-wait:active"),
       runId: run.id,
       type: "dynamic_tool" as const,
-      toolName: "mcp__loom__t3_thread_wait",
+      toolName: "mcp__loom__loom_thread_wait",
       input: { threadId: "child-thread" },
       status: "running" as const,
     };
@@ -10127,9 +10127,9 @@ it.layer(layerTest)("ProjectionStoreV2", (it) => {
       });
       const link = {
         host: "github.com",
-        repository: "tarze07/Loom",
+        repository: "tarze07/loom",
         number: 7,
-        url: "https://github.com/tarze07/Loom/pull/7",
+        url: "https://github.com/tarze07/loom/pull/7",
         source: "agent" as const,
         linkedAt: DateTime.formatIso(at),
         snapshot: null,
@@ -10173,7 +10173,7 @@ it.layer(layerTest)("ProjectionStoreV2", (it) => {
       ]);
       assert.deepEqual((yield* store.getThreadShell(threadId))?.pendingBackgroundTasks, [
         {
-          taskId: "pull-request-watch:github.com/tarze07/Loom#7",
+          taskId: "pull-request-watch:github.com/tarze07/loom#7",
           description: "Watching pull request #7",
           kind: "monitor",
           awaited: true,

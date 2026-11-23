@@ -192,7 +192,10 @@ function PaletteRow(props: {
           <Text numberOfLines={1} className={cn("text-sm", mutedForegroundClassName)}>
             {props.item.matchHint.label}:{" "}
             {splitSearchText(props.item.matchHint.text, props.item.matchHint.ranges).map((part) => (
-              <Text key={part.start} className={cn("text-sm", part.highlighted && "font-loom-bold")}>
+              <Text
+                key={part.start}
+                className={cn("text-sm", part.highlighted && "font-loom-bold")}
+              >
                 {part.text}
               </Text>
             ))}

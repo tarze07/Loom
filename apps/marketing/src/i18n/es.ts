@@ -3,8 +3,7 @@ import type { Messages } from "./en";
 export const es: Messages = {
   layout: {
     defaultTitle: "Loom",
-    defaultDescription:
-      "Loom. El panel de control de código abierto para agentes de programación.",
+    defaultDescription: "Loom. El panel de control de código abierto para agentes de programación.",
     socialImageAlt:
       "Loom: el panel de control de código abierto para agentes de programación, con Claude Code, Codex, Cursor, OpenCode, Grok y Antigravity.",
     homeLabel: "Inicio de Loom",

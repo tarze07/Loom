@@ -1,7 +1,4 @@
-import type {
-  DesktopPreviewAnnotationTheme,
-  DesktopPreviewRecordingInput,
-} from "@loom/contracts";
+import type { DesktopPreviewAnnotationTheme, DesktopPreviewRecordingInput } from "@loom/contracts";
 
 import {
   DEFAULT_RECORDING_INPUT_OPTIONS,

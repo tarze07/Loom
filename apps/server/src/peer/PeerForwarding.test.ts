@@ -204,7 +204,7 @@ const boxProjects = (seen: Ref.Ref<Seen>) =>
         Ref.update(seen, (current) => ({ ...current, clones: [...current.clones, input] })).pipe(
           Effect.as({
             cwd: input.destinationPath,
-            remoteUrl: "https://github.com/tarze07/Loom.git",
+            remoteUrl: "https://github.com/tarze07/loom.git",
             repository: null,
           }),
         ),
@@ -565,7 +565,7 @@ it.effect("brings a repository to a linked environment, only through full access
       const seen = yield* Ref.make<Seen>(nothingSeen);
       const b = yield* serveBox(seen, yield* Ref.make(""));
       const a = yield* makeLaptop;
-      const clone = { repository: "tarze07/Loom", destinationPath: "/home/box/loom" };
+      const clone = { repository: "tarze07/loom", destinationPath: "/home/box/loom" };
       const register = { title: "loom", workspaceRoot: "/home/box/loom" };
 
       yield* linkTo(a.links, b, "full-access");

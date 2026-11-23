@@ -32,7 +32,9 @@ export function environmentMismatchError(input: {
   });
 }
 
-export function mapRemoteEnvironmentError(error: RemoteEnvironmentAuthError): ConnectionAttemptError {
+export function mapRemoteEnvironmentError(
+  error: RemoteEnvironmentAuthError,
+): ConnectionAttemptError {
   switch (error._tag) {
     case "EnvironmentAuthInvalidError":
       return new ConnectionBlockedError({

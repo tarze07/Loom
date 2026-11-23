@@ -61,7 +61,7 @@ const remoteStatusWithPr: VcsStatusRemoteResult = {
   pr: {
     number: 2978,
     title: "[codex] Rewrite client connection architecture",
-    url: "https://github.com/tarze07/Loom/pull/2978",
+    url: "https://github.com/tarze07/loom/pull/2978",
     baseRef: "main",
     headRef: "upstream-topic",
     state: "open",

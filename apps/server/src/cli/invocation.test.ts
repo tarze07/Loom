@@ -173,7 +173,10 @@ it.layer(NodeServices.layer)("host CLI commands", (it) => {
         't3 doctor "--base-dir" "C:\\Users\\Jane Doe\\.loom"',
       );
       expect(
-        (yield* resolveHostCliCommand("doctor", ["--base-dir", "C:\\Loom\\\u201CArchive\u201D"]).pipe(
+        (yield* resolveHostCliCommand("doctor", [
+          "--base-dir",
+          "C:\\Loom\\\u201CArchive\u201D",
+        ]).pipe(
           Effect.provideService(HostProcess.Platform, "win32"),
           Effect.provideService(HostProcess.Environment, { PATH: "" }),
           Effect.provideService(HostProcess.ExecutablePath, "C:\\loom.exe"),

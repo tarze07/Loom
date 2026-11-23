@@ -3,11 +3,7 @@ import {
   isAtomCommandInterrupted,
   runAtomCommand,
 } from "@loom/client-runtime/state/runtime";
-import type {
-  EnvironmentId,
-  PullRequestFilesViewedResult,
-  PullRequestRef,
-} from "@loom/contracts";
+import type { EnvironmentId, PullRequestFilesViewedResult, PullRequestRef } from "@loom/contracts";
 import { AsyncResult } from "effect/reactivity";
 
 import { appAtomRegistry } from "~/rpc/atomRegistry";

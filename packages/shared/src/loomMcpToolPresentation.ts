@@ -87,13 +87,7 @@ function tool(
 }
 
 // Codex registers "loom-direct" for Loom tools kept out of Code Mode.
-const LOOM_MCP_SERVER_ALIASES = new Set([
-  "loom",
-  "loom",
-  "loom",
-  "loom-direct",
-  "loom_direct",
-]);
+const LOOM_MCP_SERVER_ALIASES = new Set(["loom", "loom-direct", "loom_direct"]);
 
 const LOOM_MCP_TOOLS: Readonly<Record<string, LoomMcpToolDefinition>> = {
   link_pull_request: tool(
@@ -184,7 +178,10 @@ const LOOM_MCP_TOOLS: Readonly<Record<string, LoomMcpToolDefinition>> = {
     ["Hand off", "Handing off", "Handed off", "thread to a git worktree"],
     "worktree-handoff",
   ),
-  loom_worktree_status: tool(["Get", "Getting", "Got", "thread worktree status"], "worktree-status"),
+  loom_worktree_status: tool(
+    ["Get", "Getting", "Got", "thread worktree status"],
+    "worktree-status",
+  ),
   preview_status: tool(["Get", "Getting", "Got", "preview browser status"], "browser", "browser"),
   preview_open: tool(
     ["Open", "Opening", "Opened", "a page in the preview browser"],
@@ -311,7 +308,10 @@ const LOOM_MCP_TOOLS: Readonly<Record<string, LoomMcpToolDefinition>> = {
     ["List", "Listing", "Listed", "pending questions"],
     "question-list",
   ),
-  loom_pending_request_read: tool(["Read", "Reading", "Read", "pending questions"], "question-read"),
+  loom_pending_request_read: tool(
+    ["Read", "Reading", "Read", "pending questions"],
+    "question-read",
+  ),
   loom_pending_request_respond: tool(
     ["Answer", "Answering", "Answered", "pending questions"],
     "question-respond",
@@ -320,7 +320,10 @@ const LOOM_MCP_TOOLS: Readonly<Record<string, LoomMcpToolDefinition>> = {
     ["Read", "Reading", "Read", "thread configuration"],
     "thread-configuration",
   ),
-  loom_thread_configure: tool(["Use", "Using", "Used", "thread model settings"], "thread-configure"),
+  loom_thread_configure: tool(
+    ["Use", "Using", "Used", "thread model settings"],
+    "thread-configure",
+  ),
   loom_thread_transfer: tool(["Use", "Using", "Used", "thread transfers"], "thread-fork"),
   loom_thread_fork: tool(["Fork", "Forking", "Requested a fork of", "this thread"], "thread-fork"),
   loom_thread_merge_back: tool(
@@ -329,8 +332,14 @@ const LOOM_MCP_TOOLS: Readonly<Record<string, LoomMcpToolDefinition>> = {
   ),
   loom_thread_search: tool(["Search", "Searching", "Searched", "thread content"], "thread-search"),
   loom_thread_transfers: tool(["Read", "Reading", "Read", "thread transfers"], "thread-transfers"),
-  loom_thread_organize: tool(["Organize", "Organizing", "Organized", "a thread"], "thread-organize"),
-  loom_thread_update: tool(["Update", "Updating", "Updated", "Loom thread metadata"], "thread-update"),
+  loom_thread_organize: tool(
+    ["Organize", "Organizing", "Organized", "a thread"],
+    "thread-organize",
+  ),
+  loom_thread_update: tool(
+    ["Update", "Updating", "Updated", "Loom thread metadata"],
+    "thread-update",
+  ),
   loom_worktree_list: tool(["List", "Listing", "Listed", "workspace branches"], "worktree-list"),
   loom_preview_list: tool(["List", "Listing", "Listed", "preview tabs"], "browser", "browser"),
   loom_preview_close: tool(["Close", "Closing", "Closed", "a preview tab"], "browser", "browser"),
@@ -354,10 +363,16 @@ const LOOM_MCP_TOOLS: Readonly<Record<string, LoomMcpToolDefinition>> = {
     ["Update", "Updating", "Updated", "environment preferences"],
     "environment-update",
   ),
-  loom_thread_launch: tool(["Launch", "Launching", "Launched", "a project thread"], "thread-create"),
+  loom_thread_launch: tool(
+    ["Launch", "Launching", "Launched", "a project thread"],
+    "thread-create",
+  ),
   loom_project_list: tool(["List", "Listing", "Listed", "projects"], "project-list"),
   loom_project_read: tool(["Read", "Reading", "Read", "a project"], "project-read"),
-  loom_project_create: tool(["Register", "Registering", "Registered", "a project"], "project-create"),
+  loom_project_create: tool(
+    ["Register", "Registering", "Registered", "a project"],
+    "project-create",
+  ),
   loom_project_update: tool(["Update", "Updating", "Updated", "a project"], "project-update"),
   loom_project_delete: tool(["Delete", "Deleting", "Deleted", "a project"], "project-delete"),
   loom_project_clone: tool(["Clone", "Cloning", "Cloned", "a repository"], "project-clone"),
@@ -409,17 +424,17 @@ function parseLoomMcpToolName(value: string): string | null {
       : null;
   }
 
-  const namespaceMatch =
-    /^(?<server>t3[-_]code[-_]direct|loom|loom|loom)(?:[.:/]|\s*·\s*)(?<tool>.+)$/i.exec(
-      label,
-    );
+  const namespaceMatch = /^(?<server>loom(?:[-_]direct)?)(?:[.:/]|\s*·\s*)(?<tool>.+)$/i.exec(
+    label,
+  );
   if (namespaceMatch?.groups) {
     return namespaceMatch.groups.tool ?? null;
   }
 
-  const prefixed = /^(?:mcp[-_]{1,2})?t3[-_ ]?code(?:__|[-_.:/ ])(?<tool>.+)$/i.exec(label);
-  const candidate = prefixed?.groups?.tool ?? label;
-  if (Object.hasOwn(LOOM_MCP_TOOLS, candidate)) return candidate;
+  // Many tool names start with `loom_` themselves, so the bare label wins over a stripped prefix.
+  if (Object.hasOwn(LOOM_MCP_TOOLS, label)) return label;
+  const prefixed = /^(?:mcp[-_]{1,2})?loom(?:__|[-_.:/ ])(?<tool>.+)$/i.exec(label)?.groups?.tool;
+  if (prefixed !== undefined && Object.hasOwn(LOOM_MCP_TOOLS, prefixed)) return prefixed;
   // OpenCode 2 thread prefixes can contain underscores; choose the longest known tool-name suffix.
   if (!/^loom-/i.test(label)) return null;
   let longest: string | null = null;
@@ -445,9 +460,11 @@ const ACTION_TOOLS: Readonly<Record<string, (action: string) => string | undefin
   loom_queue: (action) => `loom_queue_${action}`,
   loom_pending_request: (action) => `loom_pending_request_${action}`,
   loom_thread_transfer: (action) =>
-    ({ fork: "loom_thread_fork", merge_back: "loom_thread_merge_back", status: "loom_thread_transfers" })[
-      action
-    ],
+    ({
+      fork: "loom_thread_fork",
+      merge_back: "loom_thread_merge_back",
+      status: "loom_thread_transfers",
+    })[action],
 };
 
 /** Pass the call's input so an action tool resolves to the labels and summary of its action. */

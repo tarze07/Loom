@@ -557,7 +557,6 @@
     "test": "vp test run"
   },
   "dependencies": {
-    "@pierre/diffs": "catalog:",
     "@loom/contracts": "workspace:*",
     "@loom/provider-acp-registry": "workspace:*",
     "@loom/provider-core": "workspace:*",
@@ -572,6 +571,7 @@
     "@loom/shared": "workspace:*",
     "@loom/source-control-core": "workspace:*",
     "@loom/source-control-definitions": "workspace:*",
+    "@pierre/diffs": "catalog:",
     "effect": "catalog:",
     "jszip": "3.10.1",
     "three": "0.180.0",

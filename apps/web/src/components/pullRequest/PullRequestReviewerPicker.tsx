@@ -1,9 +1,5 @@
 import { useAtomCommand } from "~/state/use-atom-command";
-import type {
-  EnvironmentId,
-  PullRequestRef,
-  PullRequestReviewerCandidate,
-} from "@loom/contracts";
+import type { EnvironmentId, PullRequestRef, PullRequestReviewerCandidate } from "@loom/contracts";
 import {
   hostReviewerQuery,
   reviewerCandidateView,

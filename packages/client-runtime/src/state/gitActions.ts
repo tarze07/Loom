@@ -1,8 +1,4 @@
-import type {
-  GitRunStackedActionInput,
-  GitStackedAction,
-  VcsStatusResult,
-} from "@loom/contracts";
+import type { GitRunStackedActionInput, GitStackedAction, VcsStatusResult } from "@loom/contracts";
 import { type ChangeRequestTerminology, sourceControlClients } from "../sourceControlClients.ts";
 
 export type GitActionIconName = "commit" | "push" | "pr";

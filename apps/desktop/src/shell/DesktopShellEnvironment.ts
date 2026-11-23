@@ -86,6 +86,17 @@ export class DesktopShellEnvironment extends Context.Service<
   }
 >()("@loom/desktop/shell/DesktopShellEnvironment") {}
 
+const PROXY_ENV_NAMES = [
+  "NODE_USE_ENV_PROXY",
+  "HTTP_PROXY",
+  "HTTPS_PROXY",
+  "NO_PROXY",
+  "ALL_PROXY",
+  "http_proxy",
+  "https_proxy",
+  "no_proxy",
+  "all_proxy",
+] as const;
 const LOGIN_SHELL_ENV_NAMES = [
   "PATH",
   "DBUS_SESSION_BUS_ADDRESS",
@@ -107,15 +118,7 @@ const LOGIN_SHELL_ENV_NAMES = [
   "SSL_CERT_FILE",
   "SSL_CERT_DIR",
   "NODE_EXTRA_CA_CERTS",
-  "NODE_USE_ENV_PROXY",
-  "HTTP_PROXY",
-  "HTTPS_PROXY",
-  "NO_PROXY",
-  "ALL_PROXY",
-  "http_proxy",
-  "https_proxy",
-  "no_proxy",
-  "all_proxy",
+  ...PROXY_ENV_NAMES,
   "LOOM_GITHUB_APP_CLIENT_ID",
   "__MISE_DIFF",
   "JAVA_HOME",
@@ -527,6 +530,7 @@ const installPosixEnvironment = Effect.fn("desktop.shellEnvironment.installPosix
       "SSL_CERT_FILE",
       "SSL_CERT_DIR",
       "NODE_EXTRA_CA_CERTS",
+      ...PROXY_ENV_NAMES,
       "JAVA_HOME",
       "LOOM_GITHUB_APP_CLIENT_ID",
     ] as const) {
@@ -620,6 +624,12 @@ const CACHED_ENV_NAMES = [
   "NODE_EXTRA_CA_CERTS",
 ] as const;
 
+// Windows env names ignore case, so a null `https_proxy` would delete an inherited `HTTPS_PROXY`.
+const patchNames = (platform: NodeJS.Platform) =>
+  Object.keys(ShellEnvironmentPatch.fields).filter(
+    (name) => platform !== "win32" || name === name.toUpperCase(),
+  );
+
 /** @public */
 export const make = Effect.gen(function* () {
   const environment = yield* DesktopEnvironment.DesktopEnvironment;
@@ -663,7 +673,7 @@ export const make = Effect.gen(function* () {
     });
     const { prepared } = discovery;
     const patch = Object.fromEntries(
-      Object.keys(ShellEnvironmentPatch.fields).map((name) => [name, fresh[name] ?? null]),
+      patchNames(environment.platform).map((name) => [name, fresh[name] ?? null]),
     );
     if (prepared || Option.isNone(yield* Ref.get(latest))) yield* publish(patch, prepared);
     if (prepared) {
@@ -713,7 +723,7 @@ export const make = Effect.gen(function* () {
         applyShellEnvironment(baseline, cached, environment.platform);
         yield* publish(
           Object.fromEntries(
-            Object.keys(ShellEnvironmentPatch.fields).map((name) => [name, baseline[name] ?? null]),
+            patchNames(environment.platform).map((name) => [name, baseline[name] ?? null]),
           ),
         );
       }

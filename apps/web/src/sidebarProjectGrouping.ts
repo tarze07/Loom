@@ -1,8 +1,4 @@
-import type {
-  EnvironmentId,
-  ScopedProjectRef,
-  SidebarProjectGroupingMode,
-} from "@loom/contracts";
+import type { EnvironmentId, ScopedProjectRef, SidebarProjectGroupingMode } from "@loom/contracts";
 import {
   buildProjectGroups,
   derivePhysicalProjectKey,

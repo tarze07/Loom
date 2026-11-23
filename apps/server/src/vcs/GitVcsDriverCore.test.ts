@@ -4652,25 +4652,27 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
       }),
     );
 
-    it.effect.each(["t3", "Loom"])("flattens a generated name when parent %s blocks it", (parent) =>
-      Effect.gen(function* () {
-        const cwd = yield* makeTmpDir();
-        yield* initRepoWithCommit(cwd);
-        const driver = yield* GitVcsDriver.GitVcsDriver;
-        // A local `loom` branch is why launches start on the flat `loom-<hex>` temporary branch.
-        yield* git(cwd, ["branch", parent]);
-        yield* git(cwd, ["checkout", "-b", "loom-abcd1234"]);
-        yield* git(cwd, ["branch", "loom-fix-login"]);
+    it.effect.each(["loom", "Loom"])(
+      "flattens a generated name when parent %s blocks it",
+      (parent) =>
+        Effect.gen(function* () {
+          const cwd = yield* makeTmpDir();
+          yield* initRepoWithCommit(cwd);
+          const driver = yield* GitVcsDriver.GitVcsDriver;
+          // A local `loom` branch is why launches start on the flat `loom-<hex>` temporary branch.
+          yield* git(cwd, ["branch", parent]);
+          yield* git(cwd, ["checkout", "-b", "loom-abcd1234"]);
+          yield* git(cwd, ["branch", "loom-fix-login"]);
 
-        const renamed = yield* driver.renameBranch({
-          cwd,
-          oldBranch: "loom-abcd1234",
-          newBranch: "t3/fix-login",
-        });
+          const renamed = yield* driver.renameBranch({
+            cwd,
+            oldBranch: "loom-abcd1234",
+            newBranch: "loom/fix-login",
+          });
 
-        assert.equal(renamed.branch, "loom-fix-login-1");
-        assert.equal(yield* git(cwd, ["branch", "--show-current"]), "loom-fix-login-1");
-      }),
+          assert.equal(renamed.branch, "loom-fix-login-1");
+          assert.equal(yield* git(cwd, ["branch", "--show-current"]), "loom-fix-login-1");
+        }),
     );
 
     it.effect.each(["loom-fix-login/child", "Loom-Fix-Login/child", "Loom-FIX-LOGIN"])(
@@ -4680,14 +4682,14 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
           const cwd = yield* makeTmpDir();
           yield* initRepoWithCommit(cwd);
           const driver = yield* GitVcsDriver.GitVcsDriver;
-          yield* git(cwd, ["branch", "t3"]);
+          yield* git(cwd, ["branch", "loom"]);
           yield* git(cwd, ["checkout", "-b", "loom-abcd1234"]);
           yield* git(cwd, ["branch", occupied]);
 
           const renamed = yield* driver.renameBranch({
             cwd,
             oldBranch: "loom-abcd1234",
-            newBranch: "t3/fix-login",
+            newBranch: "loom/fix-login",
           });
 
           assert.equal(renamed.branch, "loom-fix-login-1");
@@ -5725,7 +5727,10 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
           "# test\n",
         );
         assert.equal(
-          yield* driver.readConfigValue(worktreePath, "branch.feature/locked-config.loom-merge-base"),
+          yield* driver.readConfigValue(
+            worktreePath,
+            "branch.feature/locked-config.loom-merge-base",
+          ),
           null,
         );
         assert.equal(yield* fileSystem.exists(pathService.join(cwd, ".git/config.lock")), true);
@@ -5939,7 +5944,7 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
       Effect.gen(function* () {
         const cwd = yield* makeTmpDir();
         yield* git(cwd, ["init"]);
-        yield* git(cwd, ["remote", "add", "origin", "https://github.com/tarze07/Loom.git"]);
+        yield* git(cwd, ["remote", "add", "origin", "https://github.com/tarze07/loom.git"]);
         yield* git(cwd, ["config", "remote.origin.promisor", "true"]);
         yield* git(cwd, ["config", "remote.origin.partialclonefilter", "blob:none"]);
         const driver = yield* GitVcsDriver.GitVcsDriver;
@@ -5947,7 +5952,7 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
         const reused = yield* driver.ensureRemote({
           cwd,
           preferredName: "origin",
-          url: "git@github.com:tarze07/Loom.git",
+          url: "git@github.com:tarze07/loom.git",
         });
         assert.equal(reused, "origin");
         const added = yield* driver.ensureRemote({
@@ -6192,40 +6197,40 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
         yield* initRepoWithCommit(cwd);
         const driver = yield* GitVcsDriver.GitVcsDriver;
 
-        yield* git(cwd, ["remote", "add", "origin", "https://github.com/tarze07/Loom.git"]);
+        yield* git(cwd, ["remote", "add", "origin", "https://github.com/tarze07/loom.git"]);
 
         const reusedForSsh = yield* driver.ensureRemote({
           cwd,
           preferredName: "pingdotgg",
-          url: "git@github.com:tarze07/Loom.git",
+          url: "git@github.com:tarze07/loom.git",
         });
         assert.equal(reusedForSsh, "origin");
 
         const reusedForSshScheme = yield* driver.ensureRemote({
           cwd,
           preferredName: "pingdotgg",
-          url: "ssh://git@github.com/tarze07/Loom",
+          url: "ssh://git@github.com/tarze07/loom",
         });
         assert.equal(reusedForSshScheme, "origin");
 
         const reusedForBareSshScheme = yield* driver.ensureRemote({
           cwd,
           preferredName: "pingdotgg",
-          url: "ssh://github.com/tarze07/Loom",
+          url: "ssh://github.com/tarze07/loom",
         });
         assert.equal(reusedForBareSshScheme, "origin");
 
         const reusedForSshPort = yield* driver.ensureRemote({
           cwd,
           preferredName: "pingdotgg",
-          url: "ssh://git@github.com:22/tarze07/Loom",
+          url: "ssh://git@github.com:22/tarze07/loom",
         });
         assert.equal(reusedForSshPort, "origin");
 
         const reusedForSshWithPort = yield* driver.ensureRemote({
           cwd,
           preferredName: "pingdotgg",
-          url: "ssh://git@github.com:22/tarze07/Loom.git",
+          url: "ssh://git@github.com:22/tarze07/loom.git",
         });
         assert.equal(reusedForSshWithPort, "origin");
 
@@ -6906,7 +6911,10 @@ it.layer(layerTest)("GitVcsDriver core integration", (it) => {
         assert.strictEqual(status.branchChanges?.deletions, 0);
         // gh pr create consumes this setting verbatim as the hosted target branch.
         assert.equal(
-          yield* driver.readConfigValue(worktreePath, "branch.feature/from-upstream.loom-merge-base"),
+          yield* driver.readConfigValue(
+            worktreePath,
+            "branch.feature/from-upstream.loom-merge-base",
+          ),
           "release",
         );
         assert.equal(changes.baseRef, "upstream/release");

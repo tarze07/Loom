@@ -1,7 +1,4 @@
-import {
-  ConnectionBlockedError,
-  ConnectionTransientError,
-} from "@loom/client-runtime/connection";
+import { ConnectionBlockedError, ConnectionTransientError } from "@loom/client-runtime/connection";
 import { EnvironmentRpcUnavailableError } from "@loom/client-runtime/rpc";
 import * as Cause from "effect/Cause";
 import * as Schema from "effect/Schema";

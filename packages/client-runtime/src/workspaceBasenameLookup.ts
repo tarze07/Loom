@@ -1,8 +1,4 @@
-import {
-  isAbsolutePath,
-  isWindowsAbsolutePath,
-  resolveWorkspaceFilePath,
-} from "@loom/shared/path";
+import { isAbsolutePath, isWindowsAbsolutePath, resolveWorkspaceFilePath } from "@loom/shared/path";
 
 export const WORKSPACE_BASENAME_LOOKUP_LIMIT = 25;
 

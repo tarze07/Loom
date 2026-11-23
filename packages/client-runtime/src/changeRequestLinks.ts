@@ -1,9 +1,4 @@
-import type {
-  EnvironmentId,
-  ProjectId,
-  PullRequestRef,
-  RepositoryIdentity,
-} from "@loom/contracts";
+import type { EnvironmentId, ProjectId, PullRequestRef, RepositoryIdentity } from "@loom/contracts";
 import type { ChangeRequestLink } from "@loom/source-control-core/shared/definition";
 
 import { sourceControlClients } from "./sourceControlClients.ts";

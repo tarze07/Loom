@@ -1,11 +1,6 @@
 import { describe, expect, it } from "@effect/vitest";
 
-import type {
-  EnvironmentId,
-  OrchestrationV2ThreadShell,
-  Project,
-  ThreadId,
-} from "@loom/contracts";
+import type { EnvironmentId, OrchestrationV2ThreadShell, Project, ThreadId } from "@loom/contracts";
 import { ProviderInstanceId, RuntimeRequestId } from "@loom/contracts";
 import * as DateTime from "effect/DateTime";
 

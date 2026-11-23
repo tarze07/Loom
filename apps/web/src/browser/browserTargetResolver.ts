@@ -1,8 +1,4 @@
-import type {
-  BrowserNavigationTarget,
-  EnvironmentId,
-  PreviewUrlResolution,
-} from "@loom/contracts";
+import type { BrowserNavigationTarget, EnvironmentId, PreviewUrlResolution } from "@loom/contracts";
 import { isLoopbackHost, normalizePreviewUrl } from "@loom/shared/preview";
 import { isLocalLoopbackHost, isPrivateNetworkHost } from "@loom/shared/hostClassification";
 

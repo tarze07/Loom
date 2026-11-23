@@ -18,15 +18,9 @@ import {
 
 describe("normalizeGitRemoteUrl", () => {
   it("canonicalizes equivalent GitHub remotes across protocol variants", () => {
-    expect(normalizeGitRemoteUrl("git@github.com:Loom/Loom.git")).toBe(
-      "github.com/loom/loom",
-    );
-    expect(normalizeGitRemoteUrl("https://github.com/Loom/Loom.git")).toBe(
-      "github.com/loom/loom",
-    );
-    expect(normalizeGitRemoteUrl("ssh://git@github.com/Loom/Loom")).toBe(
-      "github.com/loom/loom",
-    );
+    expect(normalizeGitRemoteUrl("git@github.com:Loom/Loom.git")).toBe("github.com/loom/loom");
+    expect(normalizeGitRemoteUrl("https://github.com/Loom/Loom.git")).toBe("github.com/loom/loom");
+    expect(normalizeGitRemoteUrl("ssh://git@github.com/Loom/Loom")).toBe("github.com/loom/loom");
     expect(normalizeGitRemoteUrl("https://github.com/Loom/Loom.git?view=compact")).toBe(
       "github.com/loom/loom",
     );
@@ -134,12 +128,12 @@ describe("parseOriginUrlFromGitConfig", () => {
       '[remote "upstream"]',
       "\turl = https://github.com/other/repo.git",
       '[remote "origin"]',
-      "\turl = git@github.com:tarze07/Loom.git",
+      "\turl = git@github.com:tarze07/loom.git",
       "\tfetch = +refs/heads/*:refs/remotes/origin/*",
       '[branch "main"]',
       "\tremote = origin",
     ].join("\n");
-    expect(parseOriginUrlFromGitConfig(config)).toBe("git@github.com:tarze07/Loom.git");
+    expect(parseOriginUrlFromGitConfig(config)).toBe("git@github.com:tarze07/loom.git");
   });
 
   it("strips inline comments and quotes from the url value", () => {
@@ -214,13 +208,11 @@ describe("isTemporaryWorktreeBranch", () => {
     );
   });
 
-  it("matches legacy loom temporary worktree refs", () => {
-    expect(isTemporaryWorktreeBranch("loom/deadbeef")).toBe(true);
-    expect(isTemporaryWorktreeBranch("loom-deadbeef")).toBe(true);
+  it("matches temporary worktree refs created before the rename from t3", () => {
+    expect(isTemporaryWorktreeBranch("t3/deadbeef")).toBe(true);
+    expect(isTemporaryWorktreeBranch("t3-deadbeef")).toBe(true);
+    expect(isTemporaryWorktreeBranch("t3/f4ae4e0e-f971-4d48-b4f2-9cf0aa54ab12")).toBe(false);
     expect(isTemporaryWorktreeBranch("loom/f4ae4e0e-f971-4d48-b4f2-9cf0aa54ab12")).toBe(true);
-    expect(
-      isTemporaryWorktreeBranch(`${WORKTREE_BRANCH_PREFIX}/f4ae4e0e-f971-4d48-b4f2-9cf0aa54ab12`),
-    ).toBe(false);
   });
 
   it("rejects UUID-shaped refs that are not RFC 4122 v4", () => {
@@ -228,7 +220,7 @@ describe("isTemporaryWorktreeBranch", () => {
     expect(isTemporaryWorktreeBranch("loom/f4ae4e0e-f971-4d48-c4f2-9cf0aa54ab12")).toBe(false);
   });
 
-  it("matches the flat fallback used when a plain t3 branch exists", () => {
+  it("matches the flat fallback used when a plain loom branch exists", () => {
     const flat = flattenTemporaryWorktreeBranchName(`${WORKTREE_BRANCH_PREFIX}/deadbeef`);
     expect(flat).toBe(`${WORKTREE_BRANCH_PREFIX}-deadbeef`);
     expect(isTemporaryWorktreeBranch(flat)).toBe(true);

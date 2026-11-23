@@ -181,9 +181,9 @@ describe("thread links", () => {
         return match;
       });
     });
-    expect(threadLinkRefs("<loom-thread://v2/local/t1> [a](loom-thread://v2/there/t2)", local)).toEqual(
-      [ref("local", "t1"), ref("there", "t2")],
-    );
+    expect(
+      threadLinkRefs("<loom-thread://v2/local/t1> [a](loom-thread://v2/there/t2)", local),
+    ).toEqual([ref("local", "t1"), ref("there", "t2")]);
   });
 
   it("writes a titleless autolink that opens that exact thread", () => {
@@ -209,7 +209,7 @@ describe("hosted thread links", () => {
     expect(link).toBe("https://app.loom.local/threads/env%2E1/thread%3Adelegated%2Fmcp%253A1%2E");
     expect(parseThreadLinkHref(link)).toEqual(thread);
     expect(hostedThreadLink(thread, "https://preview.loom.local/")).toMatch(
-      /^https:\/\/preview\.loom\.codes\/threads\//,
+      /^https:\/\/preview\.loom\.local\/threads\//,
     );
   });
 
@@ -217,7 +217,9 @@ describe("hosted thread links", () => {
     expect(parseThreadLinkHref("https://app.loom.local/threads/env-1/thread-1")).toEqual(
       ref("env-1", "thread-1"),
     );
-    expect(parseThreadLinkHref("https://app.loom.local/threads/env-1/thread-1?prompt=go")).toBeNull();
+    expect(
+      parseThreadLinkHref("https://app.loom.local/threads/env-1/thread-1?prompt=go"),
+    ).toBeNull();
     expect(parseThreadLinkHref("https://app.loom.local/threads/env-1/thread-1/extra")).toBeNull();
     expect(parseThreadLinkHref("https://app.loom.local/threads/env-1")).toBeNull();
     expect(parseThreadLinkHref("https://app.loom.local/env-1/thread-1")).toBeNull();

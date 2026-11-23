@@ -1,8 +1,4 @@
-import {
-  AuthOrchestrationOperateScope,
-  type EditorId,
-  type EnvironmentId,
-} from "@loom/contracts";
+import { AuthOrchestrationOperateScope, type EditorId, type EnvironmentId } from "@loom/contracts";
 import { squashAtomCommandFailure } from "@loom/client-runtime/state/runtime";
 
 import { useOpenInPreferredEditor } from "../editorPreferences";

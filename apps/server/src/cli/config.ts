@@ -1,9 +1,5 @@
 import * as NetService from "@loom/shared/Net";
-import {
-  OtlpHeadersFromString,
-  OtlpProtocol,
-  type SignalExport,
-} from "@loom/shared/observability";
+import { OtlpHeadersFromString, OtlpProtocol, type SignalExport } from "@loom/shared/observability";
 import * as OtelEnvironment from "@loom/shared/otelEnvironment";
 import { parsePersistedServerObservabilitySettings } from "@loom/shared/serverSettings";
 import { DesktopBackendBootstrap, PortSchema } from "@loom/contracts";
@@ -85,9 +81,7 @@ export const traceFileConfig = Config.String("LOOM_TRACE_FILE").pipe(
   Config.option,
   Config.map(Option.getOrUndefined),
 );
-export const traceMaxFilesConfig = Config.Int("LOOM_TRACE_MAX_FILES").pipe(
-  Config.withDefault(10),
-);
+export const traceMaxFilesConfig = Config.Int("LOOM_TRACE_MAX_FILES").pipe(Config.withDefault(10));
 
 const EnvServerConfig = Config.all({
   logLevel: Config.LogLevel("LOOM_LOG_LEVEL").pipe(Config.withDefault("Info")),
@@ -109,9 +103,7 @@ const EnvServerConfig = Config.all({
     Config.option,
     Config.map(Option.getOrUndefined),
   ),
-  otlpExportIntervalMs: Config.Int("LOOM_OTLP_EXPORT_INTERVAL_MS").pipe(
-    Config.withDefault(10_000),
-  ),
+  otlpExportIntervalMs: Config.Int("LOOM_OTLP_EXPORT_INTERVAL_MS").pipe(Config.withDefault(10_000)),
   otlpHeaders: Config.schema(OtlpHeadersFromString, "LOOM_OTLP_HEADERS").pipe(
     Config.option,
     Config.map(Option.getOrUndefined),
@@ -383,8 +375,8 @@ export const resolveServerConfig = Effect.fn("config.resolveServerConfig")(funct
     Option.fromUndefinedOr(env.host),
     Option.fromUndefinedOr(bootstrap?.host),
   );
-  // Private networks only, so clients learn a LAN address and prefer it over
-  // Loom Connect. `t3 service install` writes LOOM_LAN=false for a new
+  // Private networks only, so clients learn a LAN address. `t3 service install`
+  // writes LOOM_LAN=false for a new
   // service; one installed before LOOM_LAN existed keeps listening.
   const lan = resolveOptionPrecedence(normalizedFlags.lan, Option.fromUndefinedOr(env.lan));
   const privateNetworkOnly =

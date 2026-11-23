@@ -1,7 +1,4 @@
-import type {
-  EnvironmentPresentation,
-  PreparedConnection,
-} from "@loom/client-runtime/connection";
+import type { EnvironmentPresentation, PreparedConnection } from "@loom/client-runtime/connection";
 import { connectionCatalogDisplayUrl } from "@loom/client-runtime/connection";
 import type { EnvironmentId, ServerConfig } from "@loom/contracts";
 import * as Option from "effect/Option";

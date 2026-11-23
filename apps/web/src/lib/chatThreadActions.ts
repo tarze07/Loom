@@ -1,10 +1,5 @@
 import { scopeProjectRef } from "@loom/client-runtime/environment";
-import type {
-  EnvironmentId,
-  ModelSelection,
-  ProjectId,
-  ScopedProjectRef,
-} from "@loom/contracts";
+import type { EnvironmentId, ModelSelection, ProjectId, ScopedProjectRef } from "@loom/contracts";
 import type { ComposerThreadDraftState, DraftThreadEnvMode } from "../composerDraftStore";
 
 type ComposerModelSelectionState = Pick<

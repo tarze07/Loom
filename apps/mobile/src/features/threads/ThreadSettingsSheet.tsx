@@ -1,7 +1,4 @@
-import {
-  getPromptControlledTraits,
-  getTraitSelectChange,
-} from "@loom/client-runtime/model-traits";
+import { getPromptControlledTraits, getTraitSelectChange } from "@loom/client-runtime/model-traits";
 import * as Dialog from "../../components/ui/Dialog";
 import { createV5StackNavigator as createNativeStackNavigator } from "../../native/createV5StackNavigator";
 import { useSheetStackOptions } from "../layout/nested-stacks";
@@ -23,10 +20,7 @@ import type {
 import type { LegendListRenderItemProps } from "@legendapp/list/react-native";
 import { RegistryContext, useAtomMount, useAtomValue } from "@effect/atom-react";
 import { AnimatedLegendList } from "@legendapp/list/reanimated";
-import {
-  getProviderOptionCurrentLabel,
-  getProviderOptionCurrentValue,
-} from "@loom/shared/model";
+import { getProviderOptionCurrentLabel, getProviderOptionCurrentValue } from "@loom/shared/model";
 import {
   useNavigation,
   useRoute,

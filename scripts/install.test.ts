@@ -365,7 +365,9 @@ describe.skipIf(HostProcess.Platform.defaultValue() !== "linux")("installer chec
       );
       expect(availableTools.length).toBeGreaterThan(0);
       for (const checksumTool of availableTools) {
-        const root = await NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "loom-install-checksum-"));
+        const root = await NodeFSP.mkdtemp(
+          NodePath.join(NodeOS.tmpdir(), "loom-install-checksum-"),
+        );
         const home = NodePath.join(root, homeName);
         const version = "1.2.3";
         const stem = `loom-${version}-linux-${HostProcess.Architecture.defaultValue()}`;

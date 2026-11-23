@@ -1519,7 +1519,7 @@ layer("GitHubPullRequestApi.layer", (it) => {
       yield* cli.searchPullRequests({
         cwd: "/w",
         host: "github.com",
-        repositories: ["acme/web", "tarze07/Loom"],
+        repositories: ["acme/web", "tarze07/loom"],
         state: "closed",
         involvement: "reviewing",
         viewer: "bilal",
@@ -1532,7 +1532,7 @@ layer("GitHubPullRequestApi.layer", (it) => {
       assert.strictEqual(
         searchQueryOfCall(0),
         'is:pr is:closed is:unmerged review-requested:bilal "pull requests page" ' +
-          "updated:<=2026-07-02T00:00:00Z sort:updated-desc repo:acme/web repo:tarze07/Loom",
+          "updated:<=2026-07-02T00:00:00Z sort:updated-desc repo:acme/web repo:tarze07/loom",
       );
     }),
   );
@@ -1587,7 +1587,7 @@ layer("GitHubPullRequestApi.layer", (it) => {
         Effect.succeed(
           searchPage([
             searchItem(7, "acme/web", "2026-07-03T00:00:00Z"),
-            searchItem(9, "tarze07/Loom", "2026-07-02T00:00:00Z"),
+            searchItem(9, "tarze07/loom", "2026-07-02T00:00:00Z"),
             {},
           ]),
         ),
@@ -1597,7 +1597,7 @@ layer("GitHubPullRequestApi.layer", (it) => {
       const batch = yield* cli.searchPullRequests({
         cwd: "/w",
         host: "github.com",
-        repositories: ["acme/web", "tarze07/Loom"],
+        repositories: ["acme/web", "tarze07/loom"],
         state: "open",
         involvement: "all",
         viewer: "bilal",
@@ -1608,7 +1608,7 @@ layer("GitHubPullRequestApi.layer", (it) => {
         batch.items.map((item) => [item.repository, item.number, item.author?.avatarUrl]),
         [
           ["acme/web", 7, "https://avatars/octocat"],
-          ["tarze07/Loom", 9, "https://avatars/octocat"],
+          ["tarze07/loom", 9, "https://avatars/octocat"],
         ],
       );
       assert.deepStrictEqual(

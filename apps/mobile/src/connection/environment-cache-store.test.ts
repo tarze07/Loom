@@ -575,9 +575,9 @@ describe("mobile SQLite environment cache store", () => {
       );
       const link: ThreadPullRequestLink = {
         host: "github.com",
-        repository: "tarze07/Loom",
+        repository: "tarze07/loom",
         number: 42,
-        url: "https://github.com/tarze07/Loom/pull/42",
+        url: "https://github.com/tarze07/loom/pull/42",
         source: "agent",
         linkedAt: "2026-07-29T12:00:00.000Z",
         snapshot: null,
@@ -609,9 +609,9 @@ describe("mobile SQLite environment cache store", () => {
       );
       const link: ThreadPullRequestLink = {
         host: "github.com",
-        repository: "tarze07/Loom",
+        repository: "tarze07/loom",
         number: 5,
-        url: "https://github.com/tarze07/Loom/pull/5",
+        url: "https://github.com/tarze07/loom/pull/5",
         source: "agent",
         linkedAt: "2026-07-29T12:00:00.000Z",
         snapshot: null,

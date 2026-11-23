@@ -9,10 +9,7 @@ import {
   type ScopedProjectRef,
   type ScopedThreadRef,
 } from "@loom/contracts";
-import {
-  presentThreadShell,
-  type EnvironmentThreadShell,
-} from "@loom/client-runtime/state/shell";
+import { presentThreadShell, type EnvironmentThreadShell } from "@loom/client-runtime/state/shell";
 import {
   deriveLatestThreadRun,
   deriveThreadRuntime,

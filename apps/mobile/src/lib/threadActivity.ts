@@ -76,10 +76,7 @@ import {
   mcpAppFromToolItem,
 } from "@loom/shared/toolOutput";
 import * as DateTime from "effect/DateTime";
-import {
-  IDLE_COMPACTION_TITLES,
-  IDLE_COMPACTING_LABELS,
-} from "@loom/client-runtime/user-message";
+import { IDLE_COMPACTION_TITLES, IDLE_COMPACTING_LABELS } from "@loom/client-runtime/user-message";
 
 export type PendingApproval = ThreadPendingApproval;
 export type PendingUserInput = ThreadPendingUserInput;

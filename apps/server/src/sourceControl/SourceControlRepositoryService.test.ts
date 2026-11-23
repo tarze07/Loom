@@ -92,7 +92,9 @@ function layer(input: {
     Layer.provide(
       ServerConfig.layerTest(
         process.cwd(),
-        input.fileSystem ? "/tmp/loom-source-control-repos" : { prefix: "loom-source-control-repos-" },
+        input.fileSystem
+          ? "/tmp/loom-source-control-repos"
+          : { prefix: "loom-source-control-repos-" },
       ),
     ),
   );

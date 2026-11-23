@@ -1,9 +1,4 @@
-import {
-  EDITORS,
-  type ContextMenuItem,
-  type EditorId,
-  type EnvironmentId,
-} from "@loom/contracts";
+import { EDITORS, type ContextMenuItem, type EditorId, type EnvironmentId } from "@loom/contracts";
 
 import { resolveDiffPathForWorkspace } from "./diffFileActions";
 import {

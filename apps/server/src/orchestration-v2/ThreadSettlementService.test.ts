@@ -2055,10 +2055,10 @@ describe("isSourceControlUnavailableCause", () => {
   it.effect("skips branch pull request lookups when PR-based auto-settlement is disabled", () =>
     Effect.scoped(
       Effect.gen(function* () {
-        const thread = shell({
-          id: ThreadId.make("no-pr-lookup-thread"),
+        yield* TestClock.setTime(Date.parse(NOW));
+        const thread = makeThread("no-pr-lookup-thread", {
           branch: "feature/local-only",
-          updatedAt: at(-1 * DAY_MS),
+          latestUserMessageAt: DateTime.makeUnsafe("2026-08-27T00:00:00.000Z"),
         });
         const lookups = yield* Ref.make(0);
         const fixture = yield* makeHarness({
@@ -2069,8 +2069,7 @@ describe("isSourceControlUnavailableCause", () => {
             sidebarAutoSettleAfterDays: 7,
             sidebarAutoSettleKeepPullRequests: false,
           },
-          onBranchPullRequest: () =>
-            Ref.update(lookups, (count) => count + 1).pipe(Effect.as(null)),
+          branchPullRequest: () => Ref.update(lookups, (count) => count + 1).pipe(Effect.as(null)),
         });
 
         yield* Effect.gen(function* () {

@@ -60,10 +60,7 @@ import * as ThreadCommandExecutor from "./ThreadCommandExecutor.ts";
 import * as ProviderSessionManager from "./ProviderSessionManager.ts";
 import * as CommandOutputHub from "./CommandOutputHub.ts";
 import * as ProviderAdapter from "@loom/provider-core/server/ProviderAdapter";
-import {
-  makeProviderFailure,
-  makeProviderRetryTurnItem,
-} from "@loom/provider-core/server/failure";
+import { makeProviderFailure, makeProviderRetryTurnItem } from "@loom/provider-core/server/failure";
 
 const layerTestDatabase = SqlitePersistence.layerMemory;
 const layerTestStores = Layer.merge(EventStore.layer, ProjectionStore.layer).pipe(

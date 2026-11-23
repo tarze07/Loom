@@ -29,8 +29,7 @@ export const ptBR: Messages = {
     downloadForLinux: "Baixar para Linux",
     sourceLink: "Roube nosso código (legalmente)",
     alsoOnPhone: "Também no seu celular:",
-    screenshotAlt:
-      "Loom executando subagentes do Claude, Codex, Muse e Gemini em uma mesma thread",
+    screenshotAlt: "Loom executando subagentes do Claude, Codex, Muse e Gemini em uma mesma thread",
     endorsementsTitle: "Tolerado por mais de {users} devs",
     endorsementsSub: "Alguns até tuitaram sobre isso.",
     endorsementsLabel: "Depoimentos de desenvolvedores",

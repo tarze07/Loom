@@ -1,7 +1,4 @@
-import type {
-  DesktopSshEnvironmentBootstrap,
-  DesktopSshEnvironmentTarget,
-} from "@loom/contracts";
+import type { DesktopSshEnvironmentBootstrap, DesktopSshEnvironmentTarget } from "@loom/contracts";
 import { waitForHttpReady as waitForHttpReadyShared } from "@loom/shared/httpReadiness";
 import { cliReleaseDownloadBaseUrl } from "@loom/shared/cliRelease";
 import * as KeyedLock from "@loom/shared/KeyedLock";

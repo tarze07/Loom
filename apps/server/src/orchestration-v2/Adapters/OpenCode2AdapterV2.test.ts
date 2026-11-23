@@ -50,10 +50,7 @@ import {
 } from "@loom/provider-opencode/testing";
 import { resolveAttachmentPath } from "../../attachmentStore.ts";
 import { openCode2ReplayRuntime } from "./OpenCode2AdapterV2.testkit.ts";
-import {
-  makeProviderReplayGate,
-  type ProviderReplayGate,
-} from "@loom/provider-testing/replayGate";
+import { makeProviderReplayGate, type ProviderReplayGate } from "@loom/provider-testing/replayGate";
 
 const SESSION = "ses_f148ca2deffeJcwCnRQtb0YFNX";
 const WORK = "/work/opencode2";

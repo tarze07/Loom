@@ -290,9 +290,9 @@ describe("applyShellStreamEvent", () => {
 describe("reuseUnchangedThreadShells", () => {
   const link: ThreadPullRequestLink = {
     host: "github.com",
-    repository: "tarze07/Loom",
+    repository: "tarze07/loom",
     number: 3,
-    url: "https://github.com/tarze07/Loom/pull/3",
+    url: "https://github.com/tarze07/loom/pull/3",
     source: "agent",
     linkedAt: "2026-06-20T00:00:00.000Z",
     snapshot: null,

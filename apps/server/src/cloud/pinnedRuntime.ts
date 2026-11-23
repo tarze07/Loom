@@ -460,7 +460,7 @@ export function isVersionExecutable(
 ): boolean {
   const relative = path.relative(versionsDir, path.resolve(candidate));
   // On another Windows drive, relative() returns the absolute path, like `D:\loom.exe`.
-  return !path.isAbsolute(relative) && /^(?!\.\.)[^\\/]+[\\/]t3(?:\.exe)?$/i.test(relative);
+  return !path.isAbsolute(relative) && /^(?!\.\.)[^\\/]+[\\/](?:t3|loom\.exe)$/i.test(relative);
 }
 
 /** The executable a `loom.cmd` shim written by the install script or `t3 update` runs. */

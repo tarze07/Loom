@@ -60,8 +60,8 @@ export function usePeerLinkHosts() {
 }
 
 /**
- * The user's other machines, for picking one to link `environmentId` to,
- * including those only on their Loom Connect account. Reads that environment's
+ * The user's other machines, for picking one to link `environmentId` to.
+ * Reads that environment's
  * links only while `enabled`, since listing them asks every linked machine
  * whether it answers.
  */

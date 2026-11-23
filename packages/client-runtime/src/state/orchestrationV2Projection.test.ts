@@ -109,9 +109,9 @@ describe("applyOrchestrationV2ProjectionEvent", () => {
   it("applies a compact PR sync without replacing other links or thread metadata", () => {
     const link = (number: number): ThreadPullRequestLink => ({
       host: "github.com",
-      repository: "tarze07/Loom",
+      repository: "tarze07/loom",
       number,
-      url: `https://github.com/tarze07/Loom/pull/${number}`,
+      url: `https://github.com/tarze07/loom/pull/${number}`,
       source: "manual",
       linkedAt: DateTime.formatIso(now),
       snapshot: null,

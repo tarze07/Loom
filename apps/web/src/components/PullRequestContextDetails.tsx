@@ -1,8 +1,5 @@
 import type { PullRequestContextMetadata } from "@loom/contracts";
-import {
-  capitalizeTerm,
-  sourceControlClients,
-} from "@loom/client-runtime/source-control-clients";
+import { capitalizeTerm, sourceControlClients } from "@loom/client-runtime/source-control-clients";
 import { ArrowRightIcon } from "lucide-react";
 
 import { cn } from "~/lib/utils";

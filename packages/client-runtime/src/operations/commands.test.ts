@@ -525,8 +525,8 @@ describe("V2 environment commands", () => {
     Effect.gen(function* () {
       const link = {
         host: "github.com",
-        repository: "tarze07/Loom",
-        url: "https://github.com/tarze07/Loom/pull/7",
+        repository: "tarze07/loom",
+        url: "https://github.com/tarze07/loom/pull/7",
         source: "agent" as const,
         linkedAt: "2026-10-05T00:00:00.000Z",
         snapshot: null,
@@ -567,7 +567,7 @@ describe("V2 environment commands", () => {
           commandId: expect.any(String),
           threadId: v2ThreadId,
           host: "github.com",
-          repository: "tarze07/Loom",
+          repository: "tarze07/loom",
           number: 7,
           watching: false,
         },

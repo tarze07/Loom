@@ -313,7 +313,9 @@ function LinkRequestSheet(props: {
             accessibilityRole="alert"
             className="gap-1 rounded-xl border border-warning-border bg-warning p-3"
           >
-            <Text className="font-loom-bold text-sm text-warning-foreground">Check this address</Text>
+            <Text className="font-loom-bold text-sm text-warning-foreground">
+              Check this address
+            </Text>
             <Text className="font-sans text-xs leading-snug text-warning-foreground">
               This app cannot confirm it is one of your machines. The pairing code you paste is sent
               there.

@@ -1,8 +1,4 @@
-import {
-  CommandId,
-  type MessageId,
-  type OrchestrationV2ThreadProjection,
-} from "@loom/contracts";
+import { CommandId, type MessageId, type OrchestrationV2ThreadProjection } from "@loom/contracts";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";

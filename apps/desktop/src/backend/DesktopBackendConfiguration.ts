@@ -78,8 +78,6 @@ const DESKTOP_BACKEND_ENV_NAMES = [
   "LOOM_DESKTOP_WS_URL",
   "LOOM_DESKTOP_LAN_HOST",
   "LOOM_DESKTOP_HTTPS_ENDPOINTS",
-  "LOOM_TAILSCALE_SERVE",
-  "LOOM_TAILSCALE_SERVE_PORT",
 ] as const;
 
 // Windows forwards these variables into WSL only through WSLENV.
@@ -506,8 +504,6 @@ const resolvePrimaryStartConfig = Effect.fn("desktop.backendConfiguration.resolv
       desktopBootstrapToken: input.bootstrapToken,
       desktopBootstrapSecret: input.bootstrapSecret,
       shellEnvironmentPrepared: input.shellEnvironmentPrepared,
-      tailscaleServeEnabled: backendExposure.tailscaleServeEnabled,
-      tailscaleServePort: backendExposure.tailscaleServePort,
       desktopTelemetryFd: 4,
       desktopTelemetryControlFd: 5,
       desktopBrowserFd: 6,
@@ -575,9 +571,6 @@ const resolveWslStartConfig = Effect.fn("desktop.backendConfiguration.resolveWsl
     host: wslBindHost,
     desktopBootstrapToken: input.bootstrapToken,
     desktopBootstrapSecret: input.bootstrapSecret,
-    // PortSchema rejects 0 even when Tailscale Serve is disabled.
-    tailscaleServeEnabled: false,
-    tailscaleServePort: 443,
     ...buildObservabilityFragment(input.observabilitySettings),
   };
 

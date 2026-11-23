@@ -391,7 +391,7 @@ it.layer(NodeServices.layer)("DesktopCliCommand", (it) => {
       registry.failReads = false;
       const launcherDir = DesktopCliShim.launcherPath(
         environmentFor(yield* Path.Path, { home, baseDir: `${home}/.loom`, platform: "win32" }),
-      ).replace(/[\\/]t3\.cmd$/, "");
+      ).replace(/[\\/]loom\.cmd$/, "");
       yield* command.install;
       expect(registry.path).toBe(`${userPath};${launcherDir}`);
       yield* command.uninstall;
@@ -436,7 +436,10 @@ it.layer(NodeServices.layer)("DesktopCliCommand", (it) => {
       // PATH alone.
       const besideHome = yield* fs.makeTempDirectoryScoped();
       yield* fs.makeDirectory(path.join(besideHome, ".local", "bin"), { recursive: true });
-      yield* fs.writeFileString(path.join(besideHome, ".local", "bin", "loom.cmd"), "@echo off\r\n");
+      yield* fs.writeFileString(
+        path.join(besideHome, ".local", "bin", "loom.cmd"),
+        "@echo off\r\n",
+      );
       const beside = fakePowerShell("C:\\Tools");
       yield* (yield* commandIn({ home: besideHome, platform: "win32" }, beside.spawner))
         .installOnFirstLaunch;

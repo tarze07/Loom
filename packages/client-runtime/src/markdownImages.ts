@@ -1,8 +1,4 @@
-import {
-  isNetworkPath,
-  isWindowsAbsolutePath,
-  workspaceRelativeFilePath,
-} from "@loom/shared/path";
+import { isNetworkPath, isWindowsAbsolutePath, workspaceRelativeFilePath } from "@loom/shared/path";
 
 import {
   markdownDestinationHostPath,

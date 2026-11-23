@@ -30,8 +30,7 @@ export const ja: Messages = {
     downloadForLinux: "Linux 版をダウンロード",
     sourceLink: "コードを盗もう（合法的に）",
     alsoOnPhone: "スマホでも使えます：",
-    screenshotAlt:
-      "ひとつのスレッドで Claude、Codex、Muse、Gemini のサブエージェントを動かす Loom",
+    screenshotAlt: "ひとつのスレッドで Claude、Codex、Muse、Gemini のサブエージェントを動かす Loom",
     endorsementsTitle: "{users} 人以上の開発者が我慢して使っています",
     endorsementsSub: "ツイートまでしてくれた人もいます。",
     endorsementsLabel: "開発者の声",

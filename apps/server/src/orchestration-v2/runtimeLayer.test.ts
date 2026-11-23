@@ -228,11 +228,11 @@ const watchedPullRequestDetail = (input: {
   projectId: input.projectId,
   projectTitle: "Watch wake",
   workspaceRoot: "/workspace/watch",
-  repository: "tarze07/Loom",
+  repository: "tarze07/loom",
   number: input.number,
   title: "Watched pull request",
   body: "",
-  url: `https://github.com/tarze07/Loom/pull/${input.number}`,
+  url: `https://github.com/tarze07/loom/pull/${input.number}`,
   author: { login: "agent-user", name: null, avatarUrl: null },
   state: "open",
   isDraft: false,
@@ -3045,7 +3045,10 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
       assert.instanceOf(staleWorkspaceUpdate, Orchestrator.OrchestratorDispatchError);
       const projectionAfterStaleWorkspaceUpdate = yield* orchestrator.getThreadProjection(threadId);
       assert.equal(projectionAfterStaleWorkspaceUpdate.thread.branch, "feature/v2");
-      assert.equal(projectionAfterStaleWorkspaceUpdate.thread.worktreePath, "/tmp/loom-v2-worktree");
+      assert.equal(
+        projectionAfterStaleWorkspaceUpdate.thread.worktreePath,
+        "/tmp/loom-v2-worktree",
+      );
       const pullRequestSnapshot = yield* orchestrator.getShellSnapshot();
       const pullRequest = {
         projectId,
@@ -3364,9 +3367,9 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
         },
         branchPullRequest: {
           projectId,
-          repository: "tarze07/Loom",
+          repository: "tarze07/loom",
           number: 1,
-          url: "https://github.com/tarze07/Loom/pull/1",
+          url: "https://github.com/tarze07/loom/pull/1",
         },
       });
       for (const [index, number] of [2, 2, 1, 3].entries()) {
@@ -3375,9 +3378,9 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
           commandId: CommandId.make(`branch-pr-link-${index}`),
           threadId,
           host: "GitHub.com",
-          repository: "tarze07/Loom",
+          repository: "tarze07/loom",
           number,
-          url: `https://github.com/tarze07/Loom/pull/${number}`,
+          url: `https://github.com/tarze07/loom/pull/${number}`,
           source: "manual",
         });
         assert.deepEqual(
@@ -3390,7 +3393,7 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
         commandId: CommandId.make("branch-pr-unlink"),
         threadId,
         host: "github.com",
-        repository: "tarze07/Loom",
+        repository: "tarze07/loom",
         number: 1,
       });
       yield* orchestrator.dispatch({
@@ -3398,9 +3401,9 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
         commandId: CommandId.make("branch-pr-link-after-unlink"),
         threadId,
         host: "github.com",
-        repository: "tarze07/Loom",
+        repository: "tarze07/loom",
         number: 4,
-        url: "https://github.com/tarze07/Loom/pull/4",
+        url: "https://github.com/tarze07/loom/pull/4",
         source: "manual",
       });
       assert.isTrue((yield* maintenance.rebuild).valid);
@@ -3414,9 +3417,9 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
           commandId: CommandId.make(`gitcafe-pr-link-${index}`),
           threadId,
           host: "git.cafe",
-          repository: "tarze07/Loom",
+          repository: "tarze07/loom",
           number: 21353 + index,
-          url: `https://git.cafe/tarze07/Loom/${route}/${21353 + index}`,
+          url: `https://git.cafe/tarze07/loom/${route}/${21353 + index}`,
           source: "manual",
         });
       }
@@ -3425,7 +3428,7 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
         (yield* orchestrator.getThreadShell(threadId))?.pullRequests
           ?.filter((link) => link.host === "git.cafe")
           .map((link) => link.url),
-        [21353, 21354].map((number) => `https://git.cafe/tarze07/Loom/pulls/${number}`),
+        [21353, 21354].map((number) => `https://git.cafe/tarze07/loom/pulls/${number}`),
       );
     }),
   );
@@ -3449,7 +3452,7 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
         branch: null,
         worktreePath: null,
       });
-      const key = { host: "GitHub.com", repository: "tarze07/Loom" };
+      const key = { host: "GitHub.com", repository: "tarze07/loom" };
       for (const number of [1, 2]) {
         yield* orchestrator.dispatch({
           type: "thread.pull-request.link",
@@ -3457,14 +3460,14 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
           threadId,
           ...key,
           number,
-          url: `https://github.com/tarze07/Loom/pull/${number}`,
+          url: `https://github.com/tarze07/loom/pull/${number}`,
           source: number === 1 ? "manual" : "stack",
         });
       }
       const linked = yield* orchestrator.getThreadShell(threadId);
       assert.deepEqual(
         linked?.pullRequests?.map(({ host, repository, number }) => ({ host, repository, number })),
-        [1, 2].map((number) => ({ host: "github.com", repository: "tarze07/Loom", number })),
+        [1, 2].map((number) => ({ host: "github.com", repository: "tarze07/loom", number })),
       );
       yield* orchestrator.dispatch({
         type: "thread.pull-request.unlink",
@@ -3493,7 +3496,7 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
         threadId,
         ...key,
         number: 2,
-        url: "https://github.com/tarze07/Loom/pull/2",
+        url: "https://github.com/tarze07/loom/pull/2",
         source: "stack",
       });
       assert.equal(
@@ -3511,7 +3514,7 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
         threadId,
         ...key,
         number: 2,
-        url: "https://github.com/tarze07/Loom/pull/2",
+        url: "https://github.com/tarze07/loom/pull/2",
         source: "manual",
       });
       assert.equal(
@@ -3540,8 +3543,8 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
         branch: null,
         worktreePath: null,
       });
-      const key = { host: "github.com", repository: "tarze07/Loom", number: 7 };
-      const url = "https://github.com/tarze07/Loom/pull/7";
+      const key = { host: "github.com", repository: "tarze07/loom", number: 7 };
+      const url = "https://github.com/tarze07/loom/pull/7";
       const watchOf = Effect.map(
         orchestrator.getThreadShell(threadId),
         (thread) => thread?.pullRequests?.[0]?.watch,
@@ -3632,7 +3635,7 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
         branch: null,
         worktreePath: null,
       });
-      const key = { host: "github.com", repository: "tarze07/Loom" };
+      const key = { host: "github.com", repository: "tarze07/loom" };
       for (const number of [7, 8]) {
         yield* orchestrator.dispatch({
           type: "thread.pull-request.watch",
@@ -3641,7 +3644,7 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
           ...key,
           number,
           watching: true,
-          link: { url: `https://github.com/tarze07/Loom/pull/${number}`, source: "agent" },
+          link: { url: `https://github.com/tarze07/loom/pull/${number}`, source: "agent" },
         });
       }
       const before = yield* orchestrator.getThreadShell(threadId);
@@ -3740,10 +3743,10 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
         type: "thread.pull-request.watch" as const,
         threadId,
         host: "github.com",
-        repository: "tarze07/Loom",
+        repository: "tarze07/loom",
         number: 7,
         watching: true,
-        link: { url: "https://github.com/tarze07/Loom/pull/7", source: "agent" as const },
+        link: { url: "https://github.com/tarze07/loom/pull/7", source: "agent" as const },
       };
       const watched = Effect.map(
         orchestrator.getThreadShell(threadId),
@@ -3816,10 +3819,10 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
           commandId: CommandId.make(`pr-watch-unreadable-start-${reason}-${activityFails}`),
           threadId,
           host: "github.com",
-          repository: "tarze07/Loom",
+          repository: "tarze07/loom",
           number: 8,
           watching: true,
-          link: { url: "https://github.com/tarze07/Loom/pull/8", source: "agent" },
+          link: { url: "https://github.com/tarze07/loom/pull/8", source: "agent" },
         });
         let disconnected = false;
         let passed = false;
@@ -3919,7 +3922,7 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
           commandId: CommandId.make(`pr-watch-unreadable-stop-${reason}-${activityFails}`),
           threadId,
           host: "github.com",
-          repository: "tarze07/Loom",
+          repository: "tarze07/loom",
           number: 8,
           watching: false,
         });
@@ -3958,10 +3961,10 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
         commandId: CommandId.make("pr-watch-closed-unreadable-start"),
         threadId,
         host: "github.com",
-        repository: "tarze07/Loom",
+        repository: "tarze07/loom",
         number: 8,
         watching: true,
-        link: { url: "https://github.com/tarze07/Loom/pull/8", source: "agent" },
+        link: { url: "https://github.com/tarze07/loom/pull/8", source: "agent" },
       });
       const reactor = yield* PullRequestWatchReactor.make.pipe(
         Effect.provide(
@@ -4028,10 +4031,10 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
           commandId: CommandId.make(`pr-watch-told-${id}`),
           threadId,
           host: "github.com",
-          repository: "tarze07/Loom",
+          repository: "tarze07/loom",
           number: 12,
           watching: on,
-          link: { url: "https://github.com/tarze07/Loom/pull/12", source: "agent" },
+          link: { url: "https://github.com/tarze07/loom/pull/12", source: "agent" },
         });
       yield* watch(true, "start");
 
@@ -4132,10 +4135,10 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
             commandId: CommandId.make(`pr-watch-pass-start-${busy}-${number}`),
             threadId,
             host: "github.com",
-            repository: "tarze07/Loom",
+            repository: "tarze07/loom",
             number,
             watching: true,
-            link: { url: `https://github.com/tarze07/Loom/pull/${number}`, source: "agent" },
+            link: { url: `https://github.com/tarze07/loom/pull/${number}`, source: "agent" },
           });
         }
         if (busy) {
@@ -4200,7 +4203,7 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
           commandId: CommandId.make("pr-watch-pass-stop-12"),
           threadId,
           host: "github.com",
-          repository: "tarze07/Loom",
+          repository: "tarze07/loom",
           number: 12,
           watching: false,
         });
@@ -4256,17 +4259,17 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
           commandId: CommandId.make(`pr-watch-owed-${initialStatus}-${id}`),
           threadId,
           host: "github.com",
-          repository: "tarze07/Loom",
+          repository: "tarze07/loom",
           number: 12,
           watching: on,
-          link: { url: "https://github.com/tarze07/Loom/pull/12", source: "agent" },
+          link: { url: "https://github.com/tarze07/loom/pull/12", source: "agent" },
         });
       yield* watch(true, "start");
 
       let remainingStatus: "pending" | "action-required" | "success" = initialStatus;
       const approval = initialStatus === "action-required";
       const firstSummary = approval ? "#12: checks await approval" : "#12: checks passed";
-      const runUrl = "https://github.com/tarze07/Loom/actions/runs/123";
+      const runUrl = "https://github.com/tarze07/loom/actions/runs/123";
       const host = Layer.mergeAll(
         NodeServices.layer,
         NodeCrypto.layer,
@@ -4379,7 +4382,7 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
         branch: null,
         worktreePath: null,
       });
-      const key = { host: "github.com", repository: "tarze07/Loom", number: 13 };
+      const key = { host: "github.com", repository: "tarze07/loom", number: 13 };
       const watch = (id: string) =>
         orchestrator.dispatch({
           type: "thread.pull-request.watch",
@@ -4387,7 +4390,7 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
           threadId,
           ...key,
           watching: true,
-          link: { url: "https://github.com/tarze07/Loom/pull/13", source: "agent" },
+          link: { url: "https://github.com/tarze07/loom/pull/13", source: "agent" },
         });
       const watchOf = Effect.map(
         orchestrator.getThreadShell(threadId),
@@ -4434,7 +4437,7 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
                   author: { login: "reviewer", name: null, avatarUrl: null },
                   body: "One more thing.",
                   createdAt: commentAt,
-                  url: "https://github.com/tarze07/Loom/pull/13#comment",
+                  url: "https://github.com/tarze07/loom/pull/13#comment",
                   path: null,
                   reviewState: null,
                 },
@@ -4502,14 +4505,14 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
         branch: null,
         worktreePath: null,
       });
-      const key = { host: "github.com", repository: "tarze07/Loom", number: 14 };
+      const key = { host: "github.com", repository: "tarze07/loom", number: 14 };
       yield* orchestrator.dispatch({
         type: "thread.pull-request.watch",
         commandId: CommandId.make("pr-watch-no-checks-start"),
         threadId,
         ...key,
         watching: true,
-        link: { url: "https://github.com/tarze07/Loom/pull/14", source: "agent" },
+        link: { url: "https://github.com/tarze07/loom/pull/14", source: "agent" },
       });
 
       // A docs-only push that path filters keep every workflow off.
@@ -4610,14 +4613,14 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
             branch: null,
             worktreePath: null,
           });
-          const key = { host: "github.com", repository: "tarze07/Loom", number: 15 };
+          const key = { host: "github.com", repository: "tarze07/loom", number: 15 };
           yield* orchestrator.dispatch({
             type: "thread.pull-request.watch",
             commandId: CommandId.make("pr-watch-host-event-start"),
             threadId,
             ...key,
             watching: true,
-            link: { url: "https://github.com/tarze07/Loom/pull/15", source: "agent" },
+            link: { url: "https://github.com/tarze07/loom/pull/15", source: "agent" },
           });
 
           let checks: PullRequestDetail["checks"] = [
@@ -4728,14 +4731,14 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
         branch: null,
         worktreePath: null,
       });
-      const key = { host: "github.com", repository: "tarze07/Loom", number: 14 };
+      const key = { host: "github.com", repository: "tarze07/loom", number: 14 };
       yield* orchestrator.dispatch({
         type: "thread.pull-request.watch",
         commandId: CommandId.make("pr-watch-late-checks-start"),
         threadId,
         ...key,
         watching: true,
-        link: { url: "https://github.com/tarze07/Loom/pull/14", source: "agent" },
+        link: { url: "https://github.com/tarze07/loom/pull/14", source: "agent" },
       });
 
       const headSha = "6074dd48ff";
@@ -4844,14 +4847,14 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
           branch: null,
           worktreePath: null,
         });
-        const key = { host: "github.com", repository: "tarze07/Loom", number: 14 };
+        const key = { host: "github.com", repository: "tarze07/loom", number: 14 };
         yield* orchestrator.dispatch({
           type: "thread.pull-request.watch",
           commandId: CommandId.make(`pr-watch-due-start-${fingerprinted}`),
           threadId,
           ...key,
           watching: true,
-          link: { url: "https://github.com/tarze07/Loom/pull/14", source: "agent" },
+          link: { url: "https://github.com/tarze07/loom/pull/14", source: "agent" },
         });
 
         let reads = 0;
@@ -4943,8 +4946,8 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
         branch: null,
         worktreePath: null,
       });
-      const key = { host: "github.com", repository: "tarze07/Loom", number: 14 };
-      const url = "https://github.com/tarze07/Loom/pull/14";
+      const key = { host: "github.com", repository: "tarze07/loom", number: 14 };
+      const url = "https://github.com/tarze07/loom/pull/14";
       const watchOf = Effect.map(
         orchestrator.getThreadShell(threadId),
         (thread) => thread?.pullRequests?.[0]?.watch,
@@ -5026,8 +5029,8 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
         branch: null,
         worktreePath: null,
       });
-      const key = { host: "github.com", repository: "tarze07/Loom", number: 7 };
-      const url = "https://github.com/tarze07/Loom/pull/7";
+      const key = { host: "github.com", repository: "tarze07/loom", number: 7 };
+      const url = "https://github.com/tarze07/loom/pull/7";
       yield* orchestrator.dispatch({
         type: "thread.pull-request.link",
         commandId: CommandId.make(`pr-watch-wake-link-${mode}`),
@@ -5204,14 +5207,14 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
       branch: null,
       worktreePath: process.cwd(),
     });
-    const key = { host: "github.com", repository: "tarze07/Loom", number: 7 };
+    const key = { host: "github.com", repository: "tarze07/loom", number: 7 };
     yield* orchestrator.dispatch({
       type: "thread.pull-request.watch",
       commandId: CommandId.make(`${threadId}-watch`),
       threadId,
       ...key,
       watching: true,
-      link: { url: "https://github.com/tarze07/Loom/pull/7", source: "agent" },
+      link: { url: "https://github.com/tarze07/loom/pull/7", source: "agent" },
     });
     let watch = (yield* orchestrator.getThreadShell(threadId))?.pullRequests?.[0]?.watch;
     assert.isDefined(watch);
@@ -5370,7 +5373,7 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
             commandId: CommandId.make(`${threadId}-relink`),
             threadId,
             ...key,
-            url: "https://github.com/tarze07/Loom/pull/7",
+            url: "https://github.com/tarze07/loom/pull/7",
             source: "manual",
           });
         }
@@ -5570,10 +5573,10 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
           commandId: CommandId.make(`pr-watch-pipeline-start-${number}`),
           threadId,
           host: "github.com",
-          repository: "tarze07/Loom",
+          repository: "tarze07/loom",
           number,
           watching: true,
-          link: { url: `https://github.com/tarze07/Loom/pull/${number}`, source: "agent" },
+          link: { url: `https://github.com/tarze07/loom/pull/${number}`, source: "agent" },
         });
       }
       const at = "2026-10-02T12:00:00.000Z";
@@ -6088,10 +6091,10 @@ it.layer(layerTest)("OrchestrationV2LayerLive lifecycle", (it) => {
         commandId: CommandId.make("runtime-layer-settle-then-watch-watch"),
         threadId,
         host: "github.com",
-        repository: "tarze07/Loom",
+        repository: "tarze07/loom",
         number: 7,
         watching: true,
-        link: { url: "https://github.com/tarze07/Loom/pull/7", source: "agent" },
+        link: { url: "https://github.com/tarze07/loom/pull/7", source: "agent" },
       });
       assert.isDefined((yield* orchestrator.getThreadShell(threadId))?.pullRequests?.[0]?.watch);
 
@@ -9712,8 +9715,8 @@ it.layer(Layer.fresh(layerSharedApplicationDataPlaneTest))("PR link events", (it
         branch: null,
         worktreePath: null,
       });
-      const key = { host: "github.com", repository: "tarze07/Loom" };
-      const repositoryWebUrl = "https://github.com/tarze07/Loom/pull/2";
+      const key = { host: "github.com", repository: "tarze07/loom" };
+      const repositoryWebUrl = "https://github.com/tarze07/loom/pull/2";
       for (const number of [1, 2]) {
         yield* orchestrator.dispatch({
           type: "thread.pull-request.link",
@@ -9721,14 +9724,14 @@ it.layer(Layer.fresh(layerSharedApplicationDataPlaneTest))("PR link events", (it
           threadId,
           ...key,
           number,
-          url: `https://github.com/tarze07/Loom/pull/${number}`,
+          url: `https://github.com/tarze07/loom/pull/${number}`,
           source: "manual",
           ...(number === 2 ? { repositoryWebUrl } : {}),
         });
       }
       const watchedLink = {
-        url: "https://github.com/tarze07/Loom/pull/3",
-        repositoryWebUrl: "https://github.com/tarze07/Loom/pull/3",
+        url: "https://github.com/tarze07/loom/pull/3",
+        repositoryWebUrl: "https://github.com/tarze07/loom/pull/3",
         source: "manual" as const,
       };
       yield* orchestrator.dispatch({
@@ -9768,7 +9771,7 @@ it.layer(Layer.fresh(layerSharedApplicationDataPlaneTest))("PR link events", (it
           kind: "native",
           id: "updated",
           number: 2,
-          url: "https://github.com/tarze07/Loom/pull/2",
+          url: "https://github.com/tarze07/loom/pull/2",
           base: "main",
           layers: [],
         },

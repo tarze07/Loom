@@ -14,10 +14,7 @@ import {
   EnvironmentAuthorizationError,
   type GitRunStackedActionResult,
 } from "@loom/contracts";
-import {
-  dedupeRemoteBranchesWithLocalMatches,
-  sanitizeFeatureBranchName,
-} from "@loom/shared/git";
+import { dedupeRemoteBranchesWithLocalMatches, sanitizeFeatureBranchName } from "@loom/shared/git";
 import * as Cause from "effect/Cause";
 import { AsyncResult } from "effect/reactivity";
 

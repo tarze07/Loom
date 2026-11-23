@@ -389,16 +389,16 @@ describe("pull request toolkit handlers", () => {
       for (const host of ["git.cafe", "staging.git.cafe"]) {
         for (const project of [makeProject(), makeProject(null)]) {
           for (const target of [
-            { host, repository: "tarze07/Loom", number: 21353 },
-            { url: `https://${host}/tarze07/Loom/pull/21353` },
-            { url: `https://${host}/tarze07/Loom/pulls/21353` },
+            { host, repository: "tarze07/loom", number: 21353 },
+            { url: `https://${host}/tarze07/loom/pull/21353` },
+            { url: `https://${host}/tarze07/loom/pulls/21353` },
           ]) {
             const harness = yield* makeHarness({ project });
             const result = yield* harness.call("link_pull_request", target);
-            const url = `https://${host}/tarze07/Loom/pulls/21353`;
+            const url = `https://${host}/tarze07/loom/pulls/21353`;
             expect(result).toMatchObject({
               host,
-              repository: "tarze07/Loom",
+              repository: "tarze07/loom",
               number: 21353,
               url,
             });
@@ -406,7 +406,7 @@ describe("pull request toolkit handlers", () => {
               {
                 type: "thread.pull-request.link",
                 host,
-                repository: "tarze07/Loom",
+                repository: "tarze07/loom",
                 number: 21353,
                 url,
               },

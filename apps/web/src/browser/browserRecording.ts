@@ -1,7 +1,4 @@
-import {
-  DESKTOP_PREVIEW_RECORDING_CAPTURE_TRIGGER,
-  PreviewCaptureFailure,
-} from "@loom/contracts";
+import { DESKTOP_PREVIEW_RECORDING_CAPTURE_TRIGGER, PreviewCaptureFailure } from "@loom/contracts";
 import type { DesktopPreviewRecordingArtifact, ScopedThreadRef } from "@loom/contracts";
 import { useAtomValue } from "@effect/atom-react";
 import * as Schema from "effect/Schema";

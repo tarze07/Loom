@@ -1,10 +1,7 @@
 import * as Effect from "effect/Effect";
 import * as Schema from "effect/Schema";
 import { AcpRegistryUrlAuthAction } from "./acpRegistry.ts";
-import {
-  type EnvironmentMachineKind,
-  ExecutionEnvironmentDescriptor,
-} from "./environment.ts";
+import { type EnvironmentMachineKind, ExecutionEnvironmentDescriptor } from "./environment.ts";
 import { AuthClientPresentationMetadata, ServerAuthDescriptor } from "./auth.ts";
 import {
   ForwardCompatibleArray,
@@ -978,4 +975,3 @@ export class ServerNpmReleaseError extends Schema.TaggedError<ServerNpmReleaseEr
     return `Could not check the configured npm registry: ${this.reason}`;
   }
 }
-

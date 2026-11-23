@@ -213,7 +213,7 @@ export function cursorMcpServers(
     return undefined;
   }
   return {
-    "loom": {
+    loom: {
       type: "http",
       url: session.endpoint,
       headers: {

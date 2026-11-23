@@ -37,6 +37,7 @@ const makeEnvironment = (path: Path.Path, overrides: Record<string, unknown> = {
     isPackaged: true,
     isDevelopment: false,
     displayName: "Loom (Alpha)",
+    appUserModelId: "com.loom.app",
     linuxDesktopEntryName: "com.loom.Loom.desktop",
     linuxApplicationsDir: "/home/alice/.local/share/applications",
     desktopLauncherPath: Option.none(),
@@ -260,10 +261,10 @@ describe("DesktopLinuxUrlHandler", () => {
 
     return Effect.gen(function* () {
       yield* runRegister(recorded, {
-        environment: { desktopLauncherPath: Option.some("/opt/Loom/loom") },
+        environment: { desktopLauncherPath: Option.some("/opt/Loom Desktop/loom") },
       });
 
-      assert.include(recorded.files[0]?.content, 'Exec="/opt/Loom/loom" %U');
+      assert.include(recorded.files[0]?.content, 'Exec="/opt/Loom Desktop/loom" %U');
     });
   });
 

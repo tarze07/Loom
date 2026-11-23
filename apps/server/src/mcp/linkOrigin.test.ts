@@ -189,7 +189,7 @@ const layerTools = Layer.mergeAll(
       cloneRepository: (input) =>
         Effect.succeed({
           cwd: input.destinationPath,
-          remoteUrl: "https://github.com/tarze07/Loom.git",
+          remoteUrl: "https://github.com/tarze07/loom.git",
           repository: null,
         }),
     }),

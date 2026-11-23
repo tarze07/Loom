@@ -884,7 +884,7 @@ it.layer(NodeServices.layer)("AgentSessionScanner", (it) => {
         yield* fileSystem.makeDirectory(path.join(repo, ".git"));
         yield* fileSystem.writeFileString(
           path.join(repo, ".git", "config"),
-          '[core]\n\tbare = false\n[remote "origin"]\n\turl = git@github.com:tarze07/Loom.git\n\tfetch = +refs/heads/*:refs/remotes/origin/*\n',
+          '[core]\n\tbare = false\n[remote "origin"]\n\turl = git@github.com:tarze07/loom.git\n\tfetch = +refs/heads/*:refs/remotes/origin/*\n',
         );
         const worktreeGitDir = path.join(repo, ".git", "worktrees", "wt");
         yield* fileSystem.makeDirectory(worktreeGitDir, { recursive: true });
@@ -930,7 +930,7 @@ it.layer(NodeServices.layer)("AgentSessionScanner", (it) => {
           { path: plain, git: null },
           {
             path: repo,
-            git: { remoteKey: "github.com/tarze07/Loom", repository: "tarze07/Loom" },
+            git: { remoteKey: "github.com/tarze07/loom", repository: "tarze07/loom" },
           },
         ]);
       }),
@@ -952,7 +952,7 @@ it.layer(NodeServices.layer)("AgentSessionScanner", (it) => {
           yield* fileSystem.makeDirectory(bareGitDir);
           yield* fileSystem.writeFileString(
             path.join(bareGitDir, "config"),
-            '[core] bare = "true" ; bare repository\n[remote "origin"]\nurl = git@github.com:tarze07/Loom.git\n',
+            '[core] bare = "true" ; bare repository\n[remote "origin"]\nurl = git@github.com:tarze07/loom.git\n',
           );
           const dev = path.join(bare, "dev");
           const prod = path.join(bare, "prod");
@@ -990,7 +990,7 @@ it.layer(NodeServices.layer)("AgentSessionScanner", (it) => {
 
           const input = { claudeHomePath, codexHomePath, configBaseDir };
           const result = yield* runScan(input);
-          const git = { remoteKey: "github.com/tarze07/Loom", repository: "tarze07/Loom" };
+          const git = { remoteKey: "github.com/tarze07/loom", repository: "tarze07/loom" };
           expect(
             result.candidates.map((candidate) => ({ path: candidate.path, git: candidate.git })),
           ).toEqual([
@@ -1005,26 +1005,28 @@ it.layer(NodeServices.layer)("AgentSessionScanner", (it) => {
         }),
     );
 
-    it.effect("excludes sandboxes under the configured worktrees dir without .loom in the path", () =>
-      Effect.gen(function* () {
-        const path = yield* Path.Path;
-        const claudeHomePath = yield* makeTempDir("loom-claude-home-");
-        const codexHomePath = yield* makeTempDir("loom-codex-home-");
-        const configBaseDir = yield* makeTempDir("loom-scanner-base-");
-        const fileSystem = yield* FileSystem.FileSystem;
+    it.effect(
+      "excludes sandboxes under the configured worktrees dir without .loom in the path",
+      () =>
+        Effect.gen(function* () {
+          const path = yield* Path.Path;
+          const claudeHomePath = yield* makeTempDir("loom-claude-home-");
+          const codexHomePath = yield* makeTempDir("loom-codex-home-");
+          const configBaseDir = yield* makeTempDir("loom-scanner-base-");
+          const fileSystem = yield* FileSystem.FileSystem;
 
-        const worktreeCwd = path.join(configBaseDir, "worktrees", "loom", "wt-2");
-        yield* fileSystem.makeDirectory(worktreeCwd, { recursive: true });
-        yield* writeTranscript({
-          filePath: path.join(claudeHomePath, "projects", "-slug", "a.jsonl"),
-          contents: claudeSessionLine(worktreeCwd),
-          mtimeMs: Date.parse("2026-01-01T00:00:00.000Z"),
-        });
+          const worktreeCwd = path.join(configBaseDir, "worktrees", "loom", "wt-2");
+          yield* fileSystem.makeDirectory(worktreeCwd, { recursive: true });
+          yield* writeTranscript({
+            filePath: path.join(claudeHomePath, "projects", "-slug", "a.jsonl"),
+            contents: claudeSessionLine(worktreeCwd),
+            mtimeMs: Date.parse("2026-01-01T00:00:00.000Z"),
+          });
 
-        const result = yield* runScan({ claudeHomePath, codexHomePath, configBaseDir });
+          const result = yield* runScan({ claudeHomePath, codexHomePath, configBaseDir });
 
-        expect(result.candidates).toEqual([]);
-      }),
+          expect(result.candidates).toEqual([]);
+        }),
     );
 
     it.effect("excludes sandboxes reached through a symlink into the worktrees dir", () =>

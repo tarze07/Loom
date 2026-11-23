@@ -49,13 +49,13 @@
     "test": "vp test run --config ../../vite.config.ts --dir ."
   },
   "dependencies": {
+    "@loom/contracts": "workspace:*",
+    "@loom/provider-core": "workspace:*",
+    "@loom/shared": "workspace:*",
     "@opencode-ai/sdk": "^1.3.15",
     "@opencode/client": "2.0.28",
     "@opencode/protocol": "2.0.28",
     "@opencode/schema": "2.0.28",
-    "@loom/contracts": "workspace:*",
-    "@loom/provider-core": "workspace:*",
-    "@loom/shared": "workspace:*",
     "effect": "catalog:"
   },
   "devDependencies": {

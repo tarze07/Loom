@@ -488,7 +488,9 @@ process.exit(0);
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
-        const root = yield* fs.makeTempDirectoryScoped({ prefix: "loom-service-launcher-repoint-" });
+        const root = yield* fs.makeTempDirectoryScoped({
+          prefix: "loom-service-launcher-repoint-",
+        });
         const statePath = path.join(root, "runtime", "service-state.json");
         yield* writeFakeRuntime(
           fs,

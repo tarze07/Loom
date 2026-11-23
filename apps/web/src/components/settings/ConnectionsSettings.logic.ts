@@ -15,7 +15,6 @@ import {
   AuthTerminalOperateScope,
   AuthTerminalReadScope,
   type DesktopBridge,
-  type DesktopServerExposureState,
   type DesktopSshEnvironmentTarget,
   type DesktopWslState,
   type EnvironmentId,
@@ -50,32 +49,6 @@ type WslEnableBridge = Pick<DesktopBridge, "setWslBackendEnabled" | "setWslDistr
 /** Never offer loopback URLs as QR targets; scanning devices would connect to themselves. */
 export function isQrShareableEndpoint(endpoint: AdvertisedEndpoint): boolean {
   return endpoint.status !== "unavailable" && endpoint.reachability !== "loopback";
-}
-
-/** Desktop skips Tailscale probing until network/Serve is enabled to avoid macOS prompts; absence then
- * means unchecked. */
-export function missingTailscaleEndpointDescription(
-  state: Pick<DesktopServerExposureState, "mode" | "tailscaleServeEnabled"> | null,
-): string {
-  return state && state.mode !== "network-accessible" && !state.tailscaleServeEnabled
-    ? "Turn on Network access to detect Tailscale."
-    : "Start Tailscale to set up HTTPS access through MagicDNS.";
-}
-
-export function resolveTailscaleServeBaseUrl(
-  endpoint: Pick<AdvertisedEndpoint, "httpBaseUrl"> | null,
-  port: number,
-  isPortValid: boolean,
-): string | null {
-  if (!endpoint) return null;
-  if (!isPortValid) return endpoint.httpBaseUrl;
-  try {
-    const url = new URL(endpoint.httpBaseUrl);
-    url.port = String(port);
-    return url.toString().replace(/\/$/u, "");
-  } catch {
-    return endpoint.httpBaseUrl;
-  }
 }
 
 export function isWslSettingsRowVisible(input: {
@@ -335,10 +308,6 @@ export function selectPairingEndpoint(
   );
 }
 
-export function isTailscaleHttpsEndpoint(endpoint: AdvertisedEndpoint): boolean {
-  return endpoint.id.startsWith("tailscale-magicdns:");
-}
-
 export function endpointDefaultPreferenceKey(endpoint: AdvertisedEndpoint): string {
   if (endpoint.id.startsWith("desktop-loopback:")) {
     return "desktop-core:loopback:http";
@@ -348,9 +317,6 @@ export function endpointDefaultPreferenceKey(endpoint: AdvertisedEndpoint): stri
   }
   if (endpoint.id.startsWith("tailscale-ip:")) {
     return "tailscale:ip:http";
-  }
-  if (isTailscaleHttpsEndpoint(endpoint)) {
-    return "tailscale:magicdns:https";
   }
 
   let scheme = "unknown";

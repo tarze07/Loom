@@ -1,7 +1,4 @@
-import {
-  presentThreadShell,
-  type EnvironmentThreadShell,
-} from "@loom/client-runtime/state/shell";
+import { presentThreadShell, type EnvironmentThreadShell } from "@loom/client-runtime/state/shell";
 import {
   EnvironmentId,
   ProjectId,

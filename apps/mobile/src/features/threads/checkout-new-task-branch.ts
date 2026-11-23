@@ -1,9 +1,6 @@
 import type { EnvironmentProject } from "@loom/client-runtime/state/shell";
 import type { VcsRef } from "@loom/client-runtime/state/vcs";
-import {
-  type AtomCommandResult,
-  mapAtomCommandResult,
-} from "@loom/client-runtime/state/runtime";
+import { type AtomCommandResult, mapAtomCommandResult } from "@loom/client-runtime/state/runtime";
 import type {
   VcsListRefsInput,
   VcsListRefsResult,

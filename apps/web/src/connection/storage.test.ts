@@ -1,7 +1,4 @@
-import {
-  ConnectionTransientError,
-  PrimaryConnectionTarget,
-} from "@loom/client-runtime/connection";
+import { ConnectionTransientError, PrimaryConnectionTarget } from "@loom/client-runtime/connection";
 import { EnvironmentId, ThreadId } from "@loom/contracts";
 import { ConnectionCatalogDocument, Persistence } from "@loom/client-runtime/platform";
 import { describe, expect, it } from "@effect/vitest";
@@ -19,7 +16,6 @@ const emptyCatalog = {
   targets: [],
   profiles: [],
   credentials: [],
-  remoteDpopTokens: [],
   disabledEnvironmentIds: [],
 } as const;
 const decodeCatalog = Schema.decodeUnknownSync(Schema.fromJsonString(ConnectionCatalogDocument));

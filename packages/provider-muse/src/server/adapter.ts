@@ -91,10 +91,7 @@ import {
   type BackgroundWorkReport,
 } from "@loom/provider-core/server/notification";
 import type * as ProviderContinuationRequests from "@loom/provider-core/server/ProviderContinuationRequests";
-import {
-  makeProviderFailure,
-  makeProviderRetryTurnItem,
-} from "@loom/provider-core/server/failure";
+import { makeProviderFailure, makeProviderRetryTurnItem } from "@loom/provider-core/server/failure";
 import {
   makeSubagentChildThread,
   makeSubagentConversationArtifacts,
@@ -1939,7 +1936,7 @@ export const makeMuseAdapterV2 = Effect.fn("makeMuseAdapterV2")(function* (
             ? {
                 mcpServers: {
                   // Muse's required default fails runs if Loom tools are unreachable; make them optional.
-                  "loom": {
+                  loom: {
                     transport: "streamableHttp",
                     mode: "optional",
                     url: mcpSession.endpoint,

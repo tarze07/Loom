@@ -1,8 +1,4 @@
-import type {
-  PullRequestActor,
-  PullRequestMergeability,
-  PullRequestState,
-} from "@loom/contracts";
+import type { PullRequestActor, PullRequestMergeability, PullRequestState } from "@loom/contracts";
 import type { ReactNode } from "react";
 
 import { cn } from "~/lib/utils";

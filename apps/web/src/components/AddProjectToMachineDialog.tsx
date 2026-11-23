@@ -12,11 +12,7 @@ import {
   type ScopedProjectRef,
   resolveEnvironmentMachineKind,
 } from "@loom/contracts";
-import {
-  type CloneProtocol,
-  cloneUrlForProtocol,
-  cloneUrlProtocol,
-} from "@loom/shared/cloneUrl";
+import { type CloneProtocol, cloneUrlForProtocol, cloneUrlProtocol } from "@loom/shared/cloneUrl";
 import { ArrowRightIcon } from "lucide-react";
 import { useId, useState } from "react";
 import { create } from "zustand";

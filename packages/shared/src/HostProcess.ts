@@ -16,21 +16,18 @@ export const Architecture = Context.Reference<NodeJS.Architecture>(
   },
 );
 
-export const LinuxLibc = Context.Reference<"gnu" | "musl">(
-  "@loom/shared/HostProcess/LinuxLibc",
-  {
-    defaultValue: () => {
-      try {
-        const report = process.report?.getReport() as
-          | { header?: { glibcVersionRuntime?: unknown } }
-          | undefined;
-        return typeof report?.header?.glibcVersionRuntime === "string" ? "gnu" : "musl";
-      } catch {
-        return "musl";
-      }
-    },
+export const LinuxLibc = Context.Reference<"gnu" | "musl">("@loom/shared/HostProcess/LinuxLibc", {
+  defaultValue: () => {
+    try {
+      const report = process.report?.getReport() as
+        | { header?: { glibcVersionRuntime?: unknown } }
+        | undefined;
+      return typeof report?.header?.glibcVersionRuntime === "string" ? "gnu" : "musl";
+    } catch {
+      return "musl";
+    }
   },
-);
+});
 
 export const Hostname = Context.Reference<string>("@loom/shared/HostProcess/Hostname", {
   defaultValue: () => NodeOS.hostname(),
@@ -46,12 +43,9 @@ export const Username = Context.Reference<string | null>("@loom/shared/HostProce
   },
 });
 
-export const HomeDirectory = Context.Reference<string>(
-  "@loom/shared/HostProcess/HomeDirectory",
-  {
-    defaultValue: () => NodeOS.homedir(),
-  },
-);
+export const HomeDirectory = Context.Reference<string>("@loom/shared/HostProcess/HomeDirectory", {
+  defaultValue: () => NodeOS.homedir(),
+});
 
 export const Environment = Context.Reference<NodeJS.ProcessEnv>(
   "@loom/shared/HostProcess/Environment",
@@ -67,12 +61,9 @@ export const WorkingDirectory = Context.Reference<string>(
   },
 );
 
-export const ExecutablePath = Context.Reference<string>(
-  "@loom/shared/HostProcess/ExecutablePath",
-  {
-    defaultValue: () => process.execPath,
-  },
-);
+export const ExecutablePath = Context.Reference<string>("@loom/shared/HostProcess/ExecutablePath", {
+  defaultValue: () => process.execPath,
+});
 
 export const Arguments = Context.Reference<ReadonlyArray<string>>(
   "@loom/shared/HostProcess/Arguments",

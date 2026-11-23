@@ -21,7 +21,7 @@ const RUNS_EVERYTHING = [
 // Includes cross-package reads absent from package.json dependencies.
 const EXTRA_OWNERS = [
   // Vite configs and tsconfigs of these apps import scripts/lib directly.
-  [/^scripts\/lib\//, ["@loom/desktop", "@loom/mobile", "@loom/web", "t3"]],
+  [/^scripts\/lib\//, ["@loom/desktop", "@loom/mobile", "@loom/web", "loom"]],
   // scripts/build-desktop-artifact.ts reads the GNOME extension manifest.
   [/^apps\/desktop\/gnome-extension\//, ["@loom/scripts"]],
   [/^native\/browser-secret\//, ["@loom/desktop"]],
@@ -33,12 +33,12 @@ const RUST = /^native\/(resource-monitor|kde-snap-shot|hyprland-snap-shot)\//;
 // These tests read other packages without declaring dependencies.
 const TEST_ONLY_DEPS = {
   // Evals import the server's source to test its real model-facing text.
-  "@loom/evals": ["t3"],
+  "@loom/evals": ["loom"],
   "@loom/provider-pi": ["@loom/client-runtime"],
-  "@loom/scripts": ["@loom/desktop", "@loom/mobile", "@loom/web", "t3", "@loom/provider-cursor"],
+  "@loom/scripts": ["@loom/desktop", "@loom/mobile", "@loom/web", "loom", "@loom/provider-cursor"],
 };
 // The server bundles the web build without importing it.
-const BUILD_ONLY_DEPS = { t3: ["@loom/web"] };
+const BUILD_ONLY_DEPS = { loom: ["@loom/web"] };
 
 const MOBILE_NATIVE =
   /^apps\/mobile\/.*\.(swift|kt|kts)$|^apps\/mobile\/(\.swiftlint\.yml|detekt\.yml|\.editorconfig|Brewfile)$|^scripts\/mobile-native-static-check\.ts$|^package\.json$|^\.github\/workflows\/ci\.yml$|^\.github\/scripts\/ci-changes\.cjs$|^\.github\/actions\/ci-changes\//;
@@ -58,7 +58,7 @@ const DESKTOP_LAUNCH = [
   /^scripts\/(smoke-desktop-app\.ts|fixtures\/desktop-launch\/)/,
 ];
 
-const OWN_TEST_JOB = new Set(["t3", "@loom/web", "@loom/monorepo"]);
+const OWN_TEST_JOB = new Set(["loom", "@loom/web", "@loom/monorepo"]);
 
 function readWorkspace() {
   const patterns = [];
@@ -168,13 +168,13 @@ function decide(files, packages, full) {
     affected: [...affected].sort(),
     outputs: {
       typecheck: affected.size > 0,
-      build: has("@loom/desktop") || has("t3") || has("@loom/web") || desktopLaunch,
+      build: has("@loom/desktop") || has("loom") || has("@loom/web") || desktopLaunch,
       desktop_launch: desktopLaunch,
       test: tested.length > 0,
       // Empty means every package the Test job covers.
       test_packages: everything ? "" : tested.map((pkg) => pkg.name).join(" "),
       test_web: has("@loom/web"),
-      test_server: has("t3"),
+      test_server: has("loom"),
       rust: everything || rust,
       release_smoke: scriptsChanged,
       mobile_native: files === null || files.some((file) => MOBILE_NATIVE.test(file)),

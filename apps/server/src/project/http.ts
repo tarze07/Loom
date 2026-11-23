@@ -58,9 +58,7 @@ export const layer = HttpApiBuilder.group(
             yield* requireEnvironmentScope(scope);
           }
           const operation = mutateProjectWithClone(projects, projectClones, args.payload);
-          return yield* startup
-            .enqueueCommand(operation)
-            .pipe(Effect.catch(failProjectMutation));
+          return yield* startup.enqueueCommand(operation).pipe(Effect.catch(failProjectMutation));
         }),
       );
   }),

@@ -83,10 +83,7 @@ import {
   type BackgroundWorkReport,
 } from "@loom/provider-core/server/notification";
 import * as ProviderContinuationRequests from "@loom/provider-core/server/ProviderContinuationRequests";
-import {
-  makeProviderFailure,
-  makeProviderRetryTurnItem,
-} from "@loom/provider-core/server/failure";
+import { makeProviderFailure, makeProviderRetryTurnItem } from "@loom/provider-core/server/failure";
 import {
   makeSubagentChildThread,
   makeSubagentConversationArtifacts,
@@ -3484,8 +3481,7 @@ export const make = Effect.fn("OpenCode2Adapter.make")(function* (instanceId: Pr
               ? {
                   status: "failed",
                   failure: makeProviderFailure({
-                    message:
-                      "OpenCode ended the turn with an error while Loom was reconnecting.",
+                    message: "OpenCode ended the turn with an error while Loom was reconnecting.",
                     class: "provider_error",
                   }),
                 }
@@ -4090,7 +4086,10 @@ export const make = Effect.fn("OpenCode2Adapter.make")(function* (instanceId: Pr
       }
       const instructions = [
         buildRuntimeInstructions({ harness: "OpenCode", model: turnInput.modelSelection.model }),
-        loomOrchestrationSystemPrompt(mcpAvailable, mcpSession?.capabilities?.has("device") === true),
+        loomOrchestrationSystemPrompt(
+          mcpAvailable,
+          mcpSession?.capabilities?.has("device") === true,
+        ),
       ]
         .filter((part) => part !== undefined && part.length > 0)
         .join("\n\n");

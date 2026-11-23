@@ -1,8 +1,4 @@
-import {
-  type PullRequestCheck,
-  PullRequestComment,
-  ThreadPullRequestWatch,
-} from "@loom/contracts";
+import { type PullRequestCheck, PullRequestComment, ThreadPullRequestWatch } from "@loom/contracts";
 import { assert, describe, it } from "@effect/vitest";
 
 import {

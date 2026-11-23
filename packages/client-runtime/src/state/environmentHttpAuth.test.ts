@@ -20,6 +20,7 @@ import * as TestClock from "effect/testing/TestClock";
 import type { HttpClient } from "effect/http";
 
 import {
+  BearerConnectionTarget,
   type PreparedConnection,
   type PreparedHttpAuthorization,
 } from "../connection/model.ts";
@@ -43,12 +44,11 @@ const PREPARED: PreparedConnection = {
   httpBaseUrl: "https://environment.example.test",
   socketUrl: "wss://environment.example.test/ws",
   httpAuthorization: { _tag: "Bearer", token: "bearer-token" },
-  target: {
-    _tag: "BearerConnectionTarget",
+  target: new BearerConnectionTarget({
     environmentId: TARGET.environmentId,
     label: TARGET.label,
     connectionId: "connection-1",
-  },
+  }),
 };
 const DIFF = {
   projectId: ProjectId.make("project-1"),

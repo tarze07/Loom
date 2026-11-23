@@ -203,9 +203,7 @@ describe("persistClientSettingsPatch", () => {
       await ensureClientSettingsHydrated();
       const otherTabSettings = { ...DEFAULT_CLIENT_SETTINGS, timestampFormat: "12-hour" as const };
       persistenceMocks.getClientSettings.mockResolvedValue(otherTabSettings);
-      window.dispatchEvent(
-        Object.assign(new Event("storage"), { key: "loom:client-settings:v1" }),
-      );
+      window.dispatchEvent(Object.assign(new Event("storage"), { key: "loom:client-settings:v1" }));
 
       await persistClientSettingsPatch({ wordWrap: false });
 

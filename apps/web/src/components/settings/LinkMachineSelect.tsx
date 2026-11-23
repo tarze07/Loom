@@ -53,7 +53,7 @@ function MachineName({ machine }: { readonly machine: LinkableMachine }) {
   );
 }
 
-/** The user's other machines, including those on their Loom Connect account, then an address. */
+/** The user's other machines, then an address. */
 export function LinkMachineSelect({
   machines,
   value,

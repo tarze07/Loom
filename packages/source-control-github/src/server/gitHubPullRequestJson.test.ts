@@ -55,7 +55,7 @@ const user = (login: string, fields: Record<string, unknown> = {}) => ({
 const row = (fields: Record<string, unknown>) => ({
   number: 1,
   title: "Add the pull requests page",
-  url: "https://github.com/tarze07/Loom/pull/1",
+  url: "https://github.com/tarze07/loom/pull/1",
   author: null,
   headRefName: "feat/page",
   baseRefName: "main",
@@ -67,7 +67,7 @@ const row = (fields: Record<string, unknown>) => ({
   createdAt: "2026-07-01T00:00:00Z",
   updatedAt: "2026-07-02T00:00:00Z",
   mergedAt: null,
-  repository: { nameWithOwner: "tarze07/Loom" },
+  repository: { nameWithOwner: "tarze07/loom" },
   reviewRequests: { nodes: [] },
   labels: { nodes: [] },
   commits: { nodes: [] },
@@ -380,7 +380,7 @@ describe("pull request detail decoding", () => {
           pullRequest: {
             number: 7,
             title: "Detail",
-            url: "https://github.com/tarze07/Loom/pull/7",
+            url: "https://github.com/tarze07/loom/pull/7",
             body: "Body",
             state: "OPEN",
             isDraft: false,

@@ -115,33 +115,14 @@ on that machine. Existing threads stay where they started. If resource checks ar
 unavailable or all eligible machines are full, choose a machine manually to continue.
 Mobile keeps its manual environment selection.
 
-### Tailscale HTTPS
+### Tailscale
 
-Join both devices to the same tailnet. In the desktop app, enable **Tailscale
-HTTPS** in **Settings → Sharing & access**. Turn it off there to remove that route.
-
-To start a command-line server with Tailscale HTTPS:
-
-```bash
-loom serve --tailscale-serve
-```
-
-For an already-running server:
-
-```bash
-loom pair --tailscale
-```
-
-The pairing link uses an address such as `https://machine.tailnet.ts.net/`.
-The mapping created by `pair --tailscale` persists across restarts. Remove its
-default-port mapping with:
-
-```bash
-tailscale serve --https=443 --set-path=/ off
-```
-
-If that port is already in use, choose another with
-`--tailscale-serve-port`. See `loom pair --help` for other pairing options.
+Join both devices to the same tailnet and turn on **Network access** in
+**Settings → Sharing & access**. The machine's Tailscale address, such as
+`http://100.x.y.z:3773/`, is listed with its other addresses; pair over it like a
+LAN address. Loom reads that address from the Tailscale network adapter. It does
+not run the `tailscale` command or set up Tailscale Serve, so there is no
+Tailscale HTTPS address.
 
 ### Hosted web app
 
