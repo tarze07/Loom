@@ -649,7 +649,7 @@ it("rebuilds the template from this checkout and sends a child Loom's task promp
   });
   assert.notInclude(String(child.system[2]?.text), "mcp__loom__watch_pull_request");
   assert.notInclude(
-    child.t3.map((tool) => tool.name),
+    child.loom.map((tool) => tool.name),
     "mcp__loom__unwatch_pull_request",
   );
   const reminders = buildMessages(makeSample(childCase, base))[0]?.content.map((b) => b.text);
@@ -670,11 +670,11 @@ it("lists link tools only while a case turns the beta on, and sends chips as Loo
     links: true,
   });
   assert.notInclude(
-    off.t3.map((tool) => tool.name),
+    off.loom.map((tool) => tool.name),
     "mcp__loom__t3_environment_link",
   );
   assert.include(
-    on.t3.map((tool) => tool.name),
+    on.loom.map((tool) => tool.name),
     "mcp__loom__t3_environment_link",
   );
 

@@ -624,7 +624,7 @@ export const buildBase = (
     readonly browserAccess?: boolean;
   },
 ) => {
-  const t3 = visibleLoom(options);
+  const loom = visibleLoom(options);
   const firstAssistant = template.messages.findIndex((message) => message.role === "assistant");
   const head = template.messages.slice(0, firstAssistant === -1 ? undefined : firstAssistant);
   const systemTexts = [
@@ -692,7 +692,7 @@ export const buildBase = (
       ...loom.filter((tool) => alwaysLoaded.has(tool.name)),
     ],
     /** Tools ToolSearch loads: Loom tools from source, and native tools the template only names. */
-    t3,
+    loom,
     deferred: [...loom, ...nativeDeferred.map((name) => ({ name, ...nativeSchema(name) }))],
   };
 };
@@ -718,7 +718,7 @@ const buildCodexBase = (
     readonly browserAccess?: boolean;
   },
 ): Base => {
-  const t3 = visibleLoom(options);
+  const loom = visibleLoom(options);
   const contentText = (item: Block) =>
     Array.isArray(item.content)
       ? item.content.map((block: Block) => valueText(block.text)).join("\n")
@@ -778,7 +778,7 @@ const buildCodexBase = (
       date: /<current_date>(.*?)<\/current_date>/.exec(joined)?.[1],
     },
     nativeTools,
-    t3,
+    loom,
     deferred: [...loom],
     codex: { ...template, input, reasoning: { ...template.reasoning, effort } },
   };
@@ -1985,7 +1985,7 @@ export const executeCodex = async (
 };
 
 const codexCatalog = (base: Base) => [
-  ...base.t3.map((tool) => ({
+  ...base.loom.map((tool) => ({
     name: tool.name.replace("mcp__loom__", "mcp__loom__"),
     description: `${valueText(tool.description)}\nInput JSON schema: ${JSON.stringify(tool.input_schema)}`,
   })),
