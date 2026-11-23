@@ -411,13 +411,11 @@ Counters tell you volume and failure rate:
 
 Webhooks have their own families:
 
-- `loom_webhook_deliveries_total` by `outcome` and `source` (`relay` or `direct`). Beyond what the
-  sender sees, `queue_full` means a task already had its limit of deliveries waiting,
-  `prompt_too_long` means the filled-in prompt passed the provider limit, and `duplicate` means
-  the relay delivered a request this environment had already run.
+- `loom_webhook_deliveries_total` by `outcome`. Beyond what the sender sees, `queue_full` means a
+  task already had its limit of deliveries waiting, `prompt_too_long` means the filled-in prompt
+  passed the provider limit, and `duplicate` means a request matched one already accepted.
 - `loom_webhook_runs_total` by `outcome` (`started`, `skipped`, `failed`) for the runs those
   deliveries start, which happen after the sender has its answer.
-- `loom_webhook_held_delay` for how long requests the relay held waited before arriving.
 
 - `loom_secret_requests_total` by `status` (`saved`, `declined`, `cancelled`, `timed_out`) for secrets
   agents asked users for, and `loom_secret_refs_consumed_total` by `result` (`used`, `rejected`) for
