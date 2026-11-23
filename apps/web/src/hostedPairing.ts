@@ -1,4 +1,4 @@
-import { DEFAULT_HOSTED_APP_URL } from "@loom/shared/connectAuth";
+import { DEFAULT_HOSTED_APP_URL } from "@loom/shared/hostedApp";
 
 import { getPairingTokenFromUrl, setPairingTokenOnUrl } from "@loom/shared/remote";
 

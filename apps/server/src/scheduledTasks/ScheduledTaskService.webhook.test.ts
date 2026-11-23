@@ -172,7 +172,6 @@ const withService = <A, E>(
     readonly failLaunches?: { remaining: number };
     readonly gate?: Deferred.Deferred<void>;
     readonly gateForTask?: (input: LaunchInput) => Deferred.Deferred<void> | undefined;
-    readonly relayHookBaseUrl?: string;
     readonly sql?: SqlClient.SqlClient;
     readonly workers?: Map<string, Effect.Effect<void>>;
     readonly policy?: ManagedPolicyDocument;
@@ -250,10 +249,6 @@ const withService = <A, E>(
             : Effect.succeed(value);
         },
       }),
-      Layer.succeed(
-        ScheduledTaskService.ScheduledTaskWebhookOrigin,
-        Effect.succeed({ relayHookBaseUrl: options.relayHookBaseUrl ?? null }),
-      ),
       ManagedPolicy.layerTest(options.policy),
     );
     return yield* Effect.gen(function* () {
@@ -312,35 +307,6 @@ it.effect("dispatches exactly the rendered prompt and logs the delivery", () =>
       assert.isDefined(next);
       assert.notEqual(next, frame);
     }),
-  ),
-);
-
-it("builds the relay hook URL from the managed tunnel's key, never the environment id", () => {
-  const relayUrl = "https://relay.example.com/";
-  assert.equal(
-    ScheduledTaskService.relayHookBaseUrl({
-      relayUrl,
-      tunnelName: "loomrelay-managedendpoint-dev-julius-0123456789abcdef",
-    }),
-    "https://relay.example.com/v1/hooks/0123456789abcdef",
-  );
-  for (const tunnelName of [undefined, "loomrelay-managedendpoint", "x-0123456789ABCDEF"]) {
-    assert.isNull(ScheduledTaskService.relayHookBaseUrl({ relayUrl, tunnelName }));
-  }
-});
-
-it.effect("gives webhook tasks a relay URL when the environment has a managed tunnel", () =>
-  withService(
-    ({ service }) =>
-      Effect.gen(function* () {
-        const { task } = yield* service.upsert(yield* webhookTaskInput());
-        const token = task.webhook!.path.split("/").at(-1);
-        assert.equal(
-          task.webhook?.url,
-          `https://relay.example.com/v1/hooks/0123456789abcdef/scheduled-task%3Ahook/${token}`,
-        );
-      }),
-    { relayHookBaseUrl: "https://relay.example.com/v1/hooks/0123456789abcdef" },
   ),
 );
 

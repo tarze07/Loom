@@ -18,7 +18,7 @@ import {
   parseMcpApprovalCode,
   type RuntimeMode,
 } from "@loom/contracts";
-import { DEFAULT_HOSTED_APP_URL } from "@loom/shared/connectAuth";
+import { DEFAULT_HOSTED_APP_URL } from "@loom/shared/hostedApp";
 import { encodeOAuthScope } from "@loom/shared/oauthScope";
 import * as Clock from "effect/Clock";
 import * as Context from "effect/Context";
@@ -205,7 +205,7 @@ export class McpOAuth extends Context.Service<
       readonly urls: McpOAuthUrls;
       readonly request: AuthMcpAuthorizationRequest;
     }) => Effect.Effect<AuthorizationRequest, McpOAuthPageError | McpOAuthRedirectError>;
-    /** A browser cookie session, or a Loom Connect session from the hosted app, that may approve. */
+    /** A browser cookie session, or a DPoP-bound session from the hosted app, that may approve. */
     readonly approvingSession: (
       request: HttpServerRequest.HttpServerRequest,
       authorization: AuthorizationRequest,

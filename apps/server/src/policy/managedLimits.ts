@@ -16,7 +16,7 @@ export class ManagedPolicyRefusedError extends Schema.TaggedError<ManagedPolicyR
   "ManagedPolicyRefusedError",
   {
     organization: Schema.String,
-    /** What the policy does not allow, for example "Loom Connect". */
+    /** What the policy does not allow, for example "Remote access". */
     action: Schema.String,
     /** What that means for this request, for example "so the server cannot listen on 0.0.0.0". */
     detail: Schema.optionalKey(Schema.String),

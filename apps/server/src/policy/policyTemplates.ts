@@ -76,7 +76,7 @@ const policies = (): ReadonlyArray<Policy> => [
   {
     id: "Clients",
     title: "Allowed clients",
-    help: "What may connect to Loom on this machine.\n\nWithout Remote, Loom only listens on this machine, does not create pairing links, signs out devices that paired earlier, and turns Loom Connect off. Check at least one client.\n\nDisabled or Not Configured: no restriction.",
+    help: "What may connect to Loom on this machine.\n\nWithout Remote, Loom only listens on this machine, does not create pairing links, and signs out devices that paired earlier. Check at least one client.\n\nDisabled or Not Configured: no restriction.",
     elements: [
       {
         kind: "checkbox",

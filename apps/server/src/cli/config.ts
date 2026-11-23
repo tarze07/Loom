@@ -375,8 +375,8 @@ export const resolveServerConfig = Effect.fn("config.resolveServerConfig")(funct
     Option.fromUndefinedOr(env.host),
     Option.fromUndefinedOr(bootstrap?.host),
   );
-  // Private networks only, so clients learn a LAN address and prefer it over
-  // Loom Connect. `t3 service install` writes LOOM_LAN=false for a new
+  // Private networks only, so clients learn a LAN address. `t3 service install`
+  // writes LOOM_LAN=false for a new
   // service; one installed before LOOM_LAN existed keeps listening.
   const lan = resolveOptionPrecedence(normalizedFlags.lan, Option.fromUndefinedOr(env.lan));
   const privateNetworkOnly =

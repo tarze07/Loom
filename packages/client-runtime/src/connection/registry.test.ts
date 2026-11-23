@@ -1797,7 +1797,7 @@ describe("EnvironmentRegistry routes", () => {
   const lanRegistration = (target = LAN_TARGET, profile = LAN_PROFILE) =>
     new BearerConnectionRegistration({ target, profile, credential: BEARER_CREDENTIAL });
 
-  it.effect("adds a paired LAN route ahead of Loom Connect instead of replacing it", () =>
+  it.effect("adds a paired LAN route ahead of an SSH route instead of replacing it", () =>
     Effect.gen(function* () {
       const harness = yield* makeHarness([SSH_ROUTE_CONNECTION], [SSH_ROUTE_PROFILE]);
       yield* Effect.gen(function* () {

@@ -62,7 +62,7 @@ describe("resolveRemoteOpenState", () => {
 
   it("keeps exec behavior for the environment that owns the desktop's Loom home", () => {
     // With Local environment off, a background service on this machine can own the
-    // desktop's home and still be reached through Loom Connect.
+    // desktop's home and still be reached remotely.
     expect(
       resolveRemoteOpenState({
         target: new SshConnectionTarget({ environmentId, label: "sol", connectionId: "ssh:sol" }),
