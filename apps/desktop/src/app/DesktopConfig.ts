@@ -37,7 +37,7 @@ export const DesktopConfig = Config.all({
   loomHome: trimmedString("LOOM_HOME"),
   devServerUrl: Config.URL("VITE_DEV_SERVER_URL").pipe(Config.option),
   appUserModelIdOverride: trimmedString("LOOM_DESKTOP_APP_USER_MODEL_ID"),
-  devRemoteLoomServerEntryPath: trimmedString("LOOM_DEV_REMOTE_T3_SERVER_ENTRY_PATH"),
+  devRemoteLoomServerEntryPath: trimmedString("LOOM_DEV_REMOTE_LOOM_SERVER_ENTRY_PATH"),
   configuredBackendPort: Config.Port("LOOM_PORT").pipe(Config.option),
   commitHashOverride: trimmedString("LOOM_COMMIT_HASH"),
   desktopLanHostOverride: trimmedString("LOOM_DESKTOP_LAN_HOST"),

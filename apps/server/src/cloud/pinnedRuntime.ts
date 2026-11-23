@@ -452,7 +452,7 @@ export const recordPinnedRuntimeLauncher = Effect.fn("cloud.pinned_runtime.recor
   },
 );
 
-/** Whether `candidate` is a version's own executable, `<versionsDir>/<version>/t3[.exe]`. */
+/** Whether `candidate` is a version's own executable, `<versionsDir>/<version>/loom[.exe]`. */
 export function isVersionExecutable(
   path: Path.Path,
   versionsDir: string,
@@ -460,7 +460,7 @@ export function isVersionExecutable(
 ): boolean {
   const relative = path.relative(versionsDir, path.resolve(candidate));
   // On another Windows drive, relative() returns the absolute path, like `D:\loom.exe`.
-  return !path.isAbsolute(relative) && /^(?!\.\.)[^\\/]+[\\/](?:t3|loom\.exe)$/i.test(relative);
+  return !path.isAbsolute(relative) && /^(?!\.\.)[^\\/]+[\\/]loom(?:\.exe)?$/i.test(relative);
 }
 
 /** The executable a `loom.cmd` shim written by the install script or `t3 update` runs. */

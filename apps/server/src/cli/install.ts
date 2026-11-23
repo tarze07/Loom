@@ -28,7 +28,7 @@ export class CliInstallError extends Schema.TaggedError<CliInstallError>()("CliI
   }
 }
 
-/** `<Loom home>/runtime/versions/<version>/t3`: the layout the install scripts and npm launcher share. */
+/** `<Loom home>/runtime/versions/<version>/loom`: the layout the install scripts and npm launcher share. */
 const standaloneRuntime = Effect.gen(function* () {
   const path = yield* Path.Path;
   if (!(yield* HostProcess.IsExecutable)) return Option.none();
@@ -55,21 +55,21 @@ export const installCli = Effect.fn("cli.install.install")(function* () {
       ? "irm https://loom.local/install.ps1 | iex"
       : "curl -fsSL https://loom.local/install.sh | sh";
     return yield* new CliInstallError({
-      reason: `Only the standalone t3 can install itself. Use \`${script}\`, or Settings in the desktop app.`,
+      reason: `Only the standalone loom can install itself. Use \`${script}\`, or Settings in the desktop app.`,
     });
   }
   const { executable, versionsDir, runtimeDir } = runtime.value;
   // cmd.exe expands `%` and reads the shim in the OEM code page, so such a path would not run.
   if (windows && /[%\u0080-\uffff]/.test(executable)) {
     return yield* new CliInstallError({
-      reason: `A loom.cmd cannot run ${executable}, because the path has % or non-ASCII characters. Keep using npx t3.`,
+      reason: `A loom.cmd cannot run ${executable}, because the path has % or non-ASCII characters. Keep using npx loom.`,
     });
   }
   // Absolute, so the PATH hint never adds a folder that changes with the working directory.
   const binDir = path.resolve(
     environment.LOOM_INSTALL_BIN_DIR?.trim() || path.join(home, ".local", "bin"),
   );
-  const name = windows ? "loom.cmd" : "t3";
+  const name = windows ? "loom.cmd" : "loom";
   const link = path.join(binDir, name);
   const failed = (reason: string) => (cause: unknown) => new CliInstallError({ reason, cause });
 
@@ -103,7 +103,7 @@ export const installCli = Effect.fn("cli.install.install")(function* () {
     )
   ) {
     return yield* new CliInstallError({
-      reason: `Another t3 is already at ${link}. Remove it, then run this again.`,
+      reason: `Another loom is already at ${link}. Remove it, then run this again.`,
     });
   }
 
@@ -155,13 +155,13 @@ export const installCli = Effect.fn("cli.install.install")(function* () {
   const same = (entry: string) => entry !== "" && normalize(entry) === normalize(binDir);
   const entries = (environment.PATH ?? environment.Path ?? "").split(windows ? ";" : ":");
   const onPath = entries.some(same);
-  // A t3 earlier on PATH runs instead, and an added folder goes last. Runner caches (npx's own
+  // A loom earlier on PATH runs instead, and an added folder goes last. Runner caches (npx's own
   // .bin) are not installs.
   const firstOther = Effect.gen(function* () {
     for (const entry of entries) {
       if (same(entry)) return undefined;
       if (!path.isAbsolute(entry) || detectCliRunner(`${entry}/`) !== null) continue;
-      for (const name of windows ? ["loom.cmd", "loom.exe"] : ["t3"]) {
+      for (const name of windows ? ["loom.cmd", "loom.exe"] : ["loom"]) {
         const candidate = path.join(entry, name);
         if (yield* fs.exists(candidate).pipe(Effect.orElseSucceed(() => false))) return candidate;
       }
@@ -197,15 +197,15 @@ export const installCli = Effect.fn("cli.install.install")(function* () {
 const reportInstalled = Effect.fn("cli.install.report")(function* (
   installed: Effect.Success<ReturnType<typeof installCli>>,
 ) {
-  yield* Console.log(`Installed t3 ${packageJson.version} at ${installed.link}.`);
+  yield* Console.log(`Installed loom ${packageJson.version} at ${installed.link}.`);
   if (installed.shadowedBy !== undefined) {
     return yield* Console.log(
-      `Another t3 at ${installed.shadowedBy} runs first, so run ${installed.link} to use this one.`,
+      `Another loom at ${installed.shadowedBy} runs first, so run ${installed.link} to use this one.`,
     );
   }
   if (installed.onPath) return yield* Console.log("Run `loom` to get started.");
   if (installed.pathCommand === undefined) {
-    return yield* Console.log(`Add ${installed.binDir} to your PATH, then run \`t3\`.`);
+    return yield* Console.log(`Add ${installed.binDir} to your PATH, then run \`loom\`.`);
   }
   if ((yield* HostProcess.Platform) === "win32") {
     yield* Console.log(
@@ -266,7 +266,7 @@ export const isForegroundPs = (output: string) => {
 };
 
 /**
- * A background job (`npx t3 serve &`) that reads the terminal is stopped by the shell, so only
+ * A background job (`npx loom serve &`) that reads the terminal is stopped by the shell, so only
  * the terminal's foreground process group may prompt. Unknown counts as background.
  */
 export const inTerminalForeground = Effect.gen(function* () {
@@ -321,16 +321,16 @@ export const offerCliInstall = Effect.fn("cli.install.offer")(function* <E, R, E
   if (Option.isNone(runtime)) return true;
   const { runtimeDir } = runtime.value;
 
-  // Any t3 already installed means no prompt: ours (even when off PATH) or another on PATH.
+  // Any loom already installed means no prompt: ours (even when off PATH) or another on PATH.
   // Runners put their own cache's node_modules/.bin on PATH, so skip those.
   const windows = platform === "win32";
-  const names = windows ? ["loom.cmd", "loom.exe"] : ["t3"];
+  const names = windows ? ["loom.cmd", "loom.exe"] : ["loom"];
   const launchers = yield* fs
     .readFileString(path.join(runtimeDir, "launchers"))
     .pipe(Effect.orElseSucceed(() => ""));
   const candidates = [
     ...launchers.split(/\r?\n/).filter(Boolean),
-    path.join(path.dirname(runtimeDir), "bin", windows ? "loom.cmd" : "t3"),
+    path.join(path.dirname(runtimeDir), "bin", windows ? "loom.cmd" : "loom"),
     ...(environment.PATH ?? environment.Path ?? "")
       .split(windows ? ";" : ":")
       .filter(
@@ -353,7 +353,7 @@ export const offerCliInstall = Effect.fn("cli.install.offer")(function* <E, R, E
   const answer = yield* input.confirm.pipe(Effect.timeoutOption(PROMPT_TIMEOUT));
   if (Option.isNone(answer)) {
     yield* saveDecline;
-    yield* Console.log(`\nNo answer, so t3 was not installed. ${installHint}\n`);
+    yield* Console.log(`\nNo answer, so loom was not installed. ${installHint}\n`);
     return true;
   }
   if (answer.value === undefined) return false;
@@ -365,7 +365,7 @@ export const offerCliInstall = Effect.fn("cli.install.offer")(function* <E, R, E
   yield* installCli().pipe(
     Effect.flatMap(reportInstalled),
     Effect.catch((error) =>
-      Effect.andThen(saveDecline, Console.error(`Could not install t3: ${error.message}`)),
+      Effect.andThen(saveDecline, Console.error(`Could not install loom: ${error.message}`)),
     ),
   );
   yield* Console.log("");
@@ -374,7 +374,7 @@ export const offerCliInstall = Effect.fn("cli.install.offer")(function* <E, R, E
 
 export const confirmCliInstall = Prompt.run(
   Prompt.Confirm({
-    message: "Install the t3 command? Then you can run `loom` directly.",
+    message: "Install the loom command? Then you can run `loom` directly.",
     initial: true,
   }),
 ).pipe(Effect.catchTags({ QuitError: () => Effect.void }));
