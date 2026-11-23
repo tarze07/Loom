@@ -29,6 +29,7 @@ import * as RepositoryIdentityResolver from "../project/RepositoryIdentityResolv
 import { forkParked } from "../serverActivation.ts";
 import { sourceControlDefinitions } from "../sourceControl/sourceControlDefinitions.ts";
 import * as Orchestrator from "./Orchestrator.ts";
+import { isSourceControlUnavailableCause } from "./ThreadSettlementService.ts";
 
 class ThreadPullRequestServiceV2 extends Context.Service<
   ThreadPullRequestServiceV2,
@@ -284,10 +285,19 @@ export const make = Effect.gen(function* () {
               Effect.catchCauseIf(
                 (cause) => !Cause.hasInterruptsOnly(cause),
                 (cause) =>
-                  Effect.logWarning("thread pull request discovery failed", {
-                    threadId: thread.id,
-                    cause: Cause.pretty(cause),
-                  }).pipe(
+                  (isSourceControlUnavailableCause(cause)
+                    ? Effect.logDebug(
+                        "thread pull request discovery skipped (source control unavailable)",
+                        {
+                          threadId: thread.id,
+                          reason: Cause.squash(cause),
+                        },
+                      )
+                    : Effect.logWarning("thread pull request discovery failed", {
+                        threadId: thread.id,
+                        cause: Cause.pretty(cause),
+                      })
+                  ).pipe(
                     Effect.tap(() => Effect.sync(() => failBackfill([thread]))),
                     Effect.as(null),
                   ),
@@ -363,10 +373,19 @@ export const make = Effect.gen(function* () {
           Effect.catchCauseIf(
             (cause) => !Cause.hasInterruptsOnly(cause),
             (cause) =>
-              Effect.logWarning("thread branch pull request lookup failed", {
-                threadIds: group.map((thread) => thread.id),
-                cause: Cause.pretty(cause),
-              }).pipe(Effect.tap(() => Effect.sync(() => failBackfill(group)))),
+              (isSourceControlUnavailableCause(cause)
+                ? Effect.logDebug(
+                    "thread branch pull request lookup skipped (source control unavailable)",
+                    {
+                      threadIds: group.map((thread) => thread.id),
+                      reason: Cause.squash(cause),
+                    },
+                  )
+                : Effect.logWarning("thread branch pull request lookup failed", {
+                    threadIds: group.map((thread) => thread.id),
+                    cause: Cause.pretty(cause),
+                  })
+              ).pipe(Effect.tap(() => Effect.sync(() => failBackfill(group)))),
           ),
         ),
       // Batch concurrent branch lookups into one GitHub GraphQL document.
