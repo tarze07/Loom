@@ -87,7 +87,7 @@ function tool(
 }
 
 // Codex registers "loom-direct" for Loom tools kept out of Code Mode.
-const LOOM_MCP_SERVER_ALIASES = new Set(["loom", "loom", "loom", "loom-direct", "loom_direct"]);
+const LOOM_MCP_SERVER_ALIASES = new Set(["loom", "loom-direct", "loom_direct"]);
 
 const LOOM_MCP_TOOLS: Readonly<Record<string, LoomMcpToolDefinition>> = {
   link_pull_request: tool(
@@ -424,15 +424,17 @@ function parseLoomMcpToolName(value: string): string | null {
       : null;
   }
 
-  const namespaceMatch =
-    /^(?<server>t3[-_]code[-_]direct|loom|loom|loom)(?:[.:/]|\s*·\s*)(?<tool>.+)$/i.exec(label);
+  const namespaceMatch = /^(?<server>loom(?:[-_]direct)?)(?:[.:/]|\s*·\s*)(?<tool>.+)$/i.exec(
+    label,
+  );
   if (namespaceMatch?.groups) {
     return namespaceMatch.groups.tool ?? null;
   }
 
-  const prefixed = /^(?:mcp[-_]{1,2})?t3[-_ ]?code(?:__|[-_.:/ ])(?<tool>.+)$/i.exec(label);
-  const candidate = prefixed?.groups?.tool ?? label;
-  if (Object.hasOwn(LOOM_MCP_TOOLS, candidate)) return candidate;
+  // Many tool names start with `loom_` themselves, so the bare label wins over a stripped prefix.
+  if (Object.hasOwn(LOOM_MCP_TOOLS, label)) return label;
+  const prefixed = /^(?:mcp[-_]{1,2})?loom(?:__|[-_.:/ ])(?<tool>.+)$/i.exec(label)?.groups?.tool;
+  if (prefixed !== undefined && Object.hasOwn(LOOM_MCP_TOOLS, prefixed)) return prefixed;
   // OpenCode 2 thread prefixes can contain underscores; choose the longest known tool-name suffix.
   if (!/^loom-/i.test(label)) return null;
   let longest: string | null = null;

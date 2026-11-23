@@ -13,9 +13,7 @@ describe("resolveLoomMcpToolPresentation", () => {
       const presentation = resolveLoomMcpToolPresentation(tool);
       for (const prefix of [
         "mcp__loom__",
-        "mcp__loom__",
-        "mcp__loom__",
-        "Loom-code.",
+        "Loom.",
         "loom.",
         "loom-direct.",
         "mcp__loom_direct__",
@@ -57,7 +55,7 @@ describe("resolveLoomMcpToolDefinition", () => {
 
 describe("resolveLoomMcpSummaryAction", () => {
   it("summarizes an action tool by the action each call ran", () => {
-    expect(resolveLoomMcpSummaryAction("mcp__loom__t3_queue", { action: "list" })).toBe(
+    expect(resolveLoomMcpSummaryAction("mcp__loom__loom_queue", { action: "list" })).toBe(
       "queue-list",
     );
     expect(resolveLoomMcpSummaryAction("loom_queue", { action: "edit" })).toBe("queue-edit");

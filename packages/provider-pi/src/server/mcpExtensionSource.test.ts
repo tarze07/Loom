@@ -38,7 +38,7 @@ async function loadHooks(
       "async function",
     ),
   );
-  await NodeVM.runInNewContext(`${source}\nt3McpExtension(pi)`, {
+  await NodeVM.runInNewContext(`${source}\nloomMcpExtension(pi)`, {
     process: { env: {}, argv },
     NodeFSP,
     NodePath,
@@ -176,26 +176,14 @@ describe("Pi MCP tool exposure", () => {
     const prompt = await start!({ systemPrompt: "Pi system prompt" }, discoveryContext);
     assert.include(prompt?.systemPrompt ?? "", "orchestrator_capabilities");
     assert.equal(bridge.servers.length, 0);
-    assert.equal(bridge.tools.length, 8);
     assert.deepEqual(bridge.getActiveTools(), ["read", "tool_search"]);
     assert.deepEqual(
-      bridge.tools
-        .filter((tool) => tool.exposure !== "hidden")
-        .map((tool) => [tool.name, tool.exposure]),
+      bridge.tools.map((tool) => [tool.name, tool.exposure]),
       [
         ["mcp__loom__orchestrator_capabilities", "direct"],
         ["mcp__loom__delegate_task", "direct"],
         ["mcp__loom__task_status", "direct"],
         ["mcp__loom__preview_snapshot", "deferred"],
-      ],
-    );
-    assert.deepEqual(
-      bridge.tools.filter((tool) => tool.exposure === "hidden").map((tool) => tool.name),
-      [
-        "mcp__loom__orchestrator_capabilities",
-        "mcp__loom__delegate_task",
-        "mcp__loom__task_status",
-        "mcp__loom__preview_snapshot",
       ],
     );
     const result = await bridge.tools
@@ -363,7 +351,7 @@ describe("Pi tool discovery permissions", () => {
         "async function",
       ),
     );
-    await NodeVM.runInNewContext(`${source}\nt3McpExtension(pi)`, {
+    await NodeVM.runInNewContext(`${source}\nloomMcpExtension(pi)`, {
       process: { env: { LOOM_PI_RUNTIME_MODE: "approval-required" } },
       pi: {
         on: (name: string, handler: ToolCallHook) => {
@@ -436,7 +424,7 @@ async function loadRequestHook() {
       "async function",
     ),
   );
-  await NodeVM.runInNewContext(`${source}\nt3McpExtension(pi)`, {
+  await NodeVM.runInNewContext(`${source}\nloomMcpExtension(pi)`, {
     process: { env: {} },
     pi: {
       on: (name: string, handler: RequestHook) => handlers.set(name, handler),

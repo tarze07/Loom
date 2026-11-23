@@ -1066,10 +1066,10 @@ function acpMcpFallbackInput(value: string | undefined): Record<string, unknown>
 
 // Known Loom inventory gates matches, so server-name separators can stay loose. Kiro titles "@loom/<tool>".
 const LOOM_MCP_TITLE_CALL =
-  /^(?:@|mcp[-_]{1,2})?t3[-_ ]?code[-_.:/ ]{1,3}(?<tool>[A-Za-z0-9][A-Za-z0-9_.-]*)(?::.*)?$/i;
+  /^(?:@|mcp[-_]{1,2})?loom[-_.:/ ]{1,3}(?<tool>[A-Za-z0-9][A-Za-z0-9_.-]*)(?::.*)?$/i;
 
 const LOOM_MCP_TITLE_SUFFIX_CALL =
-  /^(?<tool>[A-Za-z0-9][A-Za-z0-9_.-]*?)(?: \(t3[-_ ]?code MCP Server\)(?::|$)|[-_.]t3[-_ ]?code$)/i;
+  /^(?<tool>[A-Za-z0-9][A-Za-z0-9_.-]*?)(?: \(loom MCP Server\)(?::|$)|[-_.]loom$)/i;
 
 /**
  * glm and Kimi use bare names; Antigravity uses "Running <tool>". Kimi appends
@@ -1112,7 +1112,7 @@ export function extractMcpToolCallIdentity(
     : undefined;
   const metaServerId = typeof meta?.serverId === "string" ? meta.serverId.trim() : "";
   const metaToolName = typeof meta?.toolName === "string" ? meta.toolName.trim() : "";
-  if (/^t3[-_ ]?code$/i.test(metaServerId) && metaToolName.length > 0) {
+  if (/^loom$/i.test(metaServerId) && metaToolName.length > 0) {
     for (const knownTool of LOOM_MCP_TOOL_NAMES) {
       const boundary = metaToolName.length - knownTool.length - 1;
       if (
@@ -1128,8 +1128,8 @@ export function extractMcpToolCallIdentity(
   const gooseExtension =
     typeof gooseToolCall?.extensionName === "string" ? gooseToolCall.extensionName.trim() : "";
   const assertsForeignOrigin =
-    (metaServerId.length > 0 && !/^t3[-_ ]?code$/i.test(metaServerId)) ||
-    (gooseExtension.length > 0 && !/^t3[-_ ]?code$/i.test(gooseExtension));
+    (metaServerId.length > 0 && !/^loom$/i.test(metaServerId)) ||
+    (gooseExtension.length > 0 && !/^loom$/i.test(gooseExtension));
   // goose metadata also tags built-ins; retain their command/file projections instead of classifying as MCP.
   if (assertsForeignOrigin) {
     if (metaServerId.length === 0 || metaToolName.length === 0) return undefined;
@@ -1162,20 +1162,23 @@ export function extractMcpToolCallIdentity(
     if (
       qualified?.[1] &&
       qualified[2] &&
-      /^editor_t3_?code_[0-9a-f]{8}$/.test(qualified[1]) &&
+      /^editor_loom_[0-9a-f]{8}$/.test(qualified[1]) &&
       LOOM_MCP_TOOL_NAMES.has(qualified[2])
     ) {
       return { server: "loom", tool: qualified[2] };
     }
-    if (qualified?.[1] && qualified[2] && !/^t3[-_ ]?code$/i.test(qualified[1]))
+    if (qualified?.[1] && qualified[2] && !/^loom$/i.test(qualified[1]))
       return { server: qualified[1], tool: qualified[2] };
-    const match =
-      LOOM_MCP_TITLE_CALL.exec(trimmed) ??
-      LOOM_MCP_TITLE_SUFFIX_CALL.exec(trimmed) ??
-      LOOM_MCP_BARE_TITLE_CALL.exec(trimmed);
-    const candidateTool = match?.groups?.tool;
-    if (candidateTool !== undefined && LOOM_MCP_TOOL_NAMES.has(candidateTool)) {
-      return { server: "loom", tool: candidateTool };
+    // Many tool names start with `loom_`, so a server-prefix match may strip part of the name.
+    for (const pattern of [
+      LOOM_MCP_TITLE_CALL,
+      LOOM_MCP_TITLE_SUFFIX_CALL,
+      LOOM_MCP_BARE_TITLE_CALL,
+    ]) {
+      const candidateTool = pattern.exec(trimmed)?.groups?.tool;
+      if (candidateTool !== undefined && LOOM_MCP_TOOL_NAMES.has(candidateTool)) {
+        return { server: "loom", tool: candidateTool };
+      }
     }
   }
   const commands = [
