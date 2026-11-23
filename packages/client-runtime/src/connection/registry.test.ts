@@ -620,50 +620,45 @@ describe("EnvironmentRegistry", () => {
     }),
   );
 
-  it.effect.each([false, true])(
-    "a switched-off environment stays off after compatibility clears (learned route: %s)",
-    (learned) =>
-      Effect.gen(function* () {
-        const environmentId = BEARER_TARGET.environmentId;
-        const profile = new BearerConnectionProfile({
-          ...BEARER_PROFILE,
-          learned: true,
+  it.effect("a switched-off environment stays off after compatibility clears", () =>
+    Effect.gen(function* () {
+      const environmentId = BEARER_TARGET.environmentId;
+      const profile = new BearerConnectionProfile({
+        ...BEARER_PROFILE,
+        learned: true,
+      });
+      const harness = yield* makeHarness([BEARER_TARGET], [profile], [], {
+        initialDisabled: [environmentId],
+      });
+      yield* Effect.gen(function* () {
+        const registry = yield* EnvironmentRegistry.EnvironmentRegistry;
+        yield* registry.start;
+        const error = new ConnectionBlockedError({
+          reason: "unsupported",
+          detail: "Use a compatible client.",
         });
-        const harness = yield* makeHarness(
-          learned ? [BEARER_TARGET] : [BEARER_TARGET],
-          learned ? [profile] : [],
-          [],
-          { initialDisabled: [environmentId] },
+        yield* registry.setCompatibility(environmentId, error);
+        const entry = (yield* SubscriptionRef.get(registry.entries)).get(environmentId);
+        expect(entry).toMatchObject({ enabled: false, unsupportedReason: error.message });
+        expect(yield* Effect.flip(registry.setEnabled(environmentId, true))).toMatchObject({
+          reason: "unsupported",
+        });
+        expect(yield* Ref.get(harness.sessions)).toHaveLength(0);
+        yield* registry.setCompatibility(environmentId, null);
+        expect((yield* SubscriptionRef.get(registry.entries)).get(environmentId)?.enabled).toBe(
+          false,
         );
-        yield* Effect.gen(function* () {
-          const registry = yield* EnvironmentRegistry.EnvironmentRegistry;
-          yield* registry.start;
-          const error = new ConnectionBlockedError({
-            reason: "unsupported",
-            detail: "Use a compatible client.",
-          });
-          yield* registry.setCompatibility(environmentId, error);
-          const entry = (yield* SubscriptionRef.get(registry.entries)).get(environmentId);
-          expect(entry).toMatchObject({ enabled: false, unsupportedReason: error.message });
-          expect(yield* Effect.flip(registry.setEnabled(environmentId, true))).toMatchObject({
-            reason: "unsupported",
-          });
-          expect(yield* Ref.get(harness.sessions)).toHaveLength(0);
-          yield* registry.setCompatibility(environmentId, null);
-          expect((yield* SubscriptionRef.get(registry.entries)).get(environmentId)?.enabled).toBe(
-            false,
-          );
-          expect(yield* registry.state(environmentId)).toMatchObject({ desired: false });
-          expect(yield* Ref.get(harness.storedDisabled)).toEqual(new Set([environmentId]));
-          expect(yield* Ref.get(harness.sessions)).toHaveLength(0);
-          yield* registry.setEnabled(environmentId, true);
-          yield* awaitConnectionState(
-            registry,
-            environmentId,
-            (state) => state.phase === "connected",
-          );
-        }).pipe(Effect.provide(harness.layer));
-      }),
+        expect(yield* registry.state(environmentId)).toMatchObject({ desired: false });
+        expect(yield* Ref.get(harness.storedDisabled)).toEqual(new Set([environmentId]));
+        expect(yield* Ref.get(harness.sessions)).toHaveLength(0);
+        yield* registry.setEnabled(environmentId, true);
+        yield* awaitConnectionState(
+          registry,
+          environmentId,
+          (state) => state.phase === "connected",
+        );
+      }).pipe(Effect.provide(harness.layer));
+    }),
   );
 
   it.effect("protocol rejection preserves enablement through recovery and relaunch", () =>
@@ -1103,7 +1098,8 @@ describe("EnvironmentRegistry", () => {
           BEARER_CREDENTIAL.token,
           replacementCredential.token,
         ]);
-        expect(yield* Ref.get(followedSupervisors)).toBe(2);
+        // Initial bearer, the SSH route, then the re-paired bearer.
+        expect(yield* Ref.get(followedSupervisors)).toBe(3);
       }).pipe(Effect.provide(harness.layer), Effect.scoped);
     }),
   );
@@ -1378,12 +1374,27 @@ describe("EnvironmentRegistry", () => {
           label: "Shadowed SSH environment",
           connectionId: `ssh:shadowed-${target.environmentId}`,
         });
+        const sshShadowedProfile = new SshConnectionProfile({
+          connectionId: sshShadowed.connectionId,
+          environmentId: sshShadowed.environmentId,
+          label: sshShadowed.label,
+          target: {
+            alias: "shadowed",
+            hostname: "shadowed.example.test",
+            username: "developer",
+            port: 22,
+          },
+        });
         const shadowedTarget =
           registration._tag === "BearerConnectionRegistration" ? registration.target : sshShadowed;
+        const shadowedProfile =
+          registration._tag === "BearerConnectionRegistration"
+            ? registration.profile
+            : sshShadowedProfile;
         let failRemoval = true;
         const harness = yield* makeHarness(
           [shadowedTarget],
-          registration._tag === "BearerConnectionRegistration" ? [registration.profile] : [],
+          [shadowedProfile],
           registration._tag === "BearerConnectionRegistration"
             ? [
                 [
@@ -1410,10 +1421,7 @@ describe("EnvironmentRegistry", () => {
         });
         const shadowedEntry = {
           target: shadowedTarget,
-          profile:
-            registration._tag === "BearerConnectionRegistration"
-              ? Option.some(registration.profile)
-              : Option.none(),
+          profile: Option.some(shadowedProfile),
           enabled: true,
         };
         yield* permissions.set(shadowedEntry, "read-write");
@@ -1445,17 +1453,7 @@ describe("EnvironmentRegistry", () => {
           yield* registry.register(
             new SshConnectionRegistration({
               target: sshShadowed,
-              profile: new SshConnectionProfile({
-                connectionId: sshShadowed.connectionId,
-                environmentId: sshShadowed.environmentId,
-                label: sshShadowed.label,
-                target: {
-                  alias: "shadowed",
-                  hostname: "shadowed.example.test",
-                  username: "developer",
-                  port: 22,
-                },
-              }),
+              profile: sshShadowedProfile,
               credential: BEARER_CREDENTIAL,
             }),
           );

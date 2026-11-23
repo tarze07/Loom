@@ -24,7 +24,6 @@ export function orchestrationProtocolCompatibilityError(
     : new ConnectionBlockedError({
         reason: "unsupported",
         detail: `This client requires a newer server. Update Loom on ${descriptor.label} to connect.`,
-        serverUpdateRequired: true,
       });
 }
 
