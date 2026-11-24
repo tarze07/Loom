@@ -33,52 +33,57 @@ it.layer(NodeServices.layer)("root CLI commands", (it) => {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
     const bin = yield* fs.makeTempDirectoryScoped();
-    yield* fs.writeFileString(path.join(bin, "t3"), "#!/bin/sh\n", { mode: 0o755 });
+    yield* fs.writeFileString(path.join(bin, "loom"), "#!/bin/sh\n", { mode: 0o755 });
     return bin;
   });
 
   it.effect("keeps a user-installed Node reachable when the command runs under sudo", () =>
     Effect.gen(function* () {
-      const npx = "/home/theo/.npm/_npx/abc/node_modules/t3/dist/bin.mjs";
+      const npx = "/home/theo/.npm/_npx/abc/node_modules/loom/dist/bin.mjs";
       expect(yield* rootCommand({ node: "/usr/bin/node", entry: npx })).toBe(
-        "sudo npx t3 browser setup",
+        "sudo npx loom browser setup",
       );
       expect(
         yield* rootCommand({ node: "/home/theo/.nvm/versions/node/v24/bin/node", entry: npx }),
-      ).toBe('sudo env "PATH=$PATH" npx t3 browser setup');
+      ).toBe('sudo env "PATH=$PATH" npx loom browser setup');
       expect(
         yield* rootCommand({
           node: "/home/theo/.local/node/bin/node",
-          entry: "/home/theo/.local/lib/node_modules/t3/dist/bin.mjs",
+          entry: "/home/theo/.local/lib/node_modules/loom/dist/bin.mjs",
           path: yield* pathWithLoom,
         }),
-      ).toBe('sudo env "PATH=$PATH" t3 browser setup');
+      ).toBe('sudo env "PATH=$PATH" loom browser setup');
     }).pipe(Effect.scoped),
   );
 
   it.effect("keeps the arguments, so root runs setup on the same Loom home", () =>
     Effect.gen(function* () {
-      const args = ["--base-dir", "/srv/t3 home"];
+      const args = ["--base-dir", "/srv/loom home"];
       expect(
         yield* rootCommand({
           node: "/home/theo/.local/node/bin/node",
-          entry: "/home/theo/.local/lib/node_modules/t3/dist/bin.mjs",
+          entry: "/home/theo/.local/lib/node_modules/loom/dist/bin.mjs",
           path: yield* pathWithLoom,
           args,
         }),
-      ).toBe(`sudo env "PATH=$PATH" t3 browser setup --base-dir '/srv/t3 home'`);
+      ).toBe(`sudo env "PATH=$PATH" loom browser setup --base-dir '/srv/loom home'`);
       expect(
-        yield* rootCommand({ node: "/opt/t3/t3", entry: "/opt/t3/t3", executable: true, args }),
-      ).toBe("sudo /opt/t3/t3 browser setup --base-dir '/srv/t3 home'");
+        yield* rootCommand({
+          node: "/opt/loom/loom",
+          entry: "/opt/loom/loom",
+          executable: true,
+          args,
+        }),
+      ).toBe("sudo /opt/loom/loom browser setup --base-dir '/srv/loom home'");
     }).pipe(Effect.scoped),
   );
 
-  it.effect("names this install's launcher when t3 is not on PATH", () =>
+  it.effect("names this install's launcher when loom is not on PATH", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const home = yield* fs.makeTempDirectoryScoped();
-      const shim = path.join(home, ".local bin", "t3");
+      const shim = path.join(home, ".local bin", "loom");
       yield* fs.makeDirectory(path.dirname(shim), { recursive: true });
       yield* fs.writeFileString(shim, "#!/bin/sh\n", { mode: 0o755 });
       const desktop = {
@@ -96,40 +101,40 @@ it.layer(NodeServices.layer)("root CLI commands", (it) => {
 
       // The link the app installs onto PATH leads to its own launcher, so plain `loom` is right.
       const linked = yield* fs.makeTempDirectoryScoped();
-      yield* fs.symlink(shim, path.join(linked, "t3"));
+      yield* fs.symlink(shim, path.join(linked, "loom"));
       expect(yield* rootCommand({ ...desktop, path: linked })).toBe(
-        'sudo env "PATH=$PATH" t3 browser setup',
+        'sudo env "PATH=$PATH" loom browser setup',
       );
 
       expect(
         yield* rootCommand({
-          node: "/opt/t3/t3",
-          entry: "/opt/t3/t3",
+          node: "/opt/loom/loom",
+          entry: "/opt/loom/loom",
           executable: true,
         }),
-      ).toBe("sudo /opt/t3/t3 browser setup");
+      ).toBe("sudo /opt/loom/loom browser setup");
 
       // A standalone executable started directly (systemd, no launcher) is still this install.
       expect(
         yield* rootCommand({
-          node: "/opt/t3/t3",
-          entry: "/opt/t3/t3",
+          node: "/opt/loom/loom",
+          entry: "/opt/loom/loom",
           executable: true,
           path: yield* pathWithLoom,
         }),
-      ).toBe("sudo /opt/t3/t3 browser setup");
+      ).toBe("sudo /opt/loom/loom browser setup");
 
       // A global npm launcher runs the downloaded executable; PATH's `loom` is that launcher.
       const prefix = path.join(home, "npm");
-      const npmLauncher = path.join(prefix, "lib/node_modules/t3/bin/loom.mjs");
+      const npmLauncher = path.join(prefix, "lib/node_modules/loom/bin/loom.mjs");
       yield* fs.makeDirectory(path.dirname(npmLauncher), { recursive: true });
       yield* fs.makeDirectory(path.join(prefix, "bin"));
       yield* fs.writeFileString(npmLauncher, "", { mode: 0o755 });
       yield* fs.writeFileString(
-        path.join(prefix, "lib/node_modules/t3/package.json"),
-        `{"name":"t3","version":"${packageJson.version}"}`,
+        path.join(prefix, "lib/node_modules/loom/package.json"),
+        `{"name":"loom","version":"${packageJson.version}"}`,
       );
-      yield* fs.symlink(npmLauncher, path.join(prefix, "bin/t3"));
+      yield* fs.symlink(npmLauncher, path.join(prefix, "bin/loom"));
       expect(
         yield* rootCommand({
           node: "/home/theo/.loom/runtime/versions/1.0.0/t3",
@@ -138,11 +143,11 @@ it.layer(NodeServices.layer)("root CLI commands", (it) => {
           path: path.join(prefix, "bin"),
           env: { LOOM_NPM_LAUNCHER_PATH: npmLauncher },
         }),
-      ).toBe('sudo env "PATH=$PATH" t3 browser setup');
+      ).toBe('sudo env "PATH=$PATH" loom browser setup');
 
       expect(
         yield* rootCommand({ ...desktop, env: { LOOM_CLI_PATH: path.join(home, "gone") } }),
-      ).toBe('sudo env "PATH=$PATH" t3 browser setup');
+      ).toBe('sudo env "PATH=$PATH" loom browser setup');
     }).pipe(Effect.scoped),
   );
 });
@@ -170,7 +175,7 @@ it.layer(NodeServices.layer)("host CLI commands", (it) => {
         `& "${shim}" doctor "--base-dir" "C:\\Users\\Jane Doe\\.loom"`,
       );
       expect((yield* hostCommand("win32", {})).command).toBe(
-        't3 doctor "--base-dir" "C:\\Users\\Jane Doe\\.loom"',
+        'loom doctor "--base-dir" "C:\\Users\\Jane Doe\\.loom"',
       );
       expect(
         (yield* resolveHostCliCommand("doctor", [
@@ -183,7 +188,7 @@ it.layer(NodeServices.layer)("host CLI commands", (it) => {
           Effect.provideService(HostProcess.Arguments, ["C:\\loom.exe", "C:\\bin.mjs"]),
           Effect.provideService(HostProcess.IsExecutable, false),
         )).command,
-      ).toBe('t3 doctor "--base-dir" "C:\\Loom\\\u201C\u201CArchive\u201D\u201D"');
+      ).toBe('loom doctor "--base-dir" "C:\\Loom\\\u201C\u201CArchive\u201D\u201D"');
       expect((yield* hostCommand("linux", { LOOM_CLI_PATH: shim })).command).toMatch(
         / doctor --base-dir 'C:\\Users\\Jane Doe\\\.loom'$/,
       );
@@ -201,9 +206,9 @@ it.layer(NodeServices.layer)("manual server installation ownership", (it) => {
       yield* fs.makeDirectory(path.dirname(executable), { recursive: true });
       yield* fs.writeFileString(executable, "");
       for (const [relative, kind] of [
-        ["npm/_npx/hash/node_modules/t3/dist/bin.mjs", "npx"],
-        ["npm/_npx/hash/node_modules/t3/bin/loom.mjs", "npx"],
-        ["pnpm/dlx/hash/node_modules/t3/dist/bin.mjs", "pnpm-dlx"],
+        ["npm/_npx/hash/node_modules/loom/dist/bin.mjs", "npx"],
+        ["npm/_npx/hash/node_modules/loom/bin/loom.mjs", "npx"],
+        ["pnpm/dlx/hash/node_modules/loom/dist/bin.mjs", "pnpm-dlx"],
         [".bun/install/cache/t3/dist/bin.mjs", "bunx"],
       ] as const) {
         const entry = path.join(root, relative);
@@ -211,7 +216,7 @@ it.layer(NodeServices.layer)("manual server installation ownership", (it) => {
         yield* fs.writeFileString(entry, "");
         yield* fs.writeFileString(
           path.join(path.dirname(entry), "../package.json"),
-          `{"name":"t3","version":"${packageJson.version}","bin":{"t3":"./bin/loom.mjs"}}`,
+          `{"name":"loom","version":"${packageJson.version}","bin":{"loom":"./bin/loom.mjs"}}`,
         );
         const launchedBy = entry.endsWith("loom.mjs");
         const installation = yield* resolveServerInstallation.pipe(
@@ -234,15 +239,15 @@ it.layer(NodeServices.layer)("manual server installation ownership", (it) => {
       const path = yield* Path.Path;
       const root = yield* fs.makeTempDirectoryScoped();
       const prefix = path.join(root, "bunx-tools");
-      const packageRoot = path.join(prefix, "lib/node_modules/t3");
+      const packageRoot = path.join(prefix, "lib/node_modules/loom");
       const entry = path.join(packageRoot, "dist/bin.mjs");
-      const globalBin = path.join(prefix, "bin/t3");
+      const globalBin = path.join(prefix, "bin/loom");
       yield* fs.makeDirectory(path.dirname(entry), { recursive: true });
       yield* fs.makeDirectory(path.dirname(globalBin), { recursive: true });
       yield* fs.writeFileString(entry, "");
       yield* fs.writeFileString(
         path.join(packageRoot, "package.json"),
-        '{"name":"t3","version":"0.0.45","bin":{"t3":"./dist/bin.mjs"}}',
+        '{"name":"loom","version":"0.0.45","bin":{"loom":"./dist/bin.mjs"}}',
       );
       const resolve = resolveServerInstallation.pipe(
         Effect.provideService(HostProcess.Arguments, ["node", entry]),
@@ -253,7 +258,7 @@ it.layer(NodeServices.layer)("manual server installation ownership", (it) => {
       yield* fs.symlink(entry, globalBin);
       expect(yield* resolve).toEqual({ kind: "npm-global", prefix });
       yield* fs.remove(globalBin);
-      yield* fs.writeFileString(globalBin, "an unrelated t3 command");
+      yield* fs.writeFileString(globalBin, "an unrelated loom command");
       expect(yield* resolve).toBeNull();
       expect(yield* resolve.pipe(Effect.provideService(HostProcess.Platform, "win32"))).toBeNull();
     }),
@@ -265,7 +270,7 @@ it.layer(NodeServices.layer)("manual server installation ownership", (it) => {
       const path = yield* Path.Path;
       const root = yield* fs.makeTempDirectoryScoped();
       const prefix = path.join(root, "bunx-tools");
-      const packageRoot = path.join(prefix, "lib/node_modules/t3");
+      const packageRoot = path.join(prefix, "lib/node_modules/loom");
       const launcher = path.join(packageRoot, "bin/loom.mjs");
       const executable = path.join(root, ".loom/runtime/versions/1.0.0/t3");
       yield* fs.makeDirectory(path.dirname(launcher), { recursive: true });
@@ -273,7 +278,7 @@ it.layer(NodeServices.layer)("manual server installation ownership", (it) => {
       yield* fs.makeDirectory(path.join(prefix, "bin"));
       yield* fs.writeFileString(launcher, "");
       yield* fs.writeFileString(executable, "");
-      yield* fs.symlink(launcher, path.join(prefix, "bin/t3"));
+      yield* fs.symlink(launcher, path.join(prefix, "bin/loom"));
       const resolve = resolveServerInstallation.pipe(
         Effect.provideService(HostProcess.ExecutablePath, executable),
         Effect.provideService(HostProcess.Arguments, [executable, executable]),
@@ -287,7 +292,7 @@ it.layer(NodeServices.layer)("manual server installation ownership", (it) => {
       ] as const) {
         yield* fs.writeFileString(
           path.join(packageRoot, "package.json"),
-          `{"name":"t3","version":"${version}","bin":{"t3":"./bin/loom.mjs"}}`,
+          `{"name":"loom","version":"${version}","bin":{"loom":"./bin/loom.mjs"}}`,
         );
         expect(yield* resolve).toEqual(expected);
       }
@@ -300,7 +305,7 @@ it.layer(NodeServices.layer)("manual server installation ownership", (it) => {
       const path = yield* Path.Path;
       const root = yield* fs.makeTempDirectoryScoped();
       for (const relative of [
-        "project/node_modules/t3/dist/bin.mjs",
+        "project/node_modules/loom/dist/bin.mjs",
         "project/apps/server/dist/bin.mjs",
         ".loom/runtime/0.0.45/t3",
         "missing/dist/bin.mjs",

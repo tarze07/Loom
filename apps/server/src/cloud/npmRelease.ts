@@ -63,7 +63,7 @@ export const make = Effect.fn("NpmRelease.make")(function* () {
       reason: "npm is not installed and the public npm registry could not be reached.",
     });
     const json = yield* Effect.gen(function* () {
-      const response = yield* http.get(`https://registry.npmjs.org/t3/${spec}`);
+      const response = yield* http.get(`https://registry.npmjs.org/loom/${spec}`);
       if (response.status === 404) return Option.none<string>();
       if (response.status < 200 || response.status >= 300) return yield* unreachable;
       return Option.some(yield* response.text);
@@ -87,7 +87,7 @@ export const make = Effect.fn("NpmRelease.make")(function* () {
           runner.run({
             command: npmPath,
             // Named fields keep the output small; the full package document grows with every release.
-            args: ["view", "--global", "--json", `t3@${spec}`, "version", "loom"],
+            args: ["view", "--global", "--json", `loom@${spec}`, "version", "loom"],
             timeout: Duration.seconds(15),
             maxOutputBytes: 256 * 1024,
           }),

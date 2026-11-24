@@ -94,7 +94,7 @@ export const make = Effect.gen(function* () {
   const fail = (message: string) => new DesktopCliCommandError({ message });
   const exists = (target: string) => fs.exists(target).pipe(Effect.orElseSucceed(() => false));
   // Read before this launch writes either one: an app that ran before left its launcher or
-  // settings. Its user may have removed t3 or chosen another, so only Settings installs there.
+  // settings. Its user may have removed loom or chosen another, so only Settings installs there.
   const freshInstall =
     !(yield* exists(launcher)) && !(yield* exists(environment.desktopSettingsPath));
   const writableDirectory = (directory: string) =>
@@ -172,7 +172,7 @@ export const make = Effect.gen(function* () {
 
   const firstOnPath = Effect.gen(function* () {
     for (const directory of pathEntries(env.PATH, ":")) {
-      const candidate = path.join(directory, "t3");
+      const candidate = path.join(directory, "loom");
       if (yield* isExecutableFile(candidate)) return Option.some(candidate);
     }
     return Option.none<string>();
@@ -201,7 +201,7 @@ export const make = Effect.gen(function* () {
         : Option.none<string>();
     }
     for (const directory of knownLocations(environment.homeDirectory, environment.platform)) {
-      const link = path.join(directory, "t3");
+      const link = path.join(directory, "loom");
       if (yield* isOurLink(link)) return Option.some(link);
     }
     return Option.none<string>();
@@ -253,8 +253,8 @@ export const make = Effect.gen(function* () {
     const onPath = windows
       ? Option.isSome(installed)
       : Option.isSome(first) && (yield* runsOurLauncher(first.value));
-    // Only a folder missing from PATH, with no other t3 first: with one, the added folder (last
-    // on PATH) would still not run this t3.
+    // Only a folder missing from PATH, with no other loom first: with one, the added folder (last
+    // on PATH) would still not run this loom.
     const setup =
       onPath ||
       Option.isSome(shadowedBy) ||
@@ -286,14 +286,14 @@ export const make = Effect.gen(function* () {
     Effect.provideService(FileSystem.FileSystem, fs),
     Effect.flatMap(
       Option.match({
-        onNone: () => Effect.fail(fail(`Could not set up the t3 launcher at ${launcher}.`)),
+        onNone: () => Effect.fail(fail(`Could not set up the loom launcher at ${launcher}.`)),
         onSome: () => Effect.void,
       }),
     ),
   );
 
   const install: DesktopCliCommand["Service"]["install"] = Effect.gen(function* () {
-    if (!environment.isPackaged) return yield* fail("The t3 command needs an installed app.");
+    if (!environment.isPackaged) return yield* fail("The loom command needs an installed app.");
     yield* ensureLauncher;
     if (windows) {
       // PATH would split the folder at the `;`, leaving two wrong entries behind.
@@ -307,7 +307,7 @@ export const make = Effect.gen(function* () {
         yield* writeUserPath([...entries, binDirectory].join(";"));
         yield* fs
           .writeFileString(ownedPathMarker, `${binDirectory}\n`)
-          .pipe(Effect.mapError(() => fail("Added t3 to your PATH but could not record it.")));
+          .pipe(Effect.mapError(() => fail("Added loom to your PATH but could not record it.")));
       }
       return yield* state;
     }
@@ -321,10 +321,10 @@ export const make = Effect.gen(function* () {
     // Our own link into another Loom home runs first too; it is the one this install updates.
     if (Option.isSome(shadowedBy) && shadowedBy.value !== replaced) {
       return yield* fail(
-        `Another t3 at ${shadowedBy.value} runs first in a new terminal. Remove it, or run the launcher directly at ${launcher}.`,
+        `Another loom at ${shadowedBy.value} runs first in a new terminal. Remove it, or run the launcher directly at ${launcher}.`,
       );
     }
-    // An old link of ours is updated where it is, so a t3 that works now keeps working. It is
+    // An old link of ours is updated where it is, so a loom that works now keeps working. It is
     // removed only once a new link exists elsewhere.
     const onPath = pathEntries(env.PATH, ":").map((entry) => entry.replace(/\/+$/, ""));
     for (const directory of new Set([
@@ -332,7 +332,7 @@ export const make = Effect.gen(function* () {
       ...candidates.filter((candidate) => onPath.includes(candidate)),
       ...candidates.filter((candidate) => !onPath.includes(candidate)),
     ])) {
-      const link = path.join(directory, "t3");
+      const link = path.join(directory, "loom");
       const created = (yield* exists(directory))
         ? yield* writableDirectory(directory)
         : yield* fs.makeDirectory(directory, { recursive: true }).pipe(
@@ -365,7 +365,7 @@ export const make = Effect.gen(function* () {
       return yield* state;
     }
     return yield* fail(
-      `Another t3 command is already in ~/.local/bin and ~/bin, or neither is writable. Run the launcher directly at ${launcher}.`,
+      `Another loom command is already in ~/.local/bin and ~/bin, or neither is writable. Run the launcher directly at ${launcher}.`,
     );
   }).pipe(Effect.withSpan("desktop.cliCommand.install"));
 
@@ -382,7 +382,7 @@ export const make = Effect.gen(function* () {
       return yield* state;
     }
     for (const directory of knownLocations(environment.homeDirectory, environment.platform)) {
-      const link = path.join(directory, "t3");
+      const link = path.join(directory, "loom");
       if (yield* isOurLink(link)) {
         yield* fs.remove(link).pipe(Effect.mapError(() => fail(`Could not remove ${link}.`)));
       }
@@ -395,20 +395,22 @@ export const make = Effect.gen(function* () {
   const addToPath: DesktopCliCommand["Service"]["addToPath"] = Effect.gen(function* () {
     const installed = yield* installedAt;
     if (Option.isNone(installed) || !(yield* leadsHere(installed.value))) {
-      return yield* fail("Install the t3 command first.");
+      return yield* fail("Install the loom command first.");
     }
     const setup = startupLine(installed.value);
-    if (setup === undefined) return yield* fail("Loom cannot add t3 to this shell's PATH.");
+    if (setup === undefined) return yield* fail("Loom cannot add loom to this shell's PATH.");
     const shadowedBy = yield* foreignFirstOnPath;
     if (Option.isSome(shadowedBy)) {
-      return yield* fail(`Another t3 at ${shadowedBy.value} runs first; Loom leaves it in place.`);
+      return yield* fail(
+        `Another loom at ${shadowedBy.value} runs first; Loom leaves it in place.`,
+      );
     }
     if (!(yield* folderOnPath(installed.value)) && !(yield* hasLine(setup))) {
       yield* fs.makeDirectory(path.dirname(setup.path), { recursive: true }).pipe(
         Effect.andThen(
           fs.writeFileString(setup.path, `\n# Added by Loom\n${setup.line}\n`, { flag: "a" }),
         ),
-        Effect.mapError(() => fail(`Could not add t3 to ${setup.file}.`)),
+        Effect.mapError(() => fail(`Could not add loom to ${setup.file}.`)),
       );
     }
     return yield* state;
@@ -420,7 +422,7 @@ export const make = Effect.gen(function* () {
       // Mark first so a failed or removed install is never retried behind the user's back.
       yield* fs.writeFileString(firstLaunchMarker, "");
       if (!freshInstall) {
-        return yield* logInfo("left the t3 command to Settings on an existing install");
+        return yield* logInfo("left the loom command to Settings on an existing install");
       }
       // Another Loom home's app owns the existing link; only Install in Settings may take it over.
       const existing = Option.getOrUndefined(yield* installedAt);
@@ -432,20 +434,22 @@ export const make = Effect.gen(function* () {
           });
         }
       }
-      // A t3 that is not ours in these folders, even off PATH, means the user has one already. On
-      // Windows the app never writes there, so any t3 there is someone else's.
+      // A loom that is not ours in these folders, even off PATH, means the user has one already. On
+      // Windows the app never writes there, so any loom there is someone else's.
       for (const directory of userCandidates(environment.homeDirectory)) {
-        for (const name of windows ? ["loom.cmd", "loom.exe"] : ["t3"]) {
+        for (const name of windows ? ["loom.cmd", "loom.exe"] : ["loom"]) {
           const other = path.join(directory, name);
           const present =
             (yield* exists(other)) || Option.isSome(yield* fs.readLink(other).pipe(Effect.option));
           if (present && (windows || !(yield* isOurLink(other)))) {
-            return yield* logInfo("left the t3 command to Settings beside another t3", { other });
+            return yield* logInfo("left the loom command to Settings beside another loom", {
+              other,
+            });
           }
         }
       }
       const installed = yield* install;
-      yield* logInfo("installed the t3 command on first launch", {
+      yield* logInfo("installed the loom command on first launch", {
         installedPath: installed.installedPath,
         onPath: installed.onPath,
       });
@@ -453,7 +457,7 @@ export const make = Effect.gen(function* () {
   ).pipe(
     // Our own messages are short and name only paths; anything else is logged as a category.
     Effect.catch((error) =>
-      logWarning("did not install the t3 command on first launch", {
+      logWarning("did not install the loom command on first launch", {
         reason: error._tag === "DesktopCliCommandError" ? error.message : "state-write-failed",
       }),
     ),
