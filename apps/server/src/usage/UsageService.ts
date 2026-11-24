@@ -258,6 +258,7 @@ export const make = Effect.gen(function* () {
 
     if (ratesLastFailedAtMs !== null && now - ratesLastFailedAtMs < RATES_REFRESH_FLOOR_MS) return;
 
+    // Pricing is catalog data like model lists, so the same outbound switch governs it.
     const updateChecksEnabled = yield* settingsService.getSettings.pipe(
       Effect.map((settings) => settings.enableProviderUpdateChecks),
       Effect.catchCause(() => Effect.succeed(false)),

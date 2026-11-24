@@ -6490,52 +6490,54 @@ export const layer: Layer.Layer<ProjectionStoreV2, never, SqlClient.SqlClient> =
             // seconds. Scan only the runs the page spans, then select again with what they hold.
             const scannedRuns = new Set<string>();
             const persistentOutputs = new Set<string>();
-            while (workMode !== undefined) {
-              // Rows hidden in a work group move the page, so the scan always reaches the cursor.
-              const span = [...page.items.slice(0, 1), ...page.items.slice(-1)].map(
-                (row) => row.canonicalPosition,
-              );
-              if (cursorPosition >= 0) span.push(cursorPosition);
-              if (span.length === 0) break;
-              const runs = new Map(
-                // A work page holds rows of one run, which can be the rows that have no run.
-                (workMode === "work"
-                  ? page.items.slice(0, 1)
-                  : indexed.slice(Math.min(...span), Math.max(...span) + 1)
-                ).flatMap(({ sourceThreadId, item }) =>
-                  (workMode === "work" ||
-                    (item.runId !== null &&
-                      (item.runStatus === "completed" || item.attemptStatus === "superseded"))) &&
-                  !scannedRuns.has(`${sourceThreadId}:${item.runId}`)
-                    ? [
-                        [
-                          `${sourceThreadId}:${item.runId}`,
-                          { threadId: sourceThreadId, id: item.runId },
-                        ] as const,
-                      ]
-                    : [],
-                ),
-              );
-              if (runs.size === 0) break;
-              for (const run of runs.keys()) scannedRuns.add(run);
-              const found = yield* sql<{ thread_id: string; turn_item_id: string }>`
+            // Each pass scans only runs not seen yet, so the loop ends once none remain.
+            if (workMode !== undefined)
+              for (;;) {
+                // Rows hidden in a work group move the page, so the scan always reaches the cursor.
+                const span = [...page.items.slice(0, 1), ...page.items.slice(-1)].map(
+                  (row) => row.canonicalPosition,
+                );
+                if (cursorPosition >= 0) span.push(cursorPosition);
+                if (span.length === 0) break;
+                const runs = new Map(
+                  // A work page holds rows of one run, which can be the rows that have no run.
+                  (workMode === "work"
+                    ? page.items.slice(0, 1)
+                    : indexed.slice(Math.min(...span), Math.max(...span) + 1)
+                  ).flatMap(({ sourceThreadId, item }) =>
+                    (workMode === "work" ||
+                      (item.runId !== null &&
+                        (item.runStatus === "completed" || item.attemptStatus === "superseded"))) &&
+                    !scannedRuns.has(`${sourceThreadId}:${item.runId}`)
+                      ? [
+                          [
+                            `${sourceThreadId}:${item.runId}`,
+                            { threadId: sourceThreadId, id: item.runId },
+                          ] as const,
+                        ]
+                      : [],
+                  ),
+                );
+                if (runs.size === 0) break;
+                for (const run of runs.keys()) scannedRuns.add(run);
+                const found = yield* sql<{ thread_id: string; turn_item_id: string }>`
           SELECT item.thread_id, item.turn_item_id
           FROM json_each(${yield* encodeTimelineSources([...runs.values()])}) AS wanted
           CROSS JOIN orchestration_v2_projection_turn_items AS item
             ON item.thread_id = json_extract(wanted.value, '$.threadId')
             AND item.run_id IS json_extract(wanted.value, '$.id')
           WHERE item.status = 'completed' AND ${inlineWorkOutput}`;
-              if (found.length === 0) break;
-              for (const row of found)
-                persistentOutputs.add(`${row.thread_id}:${row.turn_item_id}`);
-              page = yield* selectPage(
-                indexed.map((row) =>
-                  persistentOutputs.has(`${row.sourceThreadId}:${row.sourceItemId}`)
-                    ? { ...row, item: { ...row.item, persistentOutput: true } }
-                    : row,
-                ),
-              );
-            }
+                if (found.length === 0) break;
+                for (const row of found)
+                  persistentOutputs.add(`${row.thread_id}:${row.turn_item_id}`);
+                page = yield* selectPage(
+                  indexed.map((row) =>
+                    persistentOutputs.has(`${row.sourceThreadId}:${row.sourceItemId}`)
+                      ? { ...row, item: { ...row.item, persistentOutput: true } }
+                      : row,
+                  ),
+                );
+              }
             const policy = workMode === "work" ? THREAD_HISTORY_PAGE_POLICY : olderPolicy;
             const end = (page.items.at(-1)?.canonicalPosition ?? -1) + 1;
             const hasUserTurns = index.visible

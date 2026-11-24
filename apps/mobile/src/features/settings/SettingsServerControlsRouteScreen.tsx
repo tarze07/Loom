@@ -563,7 +563,7 @@ function ServerSettingsDetail(props: { readonly page: SettingsPage }) {
                       "enableProviderUpdateChecks",
                       projectSelected
                         ? "Environment-wide setting. Select All projects to change it."
-                        : "Check installed provider CLIs for newer versions and fetch model catalog updates. When off, new models may not appear.",
+                        : "Check installed provider CLIs for newer versions and fetch model catalog and pricing updates. When off, new models may not appear and usage costs use the last fetched prices.",
                     )}
                     value={uniform("enableProviderUpdateChecks")}
                     disabled={disabledFor("enableProviderUpdateChecks")}
