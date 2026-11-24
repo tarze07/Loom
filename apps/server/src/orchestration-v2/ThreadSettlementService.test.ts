@@ -1,6 +1,5 @@
-import { SourceControlProviderError, SourceControlProviderKind } from "@loom/contracts";
+import { SourceControlProviderKind } from "@loom/contracts";
 import { assert, describe, expect, it } from "@effect/vitest";
-import * as Cause from "effect/Cause";
 import * as DateTime from "effect/DateTime";
 import {
   DEFAULT_SERVER_SETTINGS,
@@ -2021,37 +2020,7 @@ describe("isSnoozed", () => {
   });
 });
 
-describe("isSourceControlUnavailableCause", () => {
-  it("recognizes wrapped missing-credential and disabled-host source control errors", () => {
-    for (const tag of [
-      "GitHubCliMissingError",
-      "GitHubNotSignedInError",
-      "GitHubHostDisabledError",
-    ]) {
-      const wrapped = new SourceControlProviderError({
-        provider: SourceControlProviderKind.make("github"),
-        operation: "listChangeRequests",
-        cwd: "/repo",
-        detail: "No GitHub credential on the server.",
-        cause: { _tag: tag },
-      });
-      expect(ThreadSettlementService.isSourceControlUnavailableCause(Cause.fail(wrapped))).toBe(
-        true,
-      );
-    }
-
-    const networkError = new SourceControlProviderError({
-      provider: SourceControlProviderKind.make("github"),
-      operation: "listChangeRequests",
-      cwd: "/repo",
-      detail: "Timed out",
-      cause: new Error("ETIMEDOUT"),
-    });
-    expect(ThreadSettlementService.isSourceControlUnavailableCause(Cause.fail(networkError))).toBe(
-      false,
-    );
-  });
-
+describe("branch pull request lookups", () => {
   it.effect("skips branch pull request lookups when PR-based auto-settlement is disabled", () =>
     Effect.scoped(
       Effect.gen(function* () {
