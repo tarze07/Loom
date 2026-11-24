@@ -1,8 +1,7 @@
-# Security policy
+# Security Policy
 
-Report security vulnerabilities affecting Loom or Loom-operated infrastructure to
-[security@loom.local](mailto:security@loom.local). Please do not disclose them publicly until we have had
-a reasonable opportunity to investigate and remediate them.
+If you discover a security vulnerability in Loom, please report it privately through GitHub Security Advisories:
 
-See the [full security policy](https://loom.local/security-policy) for reporting details, scope,
-and safe harbor terms for good-faith research.
+https://github.com/tarze07/Loom/security/advisories/new
+
+Please include a description of the issue, reproduction steps, and affected components, with any credentials or secrets removed.

@@ -220,8 +220,7 @@ const config: ExpoConfig = {
     supportsTablet: true,
     requireFullScreen: process.env.LOOM_SHOWCASE_CAPTURE_BUILD === "1",
     bundleIdentifier: iosBundleIdentifier,
-    // Avoid Personal Team fallback: it cannot sign App Groups.
-    appleTeamId: "ARK85ZXQ4Z",
+    ...(repoEnv.LOOM_APPLE_TEAM_ID ? { appleTeamId: repoEnv.LOOM_APPLE_TEAM_ID } : {}),
     entitlements: {
       "keychain-access-groups": [`$(AppIdentifierPrefix)${variant.iosBundleIdentifier}`],
     },
@@ -404,11 +403,15 @@ const config: ExpoConfig = {
       process.env.LOOM_FEATURE_SECRETS?.trim().toLowerCase() ?? "",
     ),
     iosPersonalTeamBuild: isIosPersonalTeamBuild,
-    eas: {
-      projectId: "d763fcb8-d37c-41ea-a773-b54a0ab4a454",
-    },
+    ...(repoEnv.LOOM_EAS_PROJECT_ID
+      ? {
+          eas: {
+            projectId: repoEnv.LOOM_EAS_PROJECT_ID,
+          },
+        }
+      : {}),
   },
-  owner: "pingdotgg",
+  ...(repoEnv.LOOM_EAS_OWNER ? { owner: repoEnv.LOOM_EAS_OWNER } : {}),
   experiments: {
     // Metro only runs babel-plugin-react-compiler when this is set; see src/reactCompilerCoverage.test.ts.
     reactCompiler: true,

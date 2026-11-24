@@ -1,17 +1,11 @@
-import { ANDROID_PLAY_STORE_URL, GITHUB_REPOSITORY_URL, IOS_APP_STORE_URL } from "./site";
+import { GITHUB_REPOSITORY_URL } from "./site";
 
 export const SITE_ORIGIN = "https://loom.local";
 export const SITE_NAME = "Loom";
 export const SITE_TAGLINE = "The open-source control plane for coding agents";
 
-// The canonical set of official properties. Search engines and AI answer engines read `sameAs`
-// to tie an entity to its real homes, which is the signal a look-alike domain cannot copy.
-export const OFFICIAL_PROFILES = [
-  GITHUB_REPOSITORY_URL,
-  IOS_APP_STORE_URL,
-  ANDROID_PLAY_STORE_URL,
-  "https://discord.gg/jn4EGJjrvv",
-] as const;
+// The canonical set of official properties for this project.
+export const OFFICIAL_PROFILES = [GITHUB_REPOSITORY_URL] as const;
 
 export type JsonLd = Record<string, unknown>;
 
@@ -24,10 +18,10 @@ export const absoluteUrl = (pathname: string): string => new URL(pathname, SITE_
 export const organizationJsonLd = (): JsonLd => ({
   "@type": "Organization",
   "@id": ORGANIZATION_ID,
-  name: "Loom Inc",
+  name: SITE_NAME,
   url: SITE_ORIGIN,
   logo: absoluteUrl("/apple-touch-icon.png"),
-  sameAs: ["https://github.com/pingdotgg"],
+  sameAs: [GITHUB_REPOSITORY_URL],
 });
 
 export const websiteJsonLd = (): JsonLd => ({
