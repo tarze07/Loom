@@ -23,6 +23,12 @@ describe("ScheduledTaskSchedule", () => {
     });
   });
 
+  it("drops the retired webhook age limit that older clients and stored rows still carry", () => {
+    const legacy = { type: "webhook", signature: null, maxDeliveryAgeMinutes: 90 };
+    expect(decodeSchedule(legacy)).toEqual({ type: "webhook", signature: null });
+    expect(decodeUpsertSchedule(legacy)).toEqual({ type: "webhook", signature: null });
+  });
+
   it("accepts a one-time run only with an offset", () => {
     for (const runAt of ["2026-11-03T09:00Z", "2026-11-03T09:00:00.000-08:00"]) {
       expect(decodeUpsertSchedule({ type: "once", runAt })).toEqual({ type: "once", runAt });

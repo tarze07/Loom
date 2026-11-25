@@ -1420,7 +1420,6 @@ export const layer = Layer.effect(
                       encoding: input.schedule.signature.encoding,
                       prefix: input.schedule.signature.prefix,
                     },
-              maxDeliveryAgeMinutes: input.schedule.maxDeliveryAgeMinutes ?? null,
               ...(input.schedule.dedupe === undefined
                 ? existingTask?.schedule.type === "webhook" &&
                   existingTask.schedule.dedupe !== undefined
@@ -2145,8 +2144,6 @@ export const layer = Layer.effect(
               return { _tag: "rejected_signature" as const };
             }
           }
-          // A direct request is handled as it arrives; only the removed relay held requests,
-          // so `maxDeliveryAgeMinutes` can no longer expire one.
           const refundRejectionSlot = Ref.update(webhookRejectedRateWindows, (windows) => {
             const current = windows.get(task.id);
             if (current === undefined) return windows;
