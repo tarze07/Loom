@@ -18,15 +18,15 @@ it.layer(NodeServices.layer)("t3 uninstall launcher", (it) => {
         .makeTempDirectoryScoped({ prefix: "loom-uninstall-" })
         .pipe(Effect.flatMap(fs.realPath));
       const versionsDir = path.join(root, "runtime/versions");
-      const exe = path.join(versionsDir, "1.0.0/t3");
-      const otherExe = path.join(root, "other/runtime/versions/1.0.0/t3");
-      const copy = path.join(root, "copy/t3");
+      const exe = path.join(versionsDir, "1.0.0/loom");
+      const otherExe = path.join(root, "other/runtime/versions/1.0.0/loom");
+      const copy = path.join(root, "copy/loom");
       for (const file of [exe, otherExe, copy]) {
         yield* fs.makeDirectory(path.dirname(file), { recursive: true });
         yield* fs.writeFileString(file, "");
       }
-      const ours = path.join(root, "bin/t3");
-      const theirs = path.join(root, "other/bin/t3");
+      const ours = path.join(root, "bin/loom");
+      const theirs = path.join(root, "other/bin/loom");
       yield* fs.makeDirectory(path.dirname(ours), { recursive: true });
       yield* fs.makeDirectory(path.dirname(theirs), { recursive: true });
       yield* fs.symlink(exe, ours);
@@ -57,8 +57,8 @@ it.layer(NodeServices.layer)("t3 uninstall launcher", (it) => {
       const throughAlias = path.join(root, "bin/loom-alias");
       const pruned = path.join(root, "bin/loom-pruned");
       yield* fs.symlink(root, path.join(root, "alias"));
-      yield* fs.symlink(path.join(root, "alias/runtime/versions/1.0.0/t3"), throughAlias);
-      yield* fs.symlink(path.join(versionsDir, "0.9.0/t3"), pruned);
+      yield* fs.symlink(path.join(root, "alias/runtime/versions/1.0.0/loom"), throughAlias);
+      yield* fs.symlink(path.join(versionsDir, "0.9.0/loom"), pruned);
       // Another program inside a version is not a launcher.
       const sibling = path.join(root, "bin/loom-sibling");
       yield* fs.symlink(path.join(versionsDir, "1.0.0/node"), sibling);
