@@ -22,8 +22,8 @@ export function InstallLoomCommands({
       <p className="text-xs text-muted-foreground">Then</p>
       <CommandBlock command={command} />
       <p className="text-xs text-muted-foreground">
-        Skip the install if you already have <code className="font-mono">t3</code>. If{" "}
-        <code className="font-mono">t3</code> is not found after installing, add the folder the
+        Skip the install if you already have <code className="font-mono">loom</code>. If{" "}
+        <code className="font-mono">loom</code> is not found after installing, add the folder the
         installer names to your PATH.
       </p>
     </div>

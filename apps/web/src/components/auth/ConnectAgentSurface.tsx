@@ -317,7 +317,7 @@ function McpConsent({
             />
             <p className="text-xs text-muted-foreground">
               Get one from Use Loom in another app (MCP), Settings → Sharing & access, or{" "}
-              <code>t3 auth pairing create</code> on this machine.
+              <code>loom auth pairing create</code> on this machine.
             </p>
           </div>
         ) : null}

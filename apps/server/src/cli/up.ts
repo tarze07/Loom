@@ -90,7 +90,7 @@ const formatSetup = (setup: Setup) => {
       !service.supported
         ? "unavailable"
         : service.installed
-          ? `installed · t3@${service.installedVersion ?? packageJson.version}`
+          ? `installed · loom@${service.installedVersion ?? packageJson.version}`
           : "not installed",
     ],
     [
@@ -264,7 +264,7 @@ const setUp = Effect.fn("cli.up")(function* (flags: {
     yield* printServeCommand("Background service unavailable.");
   } else {
     if (newer) {
-      yield* Console.log(`Keeping installed service version t3@${installedVersion}.`);
+      yield* Console.log(`Keeping installed service version loom@${installedVersion}.`);
     }
     if (update && !interactive) {
       yield* Console.log("Updating Loom. Running agent turns will stop.");
@@ -336,11 +336,11 @@ export const upCommand = Command.make("up", {
     "Set up remote access and the Loom background service. Access flags skip the question, and routes not named keep their settings. Without a terminal, a needed restart runs without asking and stops running agent turns.",
   ),
   Command.withExamples([
-    { command: "t3 up", description: "Choose remote access." },
-    { command: "t3 up --lan", description: "Allow LAN access with pairing codes." },
-    { command: "t3 up --no-lan", description: "Stop LAN access." },
-    { command: "t3 up --yes", description: "Take the defaults with no questions." },
-    { command: "t3 status --json", description: "Read the settings from a script." },
+    { command: "loom up", description: "Choose remote access." },
+    { command: "loom up --lan", description: "Allow LAN access with pairing codes." },
+    { command: "loom up --no-lan", description: "Stop LAN access." },
+    { command: "loom up --yes", description: "Take the defaults with no questions." },
+    { command: "loom status --json", description: "Read the settings from a script." },
   ]),
   Command.withHandler(
     Effect.fn("cli.up.handler")(function* (flags) {
@@ -351,7 +351,7 @@ export const upCommand = Command.make("up", {
   ),
 );
 
-/** `t3 status --json`, for scripts and agents. */
+/** `loom status --json`, for scripts and agents. */
 const setupJson = (setup: Setup) =>
   JSON.stringify(
     {
@@ -380,8 +380,8 @@ export const statusCommand = Command.make("status", {
 }).pipe(
   Command.withDescription("Show service setup and remote access settings."),
   Command.withExamples([
-    { command: "t3 status", description: "Show the settings." },
-    { command: "t3 status --json", description: "Print them for scripts and agents." },
+    { command: "loom status", description: "Show the settings." },
+    { command: "loom status --json", description: "Print them for scripts and agents." },
   ]),
   Command.withHandler(
     Effect.fn("cli.status")(function* (flags) {
@@ -394,7 +394,7 @@ export const statusCommand = Command.make("status", {
           ? setupJson(setup)
           : setup.service.otherBaseDir !== undefined
             ? `This machine\n${formatSetup(setup)}`
-            : `This machine\n${formatSetup(setup)}\n\nChange access: \`t3 up\`.`,
+            : `This machine\n${formatSetup(setup)}\n\nChange access: \`loom up\`.`,
       );
     }),
   ),

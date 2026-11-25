@@ -40,7 +40,7 @@ export function attachConsoleStdin(): number | undefined {
     stdinMissing: isMissingInput(0),
     stdoutIsConsole: NodeTty.isatty(1),
   });
-  // The launcher marker must not propagate to child shells or t3 processes.
+  // The launcher marker must not propagate to child shells or loom processes.
   delete process.env.LOOM_DESKTOP_CLI_LAUNCHER;
   if (!needed) return undefined;
   let fd: number;

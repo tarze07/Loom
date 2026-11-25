@@ -38,11 +38,11 @@ one alone and stops. Set `LOOM_CHANNEL=nightly` to install the nightly train, or
 | Reclaim database space                | `loom doctor` ([details](./background-service.md#reclaim-database-space)) |
 | Remove it again                       | `loom uninstall`                                                          |
 
-Run `t3 help` or `loom --help` for the full reference. To start in a new working
-directory, use an explicit path such as `t3 ./my-project`. A bare directory name
+Run `loom help` or `loom --help` for the full reference. To start in a new working
+directory, use an explicit path such as `loom ./my-project`. A bare directory name
 is accepted only if it already exists.
 
-If `loom` or `t3 start` reports an already running server, connect to that server
+If `loom` or `loom start` reports an already running server, connect to that server
 instead. Stop it before starting a replacement, or use a different `--base-dir`
 for an independent server.
 
@@ -50,7 +50,7 @@ To try Loom once without installing it, run `npx loom@latest` instead (needs
 Node.js for `npx`). It offers to install the `loom` command first. If you say no,
 it asks again at the next minor release, and `npx loom install` installs it later.
 `npx loom` always runs the version npm picked, even when a `loom` is installed. On
-the nightly train, run your installed `loom` (for example `t3 connect`), not
+the nightly train, run your installed `loom` (for example `loom connect`), not
 `npx loom`, which runs the latest stable release.
 
 ### Intel Macs
@@ -129,7 +129,7 @@ Nix manages both the desktop app and the bundled
 
 The desktop app includes the `loom` command-line tool. A new install sets it up
 on first launch; after an update, or any time, choose **Install** next to
-**t3 command** in **Settings → About**. On macOS and Linux it adds a `loom` link
+**loom command** in **Settings → About**. On macOS and Linux it adds a `loom` link
 in `~/.local/bin` (or `~/bin`); on Windows it adds the app's command folder to
 your `PATH`. Open a new terminal afterwards. If the folder is not on your
 `PATH`, **Add to PATH** on the Welcome page or in **Settings → About** adds one

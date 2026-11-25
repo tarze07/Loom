@@ -429,7 +429,7 @@ export const make = Effect.gen(function* () {
       if (existing !== undefined) {
         const target = yield* fs.readLink(existing).pipe(Effect.option);
         if (Option.getOrUndefined(target) !== launcher) {
-          return yield* logInfo("left another Loom app's t3 command in place", {
+          return yield* logInfo("left another Loom app's loom command in place", {
             existing,
           });
         }

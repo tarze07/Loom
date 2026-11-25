@@ -17,7 +17,7 @@ Ubuntu, your AUR helper on Arch, and `nix` on NixOS.
 
 The desktop app includes the `loom` command and sets it up on each new version.
 After installing a new desktop app, open the app and choose **Install** next to
-**t3 command** in **Settings → About**. If you installed `loom` with npm, update
+**loom command** in **Settings → About**. If you installed `loom` with npm, update
 it with your npm tooling instead.
 
 ## Servers
