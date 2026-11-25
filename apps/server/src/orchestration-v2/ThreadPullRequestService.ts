@@ -29,7 +29,7 @@ import * as RepositoryIdentityResolver from "../project/RepositoryIdentityResolv
 import { forkParked } from "../serverActivation.ts";
 import { sourceControlDefinitions } from "../sourceControl/sourceControlDefinitions.ts";
 import * as Orchestrator from "./Orchestrator.ts";
-import { isSourceControlUnavailableCause } from "./ThreadSettlementService.ts";
+import { isSourceControlUnavailableCause } from "../sourceControl/sourceControlUnavailable.ts";
 
 class ThreadPullRequestServiceV2 extends Context.Service<
   ThreadPullRequestServiceV2,

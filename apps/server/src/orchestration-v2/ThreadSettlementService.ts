@@ -36,6 +36,7 @@ import * as ProjectStore from "./ProjectStore.ts";
 import { sourceControlDefinitions } from "../sourceControl/sourceControlDefinitions.ts";
 import * as Orchestrator from "./Orchestrator.ts";
 import * as ProjectionStore from "./ProjectionStore.ts";
+import { isSourceControlUnavailableCause } from "../sourceControl/sourceControlUnavailable.ts";
 
 export interface SettlementPullRequest {
   readonly state: "open" | "closed" | "merged";
@@ -261,25 +262,6 @@ function autoSettlementConfigured(settings: import("@loom/contracts").ServerSett
       entry.sidebarAutoSettleOnMerge === true ||
       (entry.sidebarAutoSettleAfterDays !== undefined && entry.sidebarAutoSettleAfterDays !== null),
   );
-}
-
-const MISSING_SOURCE_CONTROL_CREDENTIAL_TAG =
-  /^(?:GitHub|GitLab|Bitbucket|AzureDevOps|Forgejo|GitCafe)(?:CliMissing|NotSignedIn|HostDisabled|CredentialsMissing|Unauthorized)Error$/;
-
-function isSourceControlUnavailableError(error: unknown): boolean {
-  if (typeof error !== "object" || error === null) return false;
-  const record = error as { readonly _tag?: unknown; readonly cause?: unknown };
-  if (typeof record._tag === "string" && MISSING_SOURCE_CONTROL_CREDENTIAL_TAG.test(record._tag)) {
-    return true;
-  }
-  return record.cause !== undefined && record.cause !== error
-    ? isSourceControlUnavailableError(record.cause)
-    : false;
-}
-
-/** @internal Exported for tests. */
-export function isSourceControlUnavailableCause(cause: Cause.Cause<unknown>): boolean {
-  return isSourceControlUnavailableError(Cause.squash(cause));
 }
 
 /** @internal Exported for tests. */
