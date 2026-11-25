@@ -94,8 +94,8 @@ Loom.
 ## Claude Code
 
 ```sh
-claude mcp add --transport http t3 https://<environment-address>/mcp
-claude mcp login t3
+claude mcp add --transport http loom https://<environment-address>/mcp
+claude mcp login loom
 ```
 
 `claude mcp login` opens the sign-in page in your browser. On a machine
@@ -106,8 +106,8 @@ once you approve.
 ## Codex
 
 ```sh
-codex mcp add t3 --url https://<environment-address>/mcp
-codex mcp login t3
+codex mcp add loom --url https://<environment-address>/mcp
+codex mcp login loom
 ```
 
 `codex mcp login --no-browser` prints the sign-in URL instead of opening it.

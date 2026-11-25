@@ -51,7 +51,7 @@ export const makeCli = () =>
       Command.make("help").pipe(
         Command.withDescription("Show command help."),
         Command.withHandler(() =>
-          Effect.fail(new CliError.ShowHelp({ commandPath: ["t3"], errors: [] })),
+          Effect.fail(new CliError.ShowHelp({ commandPath: ["loom"], errors: [] })),
         ),
       ),
       acpMcpBridgeCommand,
