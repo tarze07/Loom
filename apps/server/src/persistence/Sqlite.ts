@@ -20,7 +20,7 @@ export class ServerOwnsDatabaseError extends Schema.TaggedError<ServerOwnsDataba
   { stateDir: Schema.String },
 ) {
   override get message(): string {
-    return `Another Loom process, usually a running server, owns ${this.stateDir}, and this CLI would change its database schema. Use the \`t3\` that matches the running server, or stop that server, then retry. The database was not changed.`;
+    return `Another Loom process, usually a running server, owns ${this.stateDir}, and this CLI would change its database schema. Use the \`loom\` that matches the running server, or stop that server, then retry. The database was not changed.`;
   }
 }
 
