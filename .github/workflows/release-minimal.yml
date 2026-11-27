@@ -1,0 +1,245 @@
+name: Release Minimal (Corporate)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (defaults to apps/server/package.json version)"
+        required: false
+        default: ""
+      build_desktop:
+        description: "Also build minimal Desktop installers (Linux x64 + Windows x64)"
+        type: boolean
+        default: true
+      publish_release:
+        description: "Publish artifacts to a GitHub Release"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  build_bundle:
+    name: Build JS bundle
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-ci-deps
+      - id: meta
+        run: |
+          VERSION="${{ inputs.version }}"
+          if [[ -z "$VERSION" ]]; then
+            VERSION="$(jq -r '.version' apps/server/package.json)"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+      - name: Build web, server, and desktop bundles
+        run: vp run build:desktop
+      - uses: actions/upload-artifact@v4
+        with:
+          name: js-bundle
+          path: |
+            apps/server/dist
+            apps/desktop/dist-electron
+          retention-days: 3
+
+  cli_linux_x64:
+    name: CLI Minimal (Linux x64)
+    needs: build_bundle
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-ci-deps
+      - name: Install patchelf and libatomic1
+        run: sudo apt-get update && sudo apt-get install -y patchelf libatomic1
+      - uses: actions/download-artifact@v4
+        with:
+          name: js-bundle
+      - name: Build Linux x64 single-executable
+        run: node apps/server/scripts/cli.ts build-exe
+      - name: Package minimal Linux x64 CLI archive
+        run: |
+          node scripts/build-cli-archive.ts \
+            --platform linux \
+            --arch x64 \
+            --version "${{ needs.build_bundle.outputs.version }}" \
+            --profile minimal \
+            --without-resource-monitor \
+            --output-dir release-cli
+      - name: Smoke test minimal Linux x64 CLI archive
+        run: |
+          node scripts/smoke-cli-archive.ts \
+            --archive "release-cli/loom-${{ needs.build_bundle.outputs.version }}-minimal-linux-x64.tar.gz" \
+            --expect-version "${{ needs.build_bundle.outputs.version }}"
+      - name: Assemble Linux x64 corporate offline bundle
+        run: |
+          node scripts/build-corporate-bundle.ts \
+            --version "${{ needs.build_bundle.outputs.version }}" \
+            --platform linux \
+            --arch x64 \
+            --profile minimal \
+            --archive "release-cli/loom-${{ needs.build_bundle.outputs.version }}-minimal-linux-x64.tar.gz" \
+            --output-dir release-corporate-linux-x64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cli-minimal-linux-x64
+          path: |
+            release-cli/*
+            release-corporate-linux-x64
+          retention-days: 14
+
+  cli_win_x64:
+    name: CLI Minimal (Windows x64)
+    needs: build_bundle
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-ci-deps
+      - name: Install zip
+        run: sudo apt-get update && sudo apt-get install -y zip
+      - uses: actions/download-artifact@v4
+        with:
+          name: js-bundle
+      - name: Cross-build Windows x64 single-executable
+        run: node apps/server/scripts/cli.ts build-exe --target win-x64
+      - name: Package minimal Windows x64 CLI archive
+        run: |
+          node scripts/build-cli-archive.ts \
+            --platform win \
+            --arch x64 \
+            --version "${{ needs.build_bundle.outputs.version }}" \
+            --profile minimal \
+            --without-resource-monitor \
+            --output-dir release-cli
+      - name: Assemble Windows x64 corporate offline bundle
+        run: |
+          node scripts/build-corporate-bundle.ts \
+            --version "${{ needs.build_bundle.outputs.version }}" \
+            --platform win \
+            --arch x64 \
+            --profile minimal \
+            --archive "release-cli/loom-${{ needs.build_bundle.outputs.version }}-minimal-win32-x64.zip" \
+            --output-dir release-corporate-win-x64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cli-minimal-win-x64
+          path: |
+            release-cli/*
+            release-corporate-win-x64
+          retention-days: 14
+
+  verify_cli_win_x64:
+    name: Smoke Test CLI Minimal (Windows x64)
+    needs: [build_bundle, cli_win_x64]
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-ci-deps
+        with:
+          install-args: "--filter @loom/scripts --filter @loom/shared"
+      - uses: actions/download-artifact@v4
+        with:
+          name: cli-minimal-win-x64
+          path: release-win
+      - name: Smoke test minimal Windows x64 CLI archive
+        shell: bash
+        run: |
+          node scripts/smoke-cli-archive.ts \
+            --archive "release-win/loom-${{ needs.build_bundle.outputs.version }}-minimal-win32-x64.zip" \
+            --expect-version "${{ needs.build_bundle.outputs.version }}"
+
+  desktop_linux_x64:
+    name: Desktop Minimal (Linux x64)
+    if: inputs.build_desktop
+    needs: build_bundle
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-ci-deps
+      - uses: actions/download-artifact@v4
+        with:
+          name: js-bundle
+      - name: Package minimal Linux x64 Desktop (.deb + AppImage)
+        run: |
+          node scripts/build-desktop-artifact.ts \
+            --platform linux \
+            --arch x64 \
+            --target AppImage,deb \
+            --profile minimal \
+            --build-version "${{ needs.build_bundle.outputs.version }}" \
+            --skip-build \
+            --output-dir release-desktop-linux-x64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: desktop-minimal-linux-x64
+          path: release-desktop-linux-x64/*
+          retention-days: 14
+
+  desktop_win_x64:
+    name: Desktop Minimal (Windows x64)
+    if: inputs.build_desktop
+    needs: build_bundle
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-ci-deps
+      - uses: actions/download-artifact@v4
+        with:
+          name: js-bundle
+      - name: Package minimal Windows x64 Desktop (NSIS)
+        run: |
+          node scripts/build-desktop-artifact.ts \
+            --platform win \
+            --arch x64 \
+            --target nsis \
+            --profile minimal \
+            --build-version "${{ needs.build_bundle.outputs.version }}" \
+            --skip-build \
+            --output-dir release-desktop-win-x64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: desktop-minimal-win-x64
+          path: release-desktop-win-x64/*
+          retention-days: 14
+
+  publish:
+    name: Aggregate SHA256SUMS & Optional Release
+    needs: [build_bundle, cli_linux_x64, verify_cli_win_x64, desktop_linux_x64, desktop_win_x64]
+    if: always() && needs.cli_linux_x64.result == 'success' && needs.verify_cli_win_x64.result == 'success' && (inputs.build_desktop == false || (needs.desktop_linux_x64.result == 'success' && needs.desktop_win_x64.result == 'success'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist-all
+      - name: Collect release assets and generate SHA256SUMS
+        run: |
+          mkdir -p release-final
+          find dist-all -maxdepth 3 -type f \( -name 'loom-*.tar.gz' -o -name 'loom-*.zip' -o -name '*.deb' -o -name '*.AppImage' -o -name '*.exe' -o -name 'sbom-*.cdx.json' \) -exec cp {} release-final/ \;
+          cp scripts/install.sh scripts/install.ps1 release-final/
+          printf 'v%s\n' "${{ needs.build_bundle.outputs.version }}" > release-final/latest.txt
+          (cd release-final && sha256sum loom-* *.deb *.AppImage *.exe 2>/dev/null || true) > release-final/SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: loom-minimal-release-${{ needs.build_bundle.outputs.version }}
+          path: release-final/*
+          retention-days: 30
+      - name: Publish GitHub Release
+        if: inputs.publish_release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v${{ needs.build_bundle.outputs.version }}"
+          gh release create "$TAG" release-final/* \
+            --title "Loom ${TAG} (Minimal Corporate Build)" \
+            --notes "Minimal corporate build for Linux x64 and Windows x64 (CLI + Desktop) with SHA256SUMS and CycloneDX SBOM." \
+            --prerelease

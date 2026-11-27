@@ -103,7 +103,7 @@ async function install(dir, key) {
     if (extract.status !== 0) throw new Error(`could not extract ${archive}`);
     fs.rmSync(file);
     const validate = spawnSync(
-      path.join(staging, process.platform === "win32" ? "loom.exe" : "t3"),
+      path.join(staging, process.platform === "win32" ? "loom.exe" : "loom"),
       ["--version"],
       {
         stdio: ["ignore", "ignore", "pipe"],
@@ -186,7 +186,7 @@ async function main() {
   // Service IPC and signals must reach the child; terminal Ctrl-C already does, so do not forward SIGINT twice.
   const ipc = process.send !== undefined;
   const child = spawn(
-    path.join(dir, process.platform === "win32" ? "loom.exe" : "t3"),
+    path.join(dir, process.platform === "win32" ? "loom.exe" : "loom"),
     process.argv.slice(2),
     {
       stdio: ipc ? ["inherit", "inherit", "inherit", "ipc"] : "inherit",

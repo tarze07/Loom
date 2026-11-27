@@ -1,34 +1,64 @@
-# Installs the Loom CLI from a GitHub Release archive on Windows. Needs
-# only PowerShell 5.1+; no Node, npm, or compiler.
+# Installs the Loom CLI from a release archive on Windows (GitHub, internal mirror, or local offline zip).
+# Needs only PowerShell 5.1+; no Node, npm, or compiler.
 #
 #   irm https://loom.local/install.ps1 | iex
+#   .\install.ps1 -ArchivePath .\loom-0.1.9-minimal-win32-x64.zip -ChecksumsPath .\SHA256SUMS
 #
-# Environment:
+# Environment (or matching parameters):
 #   LOOM_CHANNEL           release train to follow: stable, nightly, or preview
 #                            (default: stable; preview is a maintainers' test train)
 #   LOOM_VERSION           exact version to install (overrides LOOM_CHANNEL)
+#   LOOM_PROFILE           dependency profile: full or minimal (default: full)
 #   LOOM_HOME              Loom home directory (default: ~\.loom)
-#   LOOM_INSTALL_BIN_DIR   where loom.exe is linked (default: ~\.local\bin)
+#   LOOM_INSTALL_BIN_DIR   where loom.cmd is written (default: ~\.local\bin)
 #   LOOM_RELEASE_BASE_URL  mirror for releases/download (default: GitHub)
+#   LOOM_ARCHIVE_PATH      local zip archive path for 100% offline/air-gapped installation
+#   LOOM_CHECKSUMS_PATH    local SHA256SUMS file for offline verification
+#   LOOM_SKIP_CHECKSUM     set to 1 to skip checksum verification in offline mode
+#   LOOM_NO_MODIFY_PATH    set to 1 to avoid mutating PATH or printing PATH instructions
+#   LOOM_NON_INTERACTIVE   set to 1 to force non-interactive output
 #
 # The archive is unpacked into $LOOM_HOME\runtime\versions\<version>, the
-# same layout `t3 service install` uses, so the service reuses this download.
+# same layout `loom service install` uses, so the service reuses this download.
+param(
+  [string] $ArchivePath = $env:LOOM_ARCHIVE_PATH,
+  [string] $ChecksumsPath = $env:LOOM_CHECKSUMS_PATH,
+  [switch] $SkipChecksum,
+  [string] $Profile = $env:LOOM_PROFILE,
+  [string] $Version = $env:LOOM_VERSION,
+  [string] $Channel = $env:LOOM_CHANNEL,
+  [string] $LoomHome = $env:LOOM_HOME,
+  [string] $BinDir = $env:LOOM_INSTALL_BIN_DIR,
+  [string] $ReleaseBaseUrl = $env:LOOM_RELEASE_BASE_URL,
+  [switch] $NoModifyPath,
+  [switch] $NonInteractive
+)
+
 $ErrorActionPreference = "Stop"
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 $repo = "tarze07/Loom"
-$baseUrl = if ($env:LOOM_RELEASE_BASE_URL) { $env:LOOM_RELEASE_BASE_URL.TrimEnd("/") } else { "https://github.com/$repo/releases/download" }
-$loomHome = if ($env:LOOM_HOME) { $env:LOOM_HOME } else { Join-Path $HOME ".loom" }
-$binDir = if ($env:LOOM_INSTALL_BIN_DIR) { $env:LOOM_INSTALL_BIN_DIR } else { Join-Path $HOME ".local\bin" }
+$defaultBaseUrl = "https://github.com/$repo/releases/download"
+$baseUrl = if ($ReleaseBaseUrl) { $ReleaseBaseUrl.TrimEnd("/") } else { $defaultBaseUrl }
+$loomHome = if ($LoomHome) { $LoomHome } else { Join-Path $HOME ".loom" }
+$binDir = if ($BinDir) { $BinDir } else { Join-Path $HOME ".local\bin" }
 # Absolute, so PATH never gets a folder that changes with the working directory.
 $binDir = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($binDir)
+$profile = if ($Profile) { $Profile } else { "full" }
+$skipChecksumFlag = $SkipChecksum.IsPresent -or ($env:LOOM_SKIP_CHECKSUM -eq "1")
+$noModifyPathFlag = $NoModifyPath.IsPresent -or ($env:LOOM_NO_MODIFY_PATH -eq "1")
+$nonInteractiveFlag = $NonInteractive.IsPresent -or ($env:LOOM_NON_INTERACTIVE -eq "1")
 
 function Fail([string] $message) {
-  Write-Error "t3 install: $message"
+  Write-Error "loom install: $message"
   exit 1
 }
 
-$terminal = -not [Console]::IsErrorRedirected -and $env:TERM -ne "dumb"
+if ($profile -notin @("full", "minimal")) {
+  Fail "LOOM_PROFILE must be full or minimal"
+}
+
+$terminal = -not $nonInteractiveFlag -and -not [Console]::IsErrorRedirected -and $env:TERM -ne "dumb"
 $interactive = $terminal -and $Host.UI.SupportsVirtualTerminal
 if ($interactive) {
   # Legacy code pages may support ANSI escapes but not the logo or bar glyphs.
@@ -80,11 +110,14 @@ function Invoke-Retrying([scriptblock] $request) {
 function Fetch([string] $uri, [string] $destination, [switch] $progress) {
   if (-not $progress -or -not $interactive) {
     $ProgressPreference = if ($progress -and $terminal) { "Continue" } else { "SilentlyContinue" }
-    Invoke-Retrying { Invoke-WebRequest -Uri $uri -OutFile $destination -UseBasicParsing }
+    Invoke-Retrying { Invoke-WebRequest -Uri $uri -OutFile $destination -UseBasicParsing -ProxyUseDefaultCredentials }
     return
   }
   Add-Type -AssemblyName System.Net.Http
-  $client = New-Object System.Net.Http.HttpClient
+  $handler = New-Object System.Net.Http.HttpClientHandler
+  $handler.UseProxy = $true
+  $handler.DefaultProxyCredentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
+  $client = New-Object System.Net.Http.HttpClient($handler)
   $response = $source = $file = $null
   try {
     for ($attempt = 1; ; $attempt++) {
@@ -115,6 +148,7 @@ function Fetch([string] $uri, [string] $destination, [switch] $progress) {
     if ($source) { $source.Dispose() }
     if ($response) { $response.Dispose() }
     $client.Dispose()
+    $handler.Dispose()
   }
 }
 if ($interactive) {
@@ -144,40 +178,70 @@ $arch = switch ($rawArch) {
   default { Fail "unsupported architecture $rawArch" }
 }
 
-$channel = if ($env:LOOM_CHANNEL) { $env:LOOM_CHANNEL } else { "stable" }
-$version = $env:LOOM_VERSION
-if (-not $version) {
-  $tagPattern = switch ($channel) {
-    "stable" { '^v\d+\.\d+\.\d+$' }
-    "nightly" { '^v\d+\.\d+\.\d+-nightly\.\d+\.\d+$' }
-    "preview" { '^v\d+\.\d+\.\d+-preview\.\d+\.\d+$' }
-    default { Fail "LOOM_CHANNEL must be stable, nightly, or preview" }
+$channel = if ($Channel) { $Channel } else { "stable" }
+$version = $Version
+$explicitVersion = [bool]$Version
+
+if ($ArchivePath) {
+  if (-not (Test-Path -LiteralPath $ArchivePath)) {
+    Fail "offline archive not found: $ArchivePath"
   }
-  if ($channel -eq "stable") {
-    # release.yml marks only plain stable releases latest. This is a github.com
-    # page, so it is not cut off by a page of newer nightlies or the API quota.
-    $release = Invoke-Retrying { Invoke-RestMethod -Uri "https://github.com/$repo/releases/latest" -Headers @{ "User-Agent" = "loom-install"; "Accept" = "application/json" } }
-    $tag = ($release | Where-Object { $_.tag_name -match $tagPattern }).tag_name
-  } else {
-    $tag = $null
-    for ($page = 1; -not $tag -and $page -le 10; $page++) {
-      $releases = Invoke-Retrying { Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/releases?per_page=100&page=$page" -Headers @{ "User-Agent" = "loom-install" } }
-      $tag = ($releases | Where-Object { -not $_.draft -and $_.tag_name -match $tagPattern } | Select-Object -First 1).tag_name
-      if (-not $releases) { break }
+  $archive = [System.IO.Path]::GetFileName($ArchivePath)
+  $stem = [System.IO.Path]::GetFileNameWithoutExtension($archive)
+  if (-not $version) {
+    if ($archive -match "^loom-([0-9][0-9A-Za-z._-]*?)(?:-minimal)?-win32-$([regex]::Escape($arch))\.zip$") {
+      $version = $Matches[1]
+    } else {
+      Fail "could not infer version from $archive; set LOOM_VERSION or -Version"
     }
   }
-  if (-not $tag) { Fail "could not find a $channel release; set LOOM_VERSION" }
-  $version = $tag.Substring(1)
+} else {
+  if (-not $version) {
+    $tagPattern = switch ($channel) {
+      "stable" { '^v\d+\.\d+\.\d+$' }
+      "nightly" { '^v\d+\.\d+\.\d+-nightly\.\d+\.\d+$' }
+      "preview" { '^v\d+\.\d+\.\d+-preview\.\d+\.\d+$' }
+      default { Fail "LOOM_CHANNEL must be stable, nightly, or preview" }
+    }
+    if ($baseUrl -ne $defaultBaseUrl) {
+      $mirrorIndexName = if ($channel -eq "stable") { "latest.txt" } else { "channel-$channel.txt" }
+      try {
+        $mirrorVer = (Invoke-Retrying { Invoke-RestMethod -Uri "$baseUrl/$mirrorIndexName" -ProxyUseDefaultCredentials }).ToString().Trim().TrimStart("v")
+        if ($mirrorVer -match '^\d+\.\d+\.\d+') { $version = $mirrorVer }
+      } catch {
+        # Fall through to GitHub lookup if the mirror does not publish an index file.
+      }
+    }
+    if (-not $version) {
+      if ($channel -eq "stable") {
+        # release.yml marks only plain stable releases latest. This is a github.com
+        # page, so it is not cut off by a page of newer nightlies or the API quota.
+        $release = Invoke-Retrying { Invoke-RestMethod -Uri "https://github.com/$repo/releases/latest" -Headers @{ "User-Agent" = "loom-install"; "Accept" = "application/json" } -ProxyUseDefaultCredentials }
+        $tag = ($release | Where-Object { $_.tag_name -match $tagPattern }).tag_name
+      } else {
+        $tag = $null
+        for ($page = 1; -not $tag -and $page -le 10; $page++) {
+          $releases = Invoke-Retrying { Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/releases?per_page=100&page=$page" -Headers @{ "User-Agent" = "loom-install" } -ProxyUseDefaultCredentials }
+          $tag = ($releases | Where-Object { -not $_.draft -and $_.tag_name -match $tagPattern } | Select-Object -First 1).tag_name
+          if (-not $releases) { break }
+        }
+      }
+      if (-not $tag) { Fail "could not find a $channel release; set LOOM_VERSION" }
+      $version = $tag.Substring(1)
+    }
+  }
+  $profileSuffix = if ($profile -eq "minimal") { "-minimal" } else { "" }
+  $stem = "loom-$version$profileSuffix-win32-$arch"
+  $archive = "$stem.zip"
 }
+
 if ($version -match '-preview\.') {
-  Write-Warning "t3 $version is a preview build. Preview builds are cut by maintainers from unreleased branches to exercise the release pipeline. They can be broken, receive no fixes, and are never offered as updates. Set LOOM_CHANNEL=stable (the default) for a supported build."
-  if ($channel -ne "preview" -and -not $env:LOOM_VERSION) {
+  Write-Warning "loom $version is a preview build. Preview builds are cut by maintainers from unreleased branches to exercise the release pipeline. They can be broken, receive no fixes, and are never offered as updates. Set LOOM_CHANNEL=stable (the default) for a supported build."
+  if ($channel -ne "preview" -and -not $explicitVersion -and -not $ArchivePath) {
     Fail "refusing a preview build that was not explicitly requested"
   }
 }
 
-$stem = "loom-$version-win32-$arch"
-$archive = "$stem.zip"
 $versionsDir = Join-Path $loomHome "runtime\versions"
 $targetDir = Join-Path $versionsDir $version
 $marker = Join-Path $targetDir ".install-complete"
@@ -191,25 +255,46 @@ if ((Test-Path $marker) -and ((Get-Content $marker -Raw).Trim() -eq $version)) {
   try {
     if ($interactive) { [Console]::Error.Write("`r$esc[2K") }
     [Console]::Error.WriteLine("  ${muted}Installing$reset Loom $bold$version$reset`n")
-    Step "Downloading..."
-    try {
-      Fetch "$baseUrl/v$version/SHA256SUMS" (Join-Path $staging "SHA256SUMS")
-    } catch {
-      $status = $_.Exception.Response.StatusCode.value__
-      if ($status -eq 404) {
-        Fail "t3 $version has no release archive for win32-$arch; releases before the self-contained CLI can only be installed with 'npm install -g t3@$version'"
+
+    if ($ArchivePath) {
+      Step "Using offline archive..."
+      Copy-Item -LiteralPath $ArchivePath -Destination (Join-Path $staging $archive)
+      if (-not $skipChecksumFlag) {
+        if (-not $ChecksumsPath) {
+          $siblingChecksums = Join-Path ([System.IO.Path]::GetDirectoryName((Resolve-Path -LiteralPath $ArchivePath).Path)) "SHA256SUMS"
+          if (Test-Path -LiteralPath $siblingChecksums) { $ChecksumsPath = $siblingChecksums }
+        }
+        if (-not $ChecksumsPath -or -not (Test-Path -LiteralPath $ChecksumsPath)) {
+          Fail "offline install requires SHA256SUMS beside the archive, -ChecksumsPath <file>, or -SkipChecksum"
+        }
+        Step "Verifying the archive..."
+        $expected = (Get-Content -LiteralPath $ChecksumsPath | Where-Object { $_ -match "\s\*?$([regex]::Escape($archive))$" } | Select-Object -First 1)
+        if (-not $expected) { Fail "$archive is not listed in $ChecksumsPath" }
+        $expected = ($expected -split "\s+")[0].ToLowerInvariant()
+        $actual = (Get-FileHash -Algorithm SHA256 (Join-Path $staging $archive)).Hash.ToLowerInvariant()
+        if ($actual -ne $expected) { Fail "checksum mismatch for $archive" }
       }
-      throw
+    } else {
+      Step "Downloading..."
+      try {
+        Fetch "$baseUrl/v$version/SHA256SUMS" (Join-Path $staging "SHA256SUMS")
+      } catch {
+        $status = $_.Exception.Response.StatusCode.value__
+        if ($status -eq 404) {
+          Fail "loom $version has no release archive for win32-$arch; releases before the self-contained CLI can only be installed with 'npm install -g loom@$version'"
+        }
+        throw
+      }
+      Fetch "$baseUrl/v$version/$archive" (Join-Path $staging $archive) -progress
+
+      Step "Verifying the download..."
+
+      $expected = (Get-Content (Join-Path $staging "SHA256SUMS") | Where-Object { $_ -match "\s\*?$([regex]::Escape($archive))$" } | Select-Object -First 1)
+      if (-not $expected) { Fail "$archive is not listed in SHA256SUMS" }
+      $expected = ($expected -split "\s+")[0].ToLowerInvariant()
+      $actual = (Get-FileHash -Algorithm SHA256 (Join-Path $staging $archive)).Hash.ToLowerInvariant()
+      if ($actual -ne $expected) { Fail "checksum mismatch for $archive" }
     }
-    Fetch "$baseUrl/v$version/$archive" (Join-Path $staging $archive) -progress
-
-    Step "Verifying the download..."
-
-    $expected = (Get-Content (Join-Path $staging "SHA256SUMS") | Where-Object { $_ -match "\s\*?$([regex]::Escape($archive))$" } | Select-Object -First 1)
-    if (-not $expected) { Fail "$archive is not listed in SHA256SUMS" }
-    $expected = ($expected -split "\s+")[0].ToLowerInvariant()
-    $actual = (Get-FileHash -Algorithm SHA256 (Join-Path $staging $archive)).Hash.ToLowerInvariant()
-    if ($actual -ne $expected) { Fail "checksum mismatch for $archive" }
 
     Step "Extracting Loom..."
     # The archive module reads the global preference, not the caller's local scope.
@@ -219,7 +304,10 @@ if ((Test-Path $marker) -and ((Get-Content $marker -Raw).Trim() -eq $version)) {
       Expand-Archive -Path (Join-Path $staging $archive) -DestinationPath $staging -Force
     } finally { $global:ProgressPreference = $savedProgress }
     Get-ChildItem (Join-Path $staging $stem) | Move-Item -Destination $staging
-    Remove-Item (Join-Path $staging $stem), (Join-Path $staging $archive), (Join-Path $staging "SHA256SUMS") -Recurse -Force
+    Remove-Item (Join-Path $staging $stem), (Join-Path $staging $archive) -Recurse -Force
+    if (Test-Path (Join-Path $staging "SHA256SUMS")) {
+      Remove-Item (Join-Path $staging "SHA256SUMS") -Force
+    }
 
     & (Join-Path $staging "loom.exe") --version | Out-Null
     if ($LASTEXITCODE -ne 0) { Fail "the downloaded executable does not run" }
@@ -233,10 +321,10 @@ if ((Test-Path $marker) -and ((Get-Content $marker -Raw).Trim() -eq $version)) {
   }
 }
 
-Step "Setting up the t3 command..."
+Step "Setting up the loom command..."
 New-Item -ItemType Directory -Force -Path $binDir | Out-Null
 $shim = Join-Path $binDir "loom.cmd"
-# Replace only a shim that runs a version in this home; never the desktop app's or another t3.
+# Replace only a shim that runs a version in this home; never the desktop app's or another loom.
 if (Test-Path -LiteralPath $shim) {
   $existingTarget = ""
   # The shim is UTF-8 without a BOM; Windows PowerShell 5.1 reads files as ANSI by default.
@@ -248,9 +336,9 @@ if (Test-Path -LiteralPath $shim) {
   if ($existingTarget) { $existingTarget = [System.IO.Path]::GetFullPath($existingTarget) }
   # Exactly <version>\loom.exe, never another program inside a version.
   $owned = $existingTarget.StartsWith($ownedPrefix, [System.StringComparison]::OrdinalIgnoreCase) -and
-    ($existingTarget.Substring($ownedPrefix.Length) -match '^[^\\/]+\\t3\.exe$')
+    ($existingTarget.Substring($ownedPrefix.Length) -match '^[^\\/]+\\loom\.exe$')
   if (-not $owned) {
-    Fail "another t3 is already at $shim. Remove it and run this again, or run $(Join-Path $targetDir 'loom.exe') directly."
+    Fail "another loom is already at $shim. Remove it and run this again, or run $(Join-Path $targetDir 'loom.exe') directly."
   }
 }
 # UTF-8 without a BOM: cmd.exe reads the shim as-is, and ASCII would corrupt
@@ -264,22 +352,25 @@ if (-not ((Test-Path $launchers) -and ((Get-Content $launchers) -contains $shimP
 }
 if ($interactive) { [Console]::Error.Write("`r$esc[2K") }
 [Console]::Error.WriteLine("  ${green}Installed Loom $version$reset`n")
+if ($noModifyPathFlag) {
+  exit 0
+}
 if ($binDir.Contains(";")) {
   # PATH would split the folder at the `;`, so name the command in full instead.
   Write-Host "  Run ${bold}& '$($shim.Replace("'", "''"))'$reset to get started.`n"
 } else {
   # Either side may end in a separator. Trim only here: a drive root keeps its `\` for Join-Path.
   $added = ($env:PATH -split ";" | ForEach-Object { $_.TrimEnd('\', '/') }) -notcontains $binDir.TrimEnd('\', '/')
-  # `irm | iex` runs in the user's own session, so t3 works in this window right away.
-  # Last, so it never shadows another t3.
+  # `irm | iex` runs in the user's own session, so loom works in this window right away.
+  # Last, so it never shadows another loom.
   if ($added) { $env:Path = "$env:Path;$binDir" }
-  # A t3 earlier on PATH runs instead, so name this one in full.
-  $first = Get-Command t3 -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+  # A loom earlier on PATH runs instead, so name this one in full.
+  $first = Get-Command loom -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
   if ($first -and [System.IO.Path]::GetFullPath($first.Source) -ne [System.IO.Path]::GetFullPath($shimPath)) {
-    Write-Host "  Another t3 at $($first.Source) runs first, so run ${bold}& '$($shim.Replace("'", "''"))'$reset to use this one.`n"
+    Write-Host "  Another loom at $($first.Source) runs first, so run ${bold}& '$($shim.Replace("'", "''"))'$reset to use this one.`n"
   } elseif ($added) {
-    Write-Host "  Run ${bold}t3$reset to get started. For new windows, add $binDir to your PATH.`n"
+    Write-Host "  Run ${bold}loom$reset to get started. For new windows, add $binDir to your PATH.`n"
   } else {
-    Write-Host "  Run ${bold}t3$reset to use Loom here, or ${bold}t3 up$reset to use it from your other devices.`n"
+    Write-Host "  Run ${bold}loom$reset to use Loom here, or ${bold}loom up$reset to use it from your other devices.`n"
   }
 }

@@ -11,8 +11,20 @@ import { sandboxDisabled } from "./PreviewBrowserHost.ts";
 
 // Playwright needs its files on disk. createRequire also resolves it from a Node SEA executable.
 const requirePlaywright = NodeModule.createRequire(import.meta.url);
-const loadPlaywright = () =>
-  requirePlaywright("playwright-core") as typeof import("playwright-core");
+const loadPlaywright = () => {
+  try {
+    return requirePlaywright("playwright-core") as typeof import("playwright-core");
+  } catch (cause) {
+    const code = (cause as { readonly code?: unknown } | null)?.code;
+    if (code === "MODULE_NOT_FOUND" || code === "ERR_MODULE_NOT_FOUND") {
+      throw new Error(
+        "The preview browser is not included in this minimal Loom build (playwright-core is not installed).",
+        { cause },
+      );
+    }
+    throw cause;
+  }
+};
 
 interface Options {
   readonly profilesDir: string;
