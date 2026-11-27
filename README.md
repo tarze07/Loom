@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/tarze07/Loom">
-    <img src="./assets/prod/loom-black-web-icon-192x192.png" width="80" height="80" alt="Loom logo" />
+    <img src="./assets/prod/loom-code-logo.png" width="420" alt="Loom Code logo" />
   </a>
 </p>
 
