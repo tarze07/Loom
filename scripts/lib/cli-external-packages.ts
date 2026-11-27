@@ -50,9 +50,48 @@ export function shouldBundleCliDependency(id: string): boolean {
   return !isExternalCliDependency(id);
 }
 
+export type RuntimeBuildProfile = "full" | "minimal";
+export type RuntimeTargetPlatform = "mac" | "linux" | "win";
+
+export interface CliRuntimeExternalSelectionOptions {
+  readonly profile?: RuntimeBuildProfile;
+  readonly platform?: RuntimeTargetPlatform;
+}
+
+// Core native packages retained in minimal/corporate builds. Optional modules
+// (playwright-core, transcribe-cpp, @cursor/sdk, @napi-rs/keyring, etc.) remain
+// external to the bundler and degrade gracefully when absent on disk.
+const MINIMAL_CLI_RUNTIME_EXTERNAL_PREFIXES = ["node-pty", "@ff-labs/"] as const;
+const WINDOWS_MINIMAL_CLI_RUNTIME_EXTERNAL_PREFIXES = ["ffi-rs", "@yuuang/"] as const;
+
+export function isMinimalCliRuntimeExternalDependency(
+  id: string,
+  platform?: RuntimeTargetPlatform,
+): boolean {
+  if (MINIMAL_CLI_RUNTIME_EXTERNAL_PREFIXES.some((prefix) => id.startsWith(prefix))) {
+    return true;
+  }
+  if (
+    platform === "win" &&
+    WINDOWS_MINIMAL_CLI_RUNTIME_EXTERNAL_PREFIXES.some((prefix) => id.startsWith(prefix))
+  ) {
+    return true;
+  }
+  return false;
+}
+
 export function selectCliRuntimeExternalDependencies(
   dependencies: Readonly<Record<string, string>>,
+  options?: CliRuntimeExternalSelectionOptions,
 ): Record<string, string> {
+  const profile = options?.profile ?? "full";
+  if (profile === "minimal") {
+    return Object.fromEntries(
+      Object.entries(dependencies).filter(([name]) =>
+        isMinimalCliRuntimeExternalDependency(name, options?.platform),
+      ),
+    );
+  }
   return Object.fromEntries(
     Object.entries(dependencies).filter(([name]) => isRuntimeExternalCliDependency(name)),
   );

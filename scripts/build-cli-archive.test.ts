@@ -9,7 +9,12 @@ import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
 import { ChildProcess, ChildProcessSpawner } from "effect/process";
 
-import { awaitCliNotarization, signMacArchiveContents } from "./build-cli-archive.ts";
+import {
+  awaitCliNotarization,
+  cliArchiveFileName,
+  cliArchiveStem,
+  signMacArchiveContents,
+} from "./build-cli-archive.ts";
 
 const signedEnv = {
   LOOM_CLI_MAC_SIGN_IDENTITY: "Developer ID Application: Test (TEAM)",
@@ -64,9 +69,21 @@ const makeContent = Effect.fn("test.makeContent")(function* () {
   const root = yield* fs.makeTempDirectoryScoped({ prefix: "loom-cli-notary-" });
   const contentDir = path.join(root, "content");
   yield* fs.makeDirectory(contentDir);
-  const executablePath = path.join(contentDir, "t3");
-  yield* fs.writeFileString(executablePath, "t3");
+  const executablePath = path.join(contentDir, "loom");
+  yield* fs.writeFileString(executablePath, "loom");
   return { root, contentDir, executablePath, submissionFile: path.join(root, "submission") };
+});
+
+it("formats archive names for full and minimal profiles", () => {
+  assert.equal(cliArchiveStem("0.1.9", "linux", "x64"), "loom-0.1.9-linux-x64");
+  assert.equal(
+    cliArchiveFileName("0.1.9", "linux", "x64", "minimal"),
+    "loom-0.1.9-minimal-linux-x64.tar.gz",
+  );
+  assert.equal(
+    cliArchiveFileName("0.1.9", "win", "x64", "minimal"),
+    "loom-0.1.9-minimal-win32-x64.zip",
+  );
 });
 
 const notarySubcommands = (calls: ReadonlyArray<ReadonlyArray<string>>) =>

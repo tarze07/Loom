@@ -35,8 +35,10 @@ import { resolveCatalogDependencies } from "./lib/resolve-catalog.ts";
 
 const BuildPlatform = Schema.Literals(["mac", "linux", "win"]);
 const BuildArch = Schema.Literals(["arm64", "x64"]);
+const BuildProfile = Schema.Literals(["full", "minimal"]);
 type BuildPlatform = typeof BuildPlatform.Type;
 type BuildArch = typeof BuildArch.Type;
+type BuildProfile = typeof BuildProfile.Type;
 
 const WorkspaceConfig = Schema.Struct({
   catalog: Schema.optional(Schema.Record(Schema.String, Schema.String)),
@@ -95,13 +97,24 @@ export function cliArchivePlatformKey(platform: BuildPlatform, arch: BuildArch):
   return `${nodePlatform}-${arch}`;
 }
 
-export function cliArchiveStem(version: string, platform: BuildPlatform, arch: BuildArch): string {
-  return `loom-${version}-${cliArchivePlatformKey(platform, arch)}`;
+export function cliArchiveStem(
+  version: string,
+  platform: BuildPlatform,
+  arch: BuildArch,
+  profile: BuildProfile = "full",
+): string {
+  const profileSuffix = profile === "minimal" ? "-minimal" : "";
+  return `loom-${version}${profileSuffix}-${cliArchivePlatformKey(platform, arch)}`;
 }
 
-export function cliArchiveFileName(version: string, platform: BuildPlatform, arch: BuildArch) {
+export function cliArchiveFileName(
+  version: string,
+  platform: BuildPlatform,
+  arch: BuildArch,
+  profile: BuildProfile = "full",
+) {
   // Minimal hosts may lack xz, but tar and Node zlib handle gzip without it.
-  return `${cliArchiveStem(version, platform, arch)}.${platform === "win" ? "zip" : "tar.gz"}`;
+  return `${cliArchiveStem(version, platform, arch, profile)}.${platform === "win" ? "zip" : "tar.gz"}`;
 }
 
 const runCommand = Effect.fn("runCommand")(function* (
@@ -138,6 +151,7 @@ const stageRuntimeExternals = Effect.fn("stageRuntimeExternals")(function* (inpu
   readonly platform: BuildPlatform;
   readonly arch: BuildArch;
   readonly version: string;
+  readonly profile: BuildProfile;
 }) {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
@@ -158,7 +172,10 @@ const stageRuntimeExternals = Effect.fn("stageRuntimeExternals")(function* (inpu
     });
   }
   const dependencies = {
-    ...selectCliRuntimeExternalDependencies(serverDependencies),
+    ...selectCliRuntimeExternalDependencies(serverDependencies, {
+      profile: input.profile,
+      platform: input.platform,
+    }),
     ...resolveFffNativeDependencies(input.platform, input.arch, fffNodeVersion),
   };
   const patchedDependencies = createStagePatchedDependencies(
@@ -226,6 +243,7 @@ const stageRuntimeExternals = Effect.fn("stageRuntimeExternals")(function* (inpu
   }
   // Nested .bin shims are unused symlinks, which the npm registry rejects in tarballs.
   yield* removeNestedBinDirectories(fs, path, path.join(input.stageDir, "node_modules"));
+  return Object.keys(dependencies).sort();
 });
 
 const removeNestedBinDirectories = Effect.fn("build-cli-archive.removeNestedBinDirectories")(
@@ -588,15 +606,17 @@ const buildCliArchive = Effect.fn("buildCliArchive")(function* (input: {
   readonly platform: BuildPlatform;
   readonly arch: BuildArch;
   readonly version: string;
+  readonly profile: BuildProfile;
   readonly outputDir: string;
   readonly resourceMonitorDir: Option.Option<string>;
+  readonly withoutResourceMonitor: boolean;
   readonly notarySubmissionFile: Option.Option<string>;
 }) {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
   const repoRoot = yield* RepoRoot;
   const serverDir = path.join(repoRoot, "apps/server");
-  const executableName = input.platform === "win" ? "loom.exe" : "t3";
+  const executableName = input.platform === "win" ? "loom.exe" : "loom";
   // tsdown suffixes cross-built executables; prefer the exact target over the plain host build.
   const targetKey = `${input.platform === "mac" ? "darwin" : input.platform}-${input.arch}`;
   const targetExecutable = path.join(
@@ -625,27 +645,43 @@ const buildCliArchive = Effect.fn("buildCliArchive")(function* (input: {
     path.join(webClient, "index.html"),
     "Run `vp run --filter loom build` first.",
   );
-  yield* requireInput(
-    resourceMonitorDir,
-    "Build the resource monitor or pass --resource-monitor-dir.",
-  );
+  if (!input.withoutResourceMonitor) {
+    yield* requireInput(
+      resourceMonitorDir,
+      "Build the resource monitor, pass --resource-monitor-dir, or pass --without-resource-monitor.",
+    );
+  }
 
-  const stem = cliArchiveStem(input.version, input.platform, input.arch);
+  const stem = cliArchiveStem(input.version, input.platform, input.arch, input.profile);
   const stageRoot = yield* fs.makeTempDirectoryScoped({ prefix: "loom-cli-archive-" });
   const contentDir = path.join(stageRoot, stem);
   yield* fs.makeDirectory(contentDir, { recursive: true });
 
-  yield* Effect.log(`[cli-archive] Staging ${stem}...`);
+  yield* Effect.log(`[cli-archive] Staging ${stem} (profile=${input.profile})...`);
   yield* fs.copyFile(builtExecutable, path.join(contentDir, executableName));
   yield* stageWebClient(webClient, path.join(contentDir, "client"));
-  yield* fs.copy(resourceMonitorDir, path.join(contentDir, "resource-monitor"));
-  yield* stageRuntimeExternals({
+  if (!input.withoutResourceMonitor) {
+    yield* fs.copy(resourceMonitorDir, path.join(contentDir, "resource-monitor"));
+  }
+  const stagedExternalDependencies = yield* stageRuntimeExternals({
     repoRoot,
     stageDir: contentDir,
     platform: input.platform,
     arch: input.arch,
     version: input.version,
+    profile: input.profile,
   });
+  yield* fs.writeFileString(
+    path.join(contentDir, "build-manifest.json"),
+    `${yield* encodeJsonString({
+      version: input.version,
+      profile: input.profile,
+      platform: input.platform,
+      arch: input.arch,
+      resourceMonitorIncluded: !input.withoutResourceMonitor,
+      externalDependencies: stagedExternalDependencies,
+    })}\n`,
+  );
 
   const executablePath = path.join(contentDir, executableName);
   if (input.platform === "linux") {
@@ -676,7 +712,7 @@ const buildCliArchive = Effect.fn("buildCliArchive")(function* (input: {
   yield* fs.makeDirectory(input.outputDir, { recursive: true });
   const archivePath = path.join(
     input.outputDir,
-    cliArchiveFileName(input.version, input.platform, input.arch),
+    cliArchiveFileName(input.version, input.platform, input.arch, input.profile),
   );
   yield* fs.remove(archivePath, { force: true });
   if (input.platform === "win" && hostPlatform !== "win32") {
@@ -721,12 +757,22 @@ const command = Command.make(
     version: Flag.String("version").pipe(
       Flag.withDescription("Release version for the archive name."),
     ),
+    profile: Flag.Literals("profile", BuildProfile.literals).pipe(
+      Flag.withDefault("full"),
+      Flag.withDescription(
+        "Dependency profile: 'full' (default) or 'minimal' (corporate/air-gapped with minimal native libraries).",
+      ),
+    ),
     outputDir: Flag.String("output-dir").pipe(Flag.withDefault("release-cli")),
     resourceMonitorDir: Flag.String("resource-monitor-dir").pipe(
       Flag.withDescription(
         "Directory laid out like dist/resource-monitor (defaults to apps/server/dist/resource-monitor).",
       ),
       Flag.optional,
+    ),
+    withoutResourceMonitor: Flag.Boolean("without-resource-monitor").pipe(
+      Flag.withDefault(false),
+      Flag.withDescription("Omit the optional native resource-monitor binary from the archive."),
     ),
     notarySubmissionFile: Flag.String("notary-submission-file").pipe(
       Flag.withDescription(
@@ -737,7 +783,7 @@ const command = Command.make(
   },
   (input) => buildCliArchive(input).pipe(Effect.scoped),
 ).pipe(
-  Command.withDescription("Package the t3 single-executable into a per-platform archive."),
+  Command.withDescription("Package the loom single-executable into a per-platform archive."),
   Command.withSubcommands([
     Command.make(
       "await-notarization",

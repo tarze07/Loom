@@ -51,6 +51,70 @@ describe("shouldBundleCliDependency", () => {
   });
 });
 
+describe("minimal corporate build profile", () => {
+  const sampleServerDeps = {
+    "node-pty": "^1.2.0-beta.15",
+    "@ff-labs/fff-node": "0.11.0",
+    "ffi-rs": "1.3.2",
+    "playwright-core": "1.64.1",
+    "transcribe-cpp": "0.4.1",
+    "@cursor/sdk": "1.2.0",
+    "@napi-rs/keyring": "^1.3.0",
+    undici: "7.0.0",
+    zod: "^4.6.5",
+    effect: "4.1.2",
+  };
+
+  it("keeps only node-pty and fff-node on Linux in minimal CLI profile", () => {
+    const selected = selectCliRuntimeExternalDependencies(sampleServerDeps, {
+      profile: "minimal",
+      platform: "linux",
+    });
+    assert.deepStrictEqual(Object.keys(selected).sort(), ["@ff-labs/fff-node", "node-pty"]);
+  });
+
+  it("keeps ffi-rs on Windows for GPO registry reading in minimal CLI profile", () => {
+    const selected = selectCliRuntimeExternalDependencies(sampleServerDeps, {
+      profile: "minimal",
+      platform: "win",
+    });
+    assert.deepStrictEqual(Object.keys(selected).sort(), [
+      "@ff-labs/fff-node",
+      "ffi-rs",
+      "node-pty",
+    ]);
+  });
+
+  it("excludes optional desktop native addons in minimal Desktop profile", async () => {
+    const { selectDesktopRuntimeExternalDependencies } =
+      await import("./desktop-external-packages.ts");
+    const sampleDesktopDeps = {
+      "@napi-rs/keyring": "^1.3.0",
+      "@crowecawcaw/xa11y": "0.15.4",
+      "electron-webauthn": "1.0.0",
+      "ffi-rs": "1.3.2",
+      "playwright-core": "1.64.1",
+      electron: "44.10.1",
+    };
+    assert.deepStrictEqual(
+      selectDesktopRuntimeExternalDependencies(sampleDesktopDeps, {
+        profile: "minimal",
+        platform: "linux",
+      }),
+      {},
+    );
+    assert.deepStrictEqual(
+      Object.keys(
+        selectDesktopRuntimeExternalDependencies(sampleDesktopDeps, {
+          profile: "minimal",
+          platform: "win",
+        }),
+      ),
+      ["ffi-rs"],
+    );
+  });
+});
+
 it.layer(NodeServices.layer)("external package dependency closure", (it) => {
   // Read the pnpm store directly: isolation hides transitive names and exports maps can block package.json.
   const readInstalledPackages = Effect.gen(function* () {

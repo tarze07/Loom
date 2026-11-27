@@ -62,6 +62,7 @@ const DESKTOP_APP_ID = "com.loom.app";
 
 const BuildPlatform = Schema.Literals(["mac", "linux", "win"]);
 const BuildArch = Schema.Literals(["arm64", "x64", "universal"]);
+const BuildProfile = Schema.Literals(["full", "minimal"]);
 
 const WorkspaceConfig = Schema.Struct({
   catalog: Schema.optional(Schema.Record(Schema.String, Schema.String)),
@@ -181,6 +182,7 @@ interface BuildCliInput {
   readonly signed: Option.Option<boolean>;
   readonly verbose: Option.Option<boolean>;
   readonly wslRuntime: Option.Option<string>;
+  readonly profile?: Option.Option<typeof BuildProfile.Type>;
 }
 
 function detectHostBuildPlatform(hostPlatform: string): typeof BuildPlatform.Type | undefined {
@@ -877,6 +879,7 @@ interface ResolvedBuildOptions {
   readonly signed: boolean;
   readonly verbose: boolean;
   readonly wslRuntime: string | undefined;
+  readonly profile: typeof BuildProfile.Type;
 }
 
 interface StagePackageJson {
@@ -1069,9 +1072,13 @@ export function resolveMergedStageDependencies(input: {
   readonly desktopDependencies: Record<string, string>;
   readonly arch: typeof BuildArch.Type;
   readonly fffNodeVersion: string;
+  readonly profile?: typeof BuildProfile.Type;
 }) {
   return {
-    ...selectCliRuntimeExternalDependencies(input.serverDependencies),
+    ...selectCliRuntimeExternalDependencies(input.serverDependencies, {
+      profile: input.profile ?? "full",
+      platform: input.platform,
+    }),
     ...input.desktopDependencies,
     ...resolveFffNativeDependencies(input.platform, input.arch, input.fffNodeVersion),
   };
@@ -1231,6 +1238,7 @@ const BuildEnvConfig = Config.all({
   signed: Config.Boolean("LOOM_DESKTOP_SIGNED").pipe(Config.withDefault(false)),
   verbose: Config.Boolean("LOOM_DESKTOP_VERBOSE").pipe(Config.withDefault(false)),
   wslRuntime: Config.String("LOOM_DESKTOP_WSL_RUNTIME").pipe(Config.option),
+  profile: Config.schema(BuildProfile, "LOOM_DESKTOP_PROFILE").pipe(Config.option),
 });
 
 const resolveBooleanFlag = (flag: Option.Option<boolean>, envValue: boolean) =>
@@ -1277,6 +1285,7 @@ export const resolveBuildOptions = Effect.fn("resolveBuildOptions")(function* (
 
   const wslRuntime =
     Option.getOrUndefined(input.wslRuntime) ?? Option.getOrUndefined(env.wslRuntime);
+  const profile = mergeOptions(input.profile ?? Option.none(), env.profile, "full");
 
   return {
     platform,
@@ -1289,6 +1298,7 @@ export const resolveBuildOptions = Effect.fn("resolveBuildOptions")(function* (
     signed,
     verbose,
     wslRuntime,
+    profile,
   } satisfies ResolvedBuildOptions;
 });
 
@@ -2206,13 +2216,17 @@ const validateBundledClientAssets = Effect.fn("build-desktop-artifact.validateBu
 export function resolveDesktopRuntimeDependencies(
   dependencies: Record<string, string> | undefined,
   catalog: Record<string, string>,
+  options?: {
+    readonly profile?: typeof BuildProfile.Type;
+    readonly platform?: typeof BuildPlatform.Type;
+  },
 ): Record<string, string> {
   if (!dependencies || Object.keys(dependencies).length === 0) {
     return {};
   }
 
   return resolveCatalogDependencies(
-    selectDesktopRuntimeExternalDependencies(dependencies),
+    selectDesktopRuntimeExternalDependencies(dependencies, options),
     catalog,
     "apps/desktop",
   );
@@ -3136,9 +3150,14 @@ const buildDesktopArtifactUnlocked = Effect.fn("buildDesktopArtifactUnlocked")(f
   });
   const resolvedServerRuntimeExternalDependencies = selectCliRuntimeExternalDependencies(
     resolvedServerDependencies,
+    { profile: options.profile, platform: options.platform },
   );
   const resolvedDesktopRuntimeDependencies = yield* Effect.try({
-    try: () => resolveDesktopRuntimeDependencies(desktopPackageJson.dependencies, workspaceCatalog),
+    try: () =>
+      resolveDesktopRuntimeDependencies(desktopPackageJson.dependencies, workspaceCatalog, {
+        profile: options.profile,
+        platform: options.platform,
+      }),
     catch: (cause) =>
       new DesktopBuildDependencyResolutionError({
         kind: "desktop-runtime",
@@ -3317,6 +3336,7 @@ const buildDesktopArtifactUnlocked = Effect.fn("buildDesktopArtifactUnlocked")(f
           desktopDependencies: resolvedDesktopRuntimeDependencies,
           arch: options.arch,
           fffNodeVersion: serverPackageJson.dependencies["@ff-labs/fff-node"],
+          profile: options.profile,
         });
   const stagePatchedDependencies = createStagePatchedDependencies(
     workspacePatchedDependencies,
@@ -3372,7 +3392,9 @@ const buildDesktopArtifactUnlocked = Effect.fn("buildDesktopArtifactUnlocked")(f
     yield* fs.copy(path.join(repoRoot, "patches"), path.join(stageAppDir, "patches"));
   }
 
-  yield* Effect.log("[desktop-artifact] Installing staged production dependencies...");
+  yield* Effect.log(
+    `[desktop-artifact] Installing staged production dependencies (profile=${options.profile})...`,
+  );
   const installCommand = yield* resolveSpawnCommand("vp", [...STAGE_INSTALL_ARGS]);
   yield* runCommand(
     ChildProcess.make(installCommand.command, installCommand.args, {
@@ -3381,7 +3403,9 @@ const buildDesktopArtifactUnlocked = Effect.fn("buildDesktopArtifactUnlocked")(f
     }),
     { label: "vp install --prod", verbose: options.verbose },
   );
-  yield* stageKeyringNativeBinaries(stageAppDir, options.platform, options.arch);
+  if (Object.hasOwn(stageDependencies, "@napi-rs/keyring")) {
+    yield* stageKeyringNativeBinaries(stageAppDir, options.platform, options.arch);
+  }
 
   if (options.platform === "win" && windowsServerAsarPath) {
     yield* stageWindowsServerSidecar({
@@ -3640,6 +3664,12 @@ const buildDesktopArtifactCli = Command.make("build-desktop-artifact", {
   wslRuntime: Flag.String("wsl-runtime").pipe(
     Flag.withDescription(
       "Path to the Linux CLI release archive (loom-<version>-linux-x64.tar.gz) to embed as the WSL runtime of a Windows build (env: LOOM_DESKTOP_WSL_RUNTIME).",
+    ),
+    Flag.optional,
+  ),
+  profile: Flag.Literals("profile", BuildProfile.literals).pipe(
+    Flag.withDescription(
+      "Dependency profile: 'full' (default) or 'minimal' (corporate build without optional native libraries; env: LOOM_DESKTOP_PROFILE).",
     ),
     Flag.optional,
   ),

@@ -68,6 +68,50 @@ node apps/server/dist/bin.mjs
 `loom update` and the background service do not apply to a server run this way;
 update it with `git pull` and a rebuild.
 
+### Corporate and offline installation
+
+For restricted or air-gapped networks, use the `minimal` build profile, which omits
+optional native libraries (`playwright-core`, `transcribe-cpp`, `@cursor/sdk`, and
+`@napi-rs/keyring`) while keeping the self-contained Node runtime, terminal, search,
+and Windows GPO support.
+
+Install from an internal HTTP mirror (host `latest.txt`, `v<version>/SHA256SUMS`,
+and the archive on Artifactory, Nexus, or any static file server):
+
+```bash
+LOOM_RELEASE_BASE_URL=https://artifacts.example.com/loom \
+LOOM_PROFILE=minimal \
+sh install.sh --no-modify-path
+```
+
+On Windows (PowerShell):
+
+```powershell
+$env:LOOM_RELEASE_BASE_URL = "https://artifacts.example.com/loom"
+$env:LOOM_PROFILE = "minimal"
+.\install.ps1 -NoModifyPath
+```
+
+Install completely offline without any network requests:
+
+```bash
+sh install.sh \
+  --archive ./loom-0.1.9-minimal-linux-x64.tar.gz \
+  --checksums ./SHA256SUMS \
+  --no-modify-path
+```
+
+```powershell
+.\install.ps1 `
+  -ArchivePath .\loom-0.1.9-minimal-win32-x64.zip `
+  -ChecksumsPath .\SHA256SUMS `
+  -NoModifyPath
+```
+
+Set `HTTPS_PROXY` / `NO_PROXY` for corporate proxies, and `LOOM_CA_CERT` (or
+`SSL_CERT_FILE` / `NODE_EXTRA_CA_CERTS`) for internal root CAs. Pair with
+[Managed policy](./managed-policy.md) to lock settings and disable update checks.
+
 ## Desktop app
 
 Download a release from [GitHub Releases](https://github.com/tarze07/Loom/releases),
